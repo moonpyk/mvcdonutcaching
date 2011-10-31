@@ -1,144 +1,103 @@
 ﻿using System;
-using System.Configuration;
-using System.IO;
-using System.Text.RegularExpressions;
-using System.Web;
-using System.Web.Caching;
-using System.Web.Configuration;
 using System.Web.Mvc;
-using System.Web.Mvc.Html;
-using System.Web.Script.Serialization;
 
 namespace DevTrends.MvcDonutCaching
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = true, AllowMultiple = false)]
     public class DonutOutputCacheAttribute : ActionFilterAttribute
     {
-        private const string AspnetInternalProviderName = "AspNetInternalProvider";
-        private const string CacheKeyPrefix = "_d0nutc@che.";
+        private readonly IKeyGenerator _keyGenerator;
+        private readonly IDonutHoleFiller _donutHoleFiller;
+        private readonly IActionOutputBuilder _actionOutputBuilder;
+        private readonly IOutputCacheManager _outputCacheManager;
+        private readonly ICacheSettingsManager _cacheSettingsManager;
 
-        private static readonly Regex DonutHoles = new Regex("<!--Donut#(.*)#-->", RegexOptions.Compiled);
-        private static readonly bool IsCachingEnabled;
-        private static readonly OutputCacheProvider Cache;
-
-        private string _key;
+        private CacheSettings _cacheSettings;
+        private string _cacheKey;
 
         public int Duration { get; set; }
         public string VaryByParam { get; set; }
+        public string VaryByCustom { get; set; }
         public string CacheProfile { get; set; }
 
-        static DonutOutputCacheAttribute()
+        public DonutOutputCacheAttribute()
         {
-            var outputCacheConfigSection = (OutputCacheSection)ConfigurationManager.GetSection("system.web/caching/outputCache");
+            var keyBuilder = new KeyBuilder();
+            _keyGenerator = new KeyGenerator(keyBuilder); ;
+            _donutHoleFiller = new DonutHoleFiller(new ActionSettingsSerialiser());
+            _actionOutputBuilder = new ActionOutputBuilder();
+            _outputCacheManager = new OutputCacheManager(OutputCache.Instance, keyBuilder);
+            _cacheSettingsManager = new CacheSettingsManager();
+        }
 
-            if (outputCacheConfigSection.EnableOutputCache)
-            {
-                IsCachingEnabled = true;
-
-                if (outputCacheConfigSection.DefaultProviderName == AspnetInternalProviderName)
-                {
-                    Cache = new MemoryCacheProvider();
-                }
-                else
-                {
-                    var providerType = Type.GetType(outputCacheConfigSection.Providers[outputCacheConfigSection.DefaultProviderName].Type);
-                    Cache = (OutputCacheProvider) Activator.CreateInstance(providerType);
-                }
-            }
-        }        
+        internal DonutOutputCacheAttribute(IKeyGenerator keyGenerator, IDonutHoleFiller donutHoleFiller, IActionOutputBuilder actionOutputBuilder, 
+                                           IOutputCacheManager outputCacheManager, ICacheSettingsManager cacheSettingsManager)
+        {
+            _keyGenerator = keyGenerator;
+            _donutHoleFiller = donutHoleFiller;
+            _actionOutputBuilder = actionOutputBuilder;
+            _outputCacheManager = outputCacheManager;
+            _cacheSettingsManager = cacheSettingsManager;
+        }
 
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            ConfigureCacheProfile();
+            _cacheSettings = BuildCacheSettings();
 
-            if (IsCachingEnabled && filterContext.HttpContext.Request.Url != null)
+            if (_cacheSettings.IsCachingEnabled)
             {
-                //todo only VaryByParam = * is supported right now
-                _key = string.Concat(CacheKeyPrefix, filterContext.HttpContext.Request.Url.PathAndQuery.ToLower());
+                _cacheKey = _keyGenerator.GenerateKey(filterContext, _cacheSettings);
 
-                var content = Cache.Get(_key) as string;
+                var content = _outputCacheManager.GetItem(_cacheKey);
 
                 if (content != null)
                 {
-                    filterContext.Result = new ContentResult { Content = ReplaceDonutHoleContent(content, filterContext) };
+                    filterContext.Result = new ContentResult { Content = _donutHoleFiller.ReplaceDonutHoleContent(content, filterContext) };
                 }
             }
-        }
+        }        
 
         public override void OnActionExecuted(ActionExecutedContext filterContext)
         {
-            var viewResult = filterContext.Result as ViewResult;
+            var viewResult = filterContext.Result as ViewResultBase; // only cache views and partials
 
             if (viewResult != null)
             {
-                using (var stringWriter = new StringWriter())
+                var content = _actionOutputBuilder.GetActionOutput(viewResult, filterContext);
+
+                if (_cacheSettings.IsCachingEnabled)
                 {
-                    var viewName = String.IsNullOrEmpty(viewResult.ViewName)
-                                       ? filterContext.RouteData.GetRequiredString("action")
-                                       : viewResult.ViewName;
-
-                    viewResult.View = ViewEngines.Engines.FindView(filterContext, viewName, viewResult.MasterName).View;
-
-                    var viewContext = new ViewContext(filterContext.Controller.ControllerContext, viewResult.View,
-                                                      viewResult.ViewData, viewResult.TempData, stringWriter);
-
-                    viewResult.View.Render(viewContext, stringWriter);
-
-                    var content = stringWriter.GetStringBuilder().ToString();
-
-                    if (IsCachingEnabled)
-                    {
-                        Cache.Add(_key, content, DateTime.Now.AddSeconds(Duration));
-                    }
-
-                    filterContext.Result = new ContentResult { Content = ReplaceDonutHoleContent(content, filterContext) };
+                    _outputCacheManager.AddItem(_cacheKey, content, DateTime.Now.AddSeconds(_cacheSettings.Duration));
                 }
+
+                filterContext.Result = new ContentResult { Content = _donutHoleFiller.ReplaceDonutHoleContent(content, filterContext) };
             }            
-        }        
-
-        private void ConfigureCacheProfile()
+        }
+        
+        private CacheSettings BuildCacheSettings()
         {
-            if (IsCachingEnabled)
+            if (string.IsNullOrEmpty(CacheProfile))
             {
-                if (!string.IsNullOrEmpty(CacheProfile))
+                return new CacheSettings
                 {
-                    var outputCacheSettingsConfigSection = (OutputCacheSettingsSection)ConfigurationManager.GetSection("system.web/caching/outputCacheSettings");
-
-                    if (outputCacheSettingsConfigSection != null && outputCacheSettingsConfigSection.OutputCacheProfiles.Count > 0)
-                    {
-                        var cacheProfile = outputCacheSettingsConfigSection.OutputCacheProfiles[CacheProfile];
-
-                        if (cacheProfile != null)
-                        {
-                            Duration = cacheProfile.Duration;
-                            VaryByParam = cacheProfile.VaryByParam;
-                            return;
-                        }                        
-                    }
-
-                    throw new HttpException(string.Format("The '{0}' cache profile is not defined.  Please define it in the configuration file.", CacheProfile));
-                }
+                    IsCachingEnabled = _cacheSettingsManager.IsCachingEnabledGlobally,
+                    Duration = Duration,
+                    VaryByCustom = VaryByCustom,
+                    VaryByParam = VaryByParam
+                };                
             }
-        }
-
-        private static string ReplaceDonutHoleContent(string content, ControllerContext filterContext)
-        {
-            return DonutHoles.Replace(content, new MatchEvaluator(match =>
+            else
             {
-                var actionSettings = new JavaScriptSerializer().Deserialize<ActionSettings>(match.Groups[1].Value);
+                var cacheProfile = _cacheSettingsManager.RetrieveOutputCacheProfile(CacheProfile);
 
-                return InvokeAction(filterContext.Controller, actionSettings.ActionName, actionSettings.ControllerName, actionSettings.RouteValues);
-            }));
-        }
-
-        private static string InvokeAction(ControllerBase controller, string actionName, string controllerName, object routeValues)
-        {
-            var viewContext = new ViewContext(controller.ControllerContext, new WebFormView(controller.ControllerContext, "tmp"),
-                                              controller.ViewData, controller.TempData, TextWriter.Null);
-
-            var htmlHelper = new HtmlHelper(viewContext, new ViewPage());
-
-            return htmlHelper.Action(actionName, controllerName, routeValues).ToString();
-        }
+                return new CacheSettings
+                {
+                    IsCachingEnabled = _cacheSettingsManager.IsCachingEnabledGlobally && cacheProfile.Enabled,
+                    Duration = Duration == 0 ? cacheProfile.Duration : Duration,
+                    VaryByCustom = VaryByCustom ?? cacheProfile.VaryByCustom,
+                    VaryByParam = VaryByParam ?? cacheProfile.VaryByParam
+                };
+            }
+        }    
     }
 }

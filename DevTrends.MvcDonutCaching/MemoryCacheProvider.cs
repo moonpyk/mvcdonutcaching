@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Runtime.Caching;
 using System.Web.Caching;
 
 namespace DevTrends.MvcDonutCaching
 {
-    public class MemoryCacheProvider : OutputCacheProvider
+    public class MemoryCacheProvider : OutputCacheProvider, IEnumerable<KeyValuePair<string, object>>
     {
         private static readonly ObjectCache Cache = MemoryCache.Default;
 
@@ -26,6 +28,19 @@ namespace DevTrends.MvcDonutCaching
         public override void Set(string key, object entry, DateTime utcExpiry)
         {
             Cache.Set(key, entry, utcExpiry);
+        }
+
+        public IEnumerator<KeyValuePair<string, object>> GetEnumerator()
+        {
+            foreach (var item in Cache)
+            {
+                yield return item;
+            }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }
