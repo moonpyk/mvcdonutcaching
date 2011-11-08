@@ -52,6 +52,7 @@
     <Compile Include="ActionSettingsSerialiser.cs" />
     <Compile Include="CacheSettings.cs" />
     <Compile Include="CacheSettingsManager.cs" />
+    <Compile Include="IExtendedOutputCacheManager.cs" />
     <Compile Include="DonutHoleFiller.cs" />
     <Compile Include="IActionOutputBuilder.cs" />
     <Compile Include="IActionSettingsSerialiser.cs" />

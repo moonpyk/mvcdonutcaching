@@ -20,10 +20,8 @@ namespace DevTrends.MvcDonutCaching
             {
                 return null;
             }
-            else
-            {
-                return _outputCacheSection.Providers[_outputCacheSection.DefaultProviderName].Type;
-            }
+
+            return _outputCacheSection.Providers[_outputCacheSection.DefaultProviderName].Type;
         }
 
         public OutputCacheProfile RetrieveOutputCacheProfile(string cacheProfileName)

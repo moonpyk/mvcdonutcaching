@@ -6,7 +6,7 @@ using System.Web.Routing;
 
 namespace DevTrends.MvcDonutCaching
 {
-    public class OutputCacheManager : IOutputCacheManager
+    public class OutputCacheManager : IExtendedOutputCacheManager
     {
         private readonly OutputCacheProvider _outputCacheProvider;
         private readonly IKeyBuilder _keyBuilder;

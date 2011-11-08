@@ -23,19 +23,19 @@ namespace DevTrends.MvcDonutCaching
 
             if (controllerName != null)
             {
-                builder.Append(controllerName.ToLowerInvariant());
+                builder.AppendFormat("{0}.", controllerName.ToLowerInvariant());
             }
 
             if (actionName != null)
             {
-                builder.AppendFormat(".{0}", actionName.ToLowerInvariant());
+                builder.AppendFormat("{0}#", actionName.ToLowerInvariant());
             }
 
             if (routeValues != null)
             {
                 foreach (var routeValue in routeValues)
                 {
-                    builder.AppendFormat("#{0}={1}", routeValue.Key.ToLowerInvariant(), routeValue.Value.ToString().ToLowerInvariant());
+                    builder.AppendFormat("{0}={1}#", routeValue.Key.ToLowerInvariant(), routeValue.Value.ToString().ToLowerInvariant());
                 }
             }
 

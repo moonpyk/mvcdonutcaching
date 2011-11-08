@@ -1,13 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Web.Routing;
 
 namespace DevTrends.MvcDonutCaching
 {
     public interface IOutputCacheManager
     {
-        void AddItem(string key, object entry, DateTime utcExpiry);
-        string GetItem(string key);
+        void RemoveItem(string controllerName, string actionName);
+        void RemoveItem(string controllerName, string actionName, object routeValues);
+        void RemoveItem(string controllerName, string actionName, RouteValueDictionary routeValues);
+        void RemoveItems();
+        void RemoveItems(string controllerName);
+        void RemoveItems(string controllerName, string actionName);        
     }
 }

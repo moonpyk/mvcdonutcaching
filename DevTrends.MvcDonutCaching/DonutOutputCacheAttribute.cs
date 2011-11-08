@@ -9,7 +9,7 @@ namespace DevTrends.MvcDonutCaching
         private readonly IKeyGenerator _keyGenerator;
         private readonly IDonutHoleFiller _donutHoleFiller;
         private readonly IActionOutputBuilder _actionOutputBuilder;
-        private readonly IOutputCacheManager _outputCacheManager;
+        private readonly IExtendedOutputCacheManager _outputCacheManager;
         private readonly ICacheSettingsManager _cacheSettingsManager;
 
         private CacheSettings _cacheSettings;
@@ -23,7 +23,7 @@ namespace DevTrends.MvcDonutCaching
         public DonutOutputCacheAttribute()
         {
             var keyBuilder = new KeyBuilder();
-            _keyGenerator = new KeyGenerator(keyBuilder); ;
+            _keyGenerator = new KeyGenerator(keyBuilder);
             _donutHoleFiller = new DonutHoleFiller(new ActionSettingsSerialiser());
             _actionOutputBuilder = new ActionOutputBuilder();
             _outputCacheManager = new OutputCacheManager(OutputCache.Instance, keyBuilder);
@@ -31,7 +31,7 @@ namespace DevTrends.MvcDonutCaching
         }
 
         internal DonutOutputCacheAttribute(IKeyGenerator keyGenerator, IDonutHoleFiller donutHoleFiller, IActionOutputBuilder actionOutputBuilder, 
-                                           IOutputCacheManager outputCacheManager, ICacheSettingsManager cacheSettingsManager)
+                                           IExtendedOutputCacheManager outputCacheManager, ICacheSettingsManager cacheSettingsManager)
         {
             _keyGenerator = keyGenerator;
             _donutHoleFiller = donutHoleFiller;
@@ -86,18 +86,16 @@ namespace DevTrends.MvcDonutCaching
                     VaryByParam = VaryByParam
                 };                
             }
-            else
-            {
-                var cacheProfile = _cacheSettingsManager.RetrieveOutputCacheProfile(CacheProfile);
 
-                return new CacheSettings
-                {
-                    IsCachingEnabled = _cacheSettingsManager.IsCachingEnabledGlobally && cacheProfile.Enabled,
-                    Duration = Duration == 0 ? cacheProfile.Duration : Duration,
-                    VaryByCustom = VaryByCustom ?? cacheProfile.VaryByCustom,
-                    VaryByParam = VaryByParam ?? cacheProfile.VaryByParam
-                };
-            }
+            var cacheProfile = _cacheSettingsManager.RetrieveOutputCacheProfile(CacheProfile);
+
+            return new CacheSettings
+            {
+                IsCachingEnabled = _cacheSettingsManager.IsCachingEnabledGlobally && cacheProfile.Enabled,
+                Duration = Duration == 0 ? cacheProfile.Duration : Duration,
+                VaryByCustom = VaryByCustom ?? cacheProfile.VaryByCustom,
+                VaryByParam = VaryByParam ?? cacheProfile.VaryByParam
+            };
         }    
     }
 }
