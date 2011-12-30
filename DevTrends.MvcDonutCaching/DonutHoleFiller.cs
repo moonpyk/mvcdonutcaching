@@ -9,7 +9,7 @@ namespace DevTrends.MvcDonutCaching
 {
     public class DonutHoleFiller : IDonutHoleFiller
     {
-        private static readonly Regex DonutHoles = new Regex("<!--Donut#(.*)#-->", RegexOptions.Compiled);
+        private static readonly Regex DonutHoles = new Regex("<!--Donut#(.*?)#-->(.*?)<!--EndDonut-->", RegexOptions.Compiled | RegexOptions.Singleline);
 
         private readonly IActionSettingsSerialiser _actionSettingsSerialiser;
 
@@ -21,6 +21,16 @@ namespace DevTrends.MvcDonutCaching
             }
 
             _actionSettingsSerialiser = actionSettingsSerialiser;
+        }
+
+        public string RemoveDonutHoleWrappers(string content, ControllerContext filterContext)
+        {
+            if (filterContext.IsChildAction)
+            {
+                return content;
+            }
+
+            return DonutHoles.Replace(content, new MatchEvaluator(match => match.Groups[2].Value));
         }
 
         public string ReplaceDonutHoleContent(string content, ControllerContext filterContext)

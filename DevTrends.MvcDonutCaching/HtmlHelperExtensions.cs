@@ -6,6 +6,8 @@ namespace DevTrends.MvcDonutCaching
 {
     public static class HtmlHelperExtensions
     {
+        private static IActionSettingsSerialiser _serialiser = new EncryptingActionSettingsSerialiser(new ActionSettingsSerialiser(), new Encryptor());
+
         /// <summary>
         /// Invokes the specified child action method and returns the result as an HTML string.
         /// </summary>
@@ -91,9 +93,9 @@ namespace DevTrends.MvcDonutCaching
                     RouteValues = routeValues
                 };
 
-                var serialisedActionSettings = new ActionSettingsSerialiser().Serialise(actionSettings);                
+                var serialisedActionSettings = _serialiser.Serialise(actionSettings);
 
-                return new MvcHtmlString(string.Format("<!--Donut#{0}#-->", serialisedActionSettings));                
+                return new MvcHtmlString(string.Format("<!--Donut#{0}#-->{1}<!--EndDonut-->", serialisedActionSettings, html.Action(actionName, controllerName, routeValues)));                
             }
 
             return html.Action(actionName, controllerName, routeValues);

@@ -47,14 +47,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ActionOutputBuilder.cs" />
     <Compile Include="ActionSettings.cs" />
     <Compile Include="ActionSettingsSerialiser.cs" />
+    <Compile Include="CacheHeadersHelper.cs" />
+    <Compile Include="CacheItem.cs" />
     <Compile Include="CacheSettings.cs" />
     <Compile Include="CacheSettingsManager.cs" />
+    <Compile Include="EncryptingActionSettingsSerialiser.cs" />
+    <Compile Include="Encryptor.cs" />
+    <Compile Include="ICacheHeadersHelper.cs" />
+    <Compile Include="IEncryptor.cs" />
     <Compile Include="IExtendedOutputCacheManager.cs" />
     <Compile Include="DonutHoleFiller.cs" />
-    <Compile Include="IActionOutputBuilder.cs" />
     <Compile Include="IActionSettingsSerialiser.cs" />
     <Compile Include="ICacheSettingsManager.cs" />
     <Compile Include="IDonutHoleFiller.cs" />
