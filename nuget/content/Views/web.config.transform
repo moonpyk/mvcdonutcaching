@@ -1,0 +1,9 @@
+<configuration>
+    <system.web.webPages.razor>
+        <pages>
+			<namespaces>
+				<add namespace="DevTrends.MvcDonutCaching" />
+			</namespaces>            
+        </pages>
+    </system.web.webPages.razor>
+</configuration>

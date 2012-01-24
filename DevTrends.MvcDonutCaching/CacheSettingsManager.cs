@@ -1,4 +1,6 @@
 ﻿using System.Configuration;
+using System.Diagnostics;
+using System.Security;
 using System.Web;
 using System.Web.Configuration;
 
@@ -11,7 +13,16 @@ namespace DevTrends.MvcDonutCaching
 
         public CacheSettingsManager()
         {
-            _outputCacheSection = (OutputCacheSection)ConfigurationManager.GetSection("system.web/caching/outputCache");
+            try
+            {
+                _outputCacheSection = (OutputCacheSection)ConfigurationManager.GetSection("system.web/caching/outputCache");
+            }
+            catch (SecurityException)
+            {
+                Debug.WriteLine("MvcDonutCaching does not have permission to read web.config section. Using default provider.");
+                _outputCacheSection = new OutputCacheSection { DefaultProviderName = AspnetInternalProviderName, EnableOutputCache = true };
+            }
+            
         }
 
         public string RetrieveOutputCacheProviderType()

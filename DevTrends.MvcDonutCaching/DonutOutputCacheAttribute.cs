@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Globalization;
 using System.IO;
+using System.Web;
 using System.Web.Mvc;
 using System.Web.UI;
-using System.Web;
 
 namespace DevTrends.MvcDonutCaching
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = true, AllowMultiple = false)]
     public class DonutOutputCacheAttribute : ActionFilterAttribute, IExceptionFilter
     {
-        private const string CallbackKey = "d0nutCallback";
-
         private readonly IKeyGenerator _keyGenerator;
         private readonly IDonutHoleFiller _donutHoleFiller;
         private readonly IExtendedOutputCacheManager _outputCacheManager;
@@ -19,7 +17,6 @@ namespace DevTrends.MvcDonutCaching
         private readonly ICacheHeadersHelper _cacheHeadersHelper;
 
         private CacheSettings _cacheSettings;
-        private string _cacheKey;
 
         public int Duration { get; set; }
         public string VaryByParam { get; set; }
@@ -45,11 +42,11 @@ namespace DevTrends.MvcDonutCaching
         {
             _cacheSettings = BuildCacheSettings();
 
+            var cacheKey = _keyGenerator.GenerateKey(filterContext, _cacheSettings);
+
             if (_cacheSettings.IsServerCachingEnabled)
             {
-                _cacheKey = _keyGenerator.GenerateKey(filterContext, _cacheSettings);
-
-                var cachedItem = _outputCacheManager.GetItem(_cacheKey);
+                var cachedItem = _outputCacheManager.GetItem(cacheKey);
 
                 if (cachedItem != null)
                 {
@@ -63,17 +60,15 @@ namespace DevTrends.MvcDonutCaching
 
             if (filterContext.Result == null)
             {
-                var callbackKey = BuildCallbackKey(filterContext);
-
                 var cachingWriter = new StringWriter(CultureInfo.InvariantCulture);
 
                 var originalWriter = filterContext.HttpContext.Response.Output;
 
                 filterContext.HttpContext.Response.Output = cachingWriter;
 
-                filterContext.HttpContext.Items[callbackKey] = new Action<bool>(hasErrors =>
+                filterContext.HttpContext.Items[cacheKey] = new Action<bool>(hasErrors =>
                 {
-                    filterContext.HttpContext.Items.Remove(callbackKey);
+                    filterContext.HttpContext.Items.Remove(cacheKey);
 
                     filterContext.HttpContext.Response.Output = originalWriter;
 
@@ -89,7 +84,7 @@ namespace DevTrends.MvcDonutCaching
 
                         if (_cacheSettings.IsServerCachingEnabled && filterContext.HttpContext.Response.StatusCode == 200)
                         {
-                            _outputCacheManager.AddItem(_cacheKey, cacheItem, DateTime.Now.AddSeconds(_cacheSettings.Duration));
+                            _outputCacheManager.AddItem(cacheKey, cacheItem, DateTime.Now.AddSeconds(_cacheSettings.Duration));
                         }
                     }
                 });
@@ -113,9 +108,9 @@ namespace DevTrends.MvcDonutCaching
 
         private void ExecuteCallback(ControllerContext context, bool hasErrors)
         {
-            var callbackKey = BuildCallbackKey(context);
+            var cacheKey = _keyGenerator.GenerateKey(context, _cacheSettings);
 
-            var callback = context.HttpContext.Items[callbackKey] as Action<bool>;
+            var callback = context.HttpContext.Items[cacheKey] as Action<bool>;
 
             if (callback != null)
             {
@@ -123,14 +118,6 @@ namespace DevTrends.MvcDonutCaching
             }
         }
 
-        private string BuildCallbackKey(ControllerContext context)
-        {
-            var actionName = context.RouteData.Values["action"].ToString();
-            var controllerName = context.RouteData.Values["controller"].ToString();
-
-            return string.Format("{0}.{1}.{2}", CallbackKey, controllerName, actionName);
-        }
-        
         private CacheSettings BuildCacheSettings()
         {
             CacheSettings cacheSettings;
