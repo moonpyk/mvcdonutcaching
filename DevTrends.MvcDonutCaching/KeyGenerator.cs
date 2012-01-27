@@ -26,8 +26,11 @@ namespace DevTrends.MvcDonutCaching
             var controllerName = context.RouteData.Values["controller"].ToString();
 
             // remove controller, action and DictionaryValueProvider which is added by the framework for child actions
-            var filteredRouteData = context.RouteData.Values.Where(x => x.Key != "controller" && x.Key != "action" && !(x.Value is DictionaryValueProvider<object>));
-            var routeValues = new RouteValueDictionary(filteredRouteData.ToDictionary(x => x.Key, x => x.Value));
+            var filteredRouteData = context.RouteData.Values.Where(x => x.Key.ToLowerInvariant() != "controller" && 
+                                                                   x.Key.ToLowerInvariant() != "action" && 
+                                                                   !(x.Value is DictionaryValueProvider<object>));
+
+            var routeValues = new RouteValueDictionary(filteredRouteData.ToDictionary(x => x.Key.ToLowerInvariant(), x => x.Value));
 
             if (!context.IsChildAction)
             {
