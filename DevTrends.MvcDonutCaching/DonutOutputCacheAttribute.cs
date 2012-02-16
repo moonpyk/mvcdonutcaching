@@ -103,7 +103,10 @@ namespace DevTrends.MvcDonutCaching
 
         public void OnException(ExceptionContext filterContext)
         {
-            ExecuteCallback(filterContext, true);
+            if (_cacheSettings != null)
+            {
+                ExecuteCallback(filterContext, true);
+            }
         }
 
         private void ExecuteCallback(ControllerContext context, bool hasErrors)

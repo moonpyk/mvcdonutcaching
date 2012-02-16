@@ -19,7 +19,7 @@ namespace DevTrends.MvcDonutCaching
             }
             catch (SecurityException)
             {
-                Debug.WriteLine("MvcDonutCaching does not have permission to read web.config section. Using default provider.");
+                Trace.WriteLine("MvcDonutCaching does not have permission to read web.config section 'OutputCacheSection'. Using default provider.");
                 _outputCacheSection = new OutputCacheSection { DefaultProviderName = AspnetInternalProviderName, EnableOutputCache = true };
             }
             
@@ -37,7 +37,16 @@ namespace DevTrends.MvcDonutCaching
 
         public OutputCacheProfile RetrieveOutputCacheProfile(string cacheProfileName)
         {
-            var outputCacheSettingsSection = (OutputCacheSettingsSection)ConfigurationManager.GetSection("system.web/caching/outputCacheSettings");
+            OutputCacheSettingsSection outputCacheSettingsSection;
+
+            try
+            {
+                outputCacheSettingsSection = (OutputCacheSettingsSection)ConfigurationManager.GetSection("system.web/caching/outputCacheSettings");
+            }
+            catch (SecurityException)
+            {
+                throw new SecurityException("MvcDonutCaching does not have permission to read web.config section 'OutputCacheSettingsSection'.");
+            }
 
             if (outputCacheSettingsSection != null && outputCacheSettingsSection.OutputCacheProfiles.Count > 0)
             {
