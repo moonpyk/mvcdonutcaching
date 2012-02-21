@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Collections.Generic;
+using System.Text;
 using System.Web.Routing;
 
 namespace DevTrends.MvcDonutCaching
@@ -35,11 +36,16 @@ namespace DevTrends.MvcDonutCaching
             {
                 foreach (var routeValue in routeValues)
                 {
-                    builder.AppendFormat("{0}={1}#", routeValue.Key.ToLowerInvariant(), routeValue.Value.ToString().ToLowerInvariant());
+                    builder.Append(BuildKeyFragment(routeValue));
                 }
             }
 
             return builder.ToString();
+        }
+
+        public string BuildKeyFragment(KeyValuePair<string, object> routeValue)
+        {
+            return string.Format("{0}={1}#", routeValue.Key.ToLowerInvariant(), routeValue.Value.ToString().ToLowerInvariant());
         }
     }
 }

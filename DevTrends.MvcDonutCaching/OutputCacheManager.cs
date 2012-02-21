@@ -72,7 +72,7 @@ namespace DevTrends.MvcDonutCaching
         /// </summary>
         public void RemoveItems()
         {
-            RemoveItems(null, null);
+            RemoveItems(null, null, null);
         }
 
         /// <summary>
@@ -81,7 +81,7 @@ namespace DevTrends.MvcDonutCaching
         /// <param name="controllerName">The name of the controller.</param>
         public void RemoveItems(string controllerName)
         {
-            RemoveItems(controllerName, null);
+            RemoveItems(controllerName, null, null);
         }
 
         /// <summary>
@@ -90,6 +90,17 @@ namespace DevTrends.MvcDonutCaching
         /// <param name="controllerName">The name of the controller that contains the action method.</param>
         /// <param name="actionName">The name of the controller action method.</param>
         public void RemoveItems(string controllerName, string actionName)
+        {
+            RemoveItems(controllerName, actionName, null);
+        }
+
+        /// <summary>
+        /// Removes all output cache entries for the specified controller, action and parameters.
+        /// </summary>
+        /// <param name="controllerName">The name of the controller that contains the action method.</param>
+        /// <param name="actionName">The name of the controller action method.</param>
+        /// <param name="routeValues">A dictionary that contains the parameters for a route.</param>
+        public void RemoveItems(string controllerName, string actionName, RouteValueDictionary routeValues)
         {
             var enumerableCache = _outputCacheProvider as IEnumerable<KeyValuePair<string, object>>;
 
@@ -101,6 +112,15 @@ namespace DevTrends.MvcDonutCaching
             var key = _keyBuilder.BuildKey(controllerName, actionName);
 
             var keysToDelete = enumerableCache.Where(x => x.Key.StartsWith(key)).Select(x => x.Key);
+
+            if (routeValues != null)
+            {
+                foreach (var routeValue in routeValues)
+                {
+                    var value = routeValue;
+                    keysToDelete = keysToDelete.Where(x => x.Contains(_keyBuilder.BuildKeyFragment(value)));
+                }
+            }
 
             foreach (var keyToDelete in keysToDelete)
             {

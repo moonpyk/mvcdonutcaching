@@ -9,6 +9,7 @@ namespace DevTrends.MvcDonutCaching
         void RemoveItem(string controllerName, string actionName, RouteValueDictionary routeValues);
         void RemoveItems();
         void RemoveItems(string controllerName);
-        void RemoveItems(string controllerName, string actionName);        
+        void RemoveItems(string controllerName, string actionName);
+        void RemoveItems(string controllerName, string actionName, RouteValueDictionary routeValues);
     }
 }

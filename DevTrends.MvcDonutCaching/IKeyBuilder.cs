@@ -1,4 +1,5 @@
-﻿using System.Web.Routing;
+﻿using System.Collections.Generic;
+using System.Web.Routing;
 
 namespace DevTrends.MvcDonutCaching
 {
@@ -7,5 +8,6 @@ namespace DevTrends.MvcDonutCaching
         string BuildKey(string controllerName);
         string BuildKey(string controllerName, string actionName);
         string BuildKey(string controllerName, string actionName, RouteValueDictionary routeValues);
+        string BuildKeyFragment(KeyValuePair<string, object> routeValue);
     }
 }

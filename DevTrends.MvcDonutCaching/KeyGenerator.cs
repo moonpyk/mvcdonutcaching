@@ -38,6 +38,11 @@ namespace DevTrends.MvcDonutCaching
                 {
                     routeValues.Add(queryStringKey.ToLowerInvariant(), context.HttpContext.Request.QueryString[queryStringKey].ToLowerInvariant());
                 }
+
+                foreach (var formKey in context.HttpContext.Request.Form.AllKeys)
+                {
+                    routeValues.Add(formKey.ToLowerInvariant(), context.HttpContext.Request.Form[formKey].ToLowerInvariant());
+                }
             }
 
             if (!string.IsNullOrEmpty(cacheSettings.VaryByParam))
@@ -55,7 +60,7 @@ namespace DevTrends.MvcDonutCaching
 
             if (!string.IsNullOrEmpty(cacheSettings.VaryByCustom))
             {
-                routeValues.Add("custom", context.HttpContext.ApplicationInstance.GetVaryByCustomString(HttpContext.Current, cacheSettings.VaryByCustom));
+                routeValues.Add(cacheSettings.VaryByCustom.ToLowerInvariant(), context.HttpContext.ApplicationInstance.GetVaryByCustomString(HttpContext.Current, cacheSettings.VaryByCustom));
             }
 
             var key = _keyBuilder.BuildKey(controllerName, actionName, routeValues);
