@@ -34,15 +34,25 @@ namespace DevTrends.MvcDonutCaching
 
             if (!context.IsChildAction)
             {
-                foreach (var queryStringKey in context.HttpContext.Request.QueryString.AllKeys)
-                {
-                    routeValues.Add(queryStringKey.ToLowerInvariant(), context.HttpContext.Request.QueryString[queryStringKey].ToLowerInvariant());
-                }
+                // note that route values take priority over form values and form values take priority over query string values
 
                 foreach (var formKey in context.HttpContext.Request.Form.AllKeys)
                 {
-                    routeValues.Add(formKey.ToLowerInvariant(), context.HttpContext.Request.Form[formKey].ToLowerInvariant());
+                    if (!routeValues.ContainsKey(formKey.ToLowerInvariant()))
+                    {
+                        routeValues.Add(formKey.ToLowerInvariant(),
+                                        context.HttpContext.Request.Form[formKey].ToLowerInvariant());
+                    }
                 }
+
+                foreach (var queryStringKey in context.HttpContext.Request.QueryString.AllKeys)
+                {
+                    if (!routeValues.ContainsKey(queryStringKey.ToLowerInvariant()))
+                    {
+                        routeValues.Add(queryStringKey.ToLowerInvariant(),
+                                        context.HttpContext.Request.QueryString[queryStringKey].ToLowerInvariant());
+                    }
+                }                
             }
 
             if (!string.IsNullOrEmpty(cacheSettings.VaryByParam))

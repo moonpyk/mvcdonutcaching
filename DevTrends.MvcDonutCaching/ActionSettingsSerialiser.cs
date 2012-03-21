@@ -2,7 +2,6 @@
 using System.Runtime.Serialization;
 using System.Text;
 using System.Web.Routing;
-using System.Web.Script.Serialization;
 
 namespace DevTrends.MvcDonutCaching
 {

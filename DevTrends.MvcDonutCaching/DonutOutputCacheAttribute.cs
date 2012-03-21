@@ -16,6 +16,7 @@ namespace DevTrends.MvcDonutCaching
         private readonly ICacheSettingsManager _cacheSettingsManager;
         private readonly ICacheHeadersHelper _cacheHeadersHelper;
 
+        private bool? _noStore;
         private CacheSettings _cacheSettings;
 
         public int Duration { get; set; }
@@ -23,6 +24,12 @@ namespace DevTrends.MvcDonutCaching
         public string VaryByCustom { get; set; }
         public string CacheProfile { get; set; }
         public OutputCacheLocation Location { get; set; }
+        
+        public bool NoStore 
+        {
+            get { return _noStore ?? false; }
+            set { _noStore = value; }
+        }
 
         public DonutOutputCacheAttribute()
         {
@@ -133,7 +140,8 @@ namespace DevTrends.MvcDonutCaching
                     Duration = Duration,
                     VaryByCustom = VaryByCustom,
                     VaryByParam = VaryByParam,
-                    Location = (int)Location == -1 ? OutputCacheLocation.Server : Location
+                    Location = (int)Location == -1 ? OutputCacheLocation.Server : Location,
+                    NoStore = NoStore
                 };
             }
             else
@@ -146,7 +154,8 @@ namespace DevTrends.MvcDonutCaching
                     Duration = Duration == -1 ? cacheProfile.Duration : Duration,
                     VaryByCustom = VaryByCustom ?? cacheProfile.VaryByCustom,
                     VaryByParam = VaryByParam ?? cacheProfile.VaryByParam,
-                    Location = (int)Location == -1 ? ((int)cacheProfile.Location == -1 ? OutputCacheLocation.Server : cacheProfile.Location) : Location
+                    Location = (int)Location == -1 ? ((int)cacheProfile.Location == -1 ? OutputCacheLocation.Server : cacheProfile.Location) : Location,
+                    NoStore = _noStore.HasValue ? _noStore.Value : cacheProfile.NoStore
                 };
             }
 

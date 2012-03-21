@@ -30,7 +30,7 @@ namespace DevTrends.MvcDonutCaching
                 return content;
             }
 
-            return DonutHoles.Replace(content, new MatchEvaluator(match => match.Groups[2].Value));
+            return DonutHoles.Replace(content, match => match.Groups[2].Value);
         }
 
         public string ReplaceDonutHoleContent(string content, ControllerContext filterContext)
@@ -40,12 +40,12 @@ namespace DevTrends.MvcDonutCaching
                 return content;
             }
 
-            return DonutHoles.Replace(content, new MatchEvaluator(match =>
+            return DonutHoles.Replace(content, match =>
             {
                 var actionSettings = _actionSettingsSerialiser.Deserialise(match.Groups[1].Value);
 
                 return InvokeAction(filterContext.Controller, actionSettings.ActionName, actionSettings.ControllerName, actionSettings.RouteValues);
-            }));
+            });
         }
 
         private static string InvokeAction(ControllerBase controller, string actionName, string controllerName, RouteValueDictionary routeValues)
