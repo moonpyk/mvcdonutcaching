@@ -1,0 +1,10 @@
+#OS junk files
+[Tt]humbs.db
+
+#Visual Studio files
+bin/
+obj/
+packages/
+*.user
+*.suo
+*.Publish.xml

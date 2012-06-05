@@ -91,7 +91,7 @@ namespace DevTrends.MvcDonutCaching
 
                         if (_cacheSettings.IsServerCachingEnabled && filterContext.HttpContext.Response.StatusCode == 200)
                         {
-                            _outputCacheManager.AddItem(cacheKey, cacheItem, DateTime.Now.AddSeconds(_cacheSettings.Duration));
+                            _outputCacheManager.AddItem(cacheKey, cacheItem, DateTime.UtcNow.AddSeconds(_cacheSettings.Duration));
                         }
                     }
                 });

@@ -47,7 +47,8 @@ namespace DevTrends.MvcDonutCaching
 
                 foreach (var queryStringKey in context.HttpContext.Request.QueryString.AllKeys)
                 {
-                    if (!routeValues.ContainsKey(queryStringKey.ToLowerInvariant()))
+                    // queryStringKey is null if url has qs name without value. e.g. test.com?q
+                    if (queryStringKey != null && !routeValues.ContainsKey(queryStringKey.ToLowerInvariant()))
                     {
                         routeValues.Add(queryStringKey.ToLowerInvariant(),
                                         context.HttpContext.Request.QueryString[queryStringKey].ToLowerInvariant());

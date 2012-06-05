@@ -45,7 +45,9 @@ namespace DevTrends.MvcDonutCaching
 
         public string BuildKeyFragment(KeyValuePair<string, object> routeValue)
         {
-            return string.Format("{0}={1}#", routeValue.Key.ToLowerInvariant(), routeValue.Value.ToString().ToLowerInvariant());
+            var value = routeValue.Value == null ? "<null>" : routeValue.Value.ToString().ToLowerInvariant();
+
+            return string.Format("{0}={1}#", routeValue.Key.ToLowerInvariant(), value);
         }
     }
 }
