@@ -40,8 +40,10 @@ namespace DevTrends.MvcDonutCaching
                 {
                     if (!routeValues.ContainsKey(formKey.ToLowerInvariant()))
                     {
-                        routeValues.Add(formKey.ToLowerInvariant(),
-                                        context.HttpContext.Request.Form[formKey].ToLowerInvariant());
+                        var item = context.HttpContext.Request.Form[formKey];
+                        routeValues.Add(formKey.ToLowerInvariant(), item != null
+                                                                        ? item.ToLowerInvariant()
+                                                                        : string.Empty);
                     }
                 }
 
@@ -50,8 +52,10 @@ namespace DevTrends.MvcDonutCaching
                     // queryStringKey is null if url has qs name without value. e.g. test.com?q
                     if (queryStringKey != null && !routeValues.ContainsKey(queryStringKey.ToLowerInvariant()))
                     {
-                        routeValues.Add(queryStringKey.ToLowerInvariant(),
-                                        context.HttpContext.Request.QueryString[queryStringKey].ToLowerInvariant());
+                        var item = context.HttpContext.Request.QueryString[queryStringKey];
+                        routeValues.Add(queryStringKey.ToLowerInvariant(), item != null
+                                                                        ? item.ToLowerInvariant()
+                                                                        : string.Empty);
                     }
                 }                
             }

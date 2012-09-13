@@ -8,3 +8,4 @@ packages/
 *.user
 *.suo
 *.Publish.xml
+/_ReSharper.DevTrends.MvcDonutCaching/
