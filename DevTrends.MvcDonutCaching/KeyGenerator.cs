@@ -38,21 +38,35 @@ namespace DevTrends.MvcDonutCaching
 
                 foreach (var formKey in context.HttpContext.Request.Form.AllKeys)
                 {
-                    if (!routeValues.ContainsKey(formKey.ToLowerInvariant()))
+                    if (routeValues.ContainsKey(formKey.ToLowerInvariant()))
                     {
-                        routeValues.Add(formKey.ToLowerInvariant(),
-                                        context.HttpContext.Request.Form[formKey].ToLowerInvariant());
+                        continue;
                     }
+
+                    var item = context.HttpContext.Request.Form[formKey];
+                    routeValues.Add(
+                        formKey.ToLowerInvariant(), 
+                        item != null 
+                            ? item.ToLowerInvariant() 
+                            : string.Empty
+                    );
                 }
 
                 foreach (var queryStringKey in context.HttpContext.Request.QueryString.AllKeys)
                 {
                     // queryStringKey is null if url has qs name without value. e.g. test.com?q
-                    if (queryStringKey != null && !routeValues.ContainsKey(queryStringKey.ToLowerInvariant()))
+                    if (queryStringKey == null || routeValues.ContainsKey(queryStringKey.ToLowerInvariant()))
                     {
-                        routeValues.Add(queryStringKey.ToLowerInvariant(),
-                                        context.HttpContext.Request.QueryString[queryStringKey].ToLowerInvariant());
+                        continue;
                     }
+
+                    var item = context.HttpContext.Request.QueryString[queryStringKey];
+                    routeValues.Add(
+                        queryStringKey.ToLowerInvariant(),
+                        item != null 
+                            ? item.ToLowerInvariant() 
+                            : string.Empty
+                    );
                 }                
             }
 
