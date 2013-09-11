@@ -100,6 +100,9 @@ namespace DevTrends.MvcDonutCaching
 
         public override void OnResultExecuted(ResultExecutedContext filterContext)
         {
+			if(_cacheSettings == null)
+				return;
+
             ExecuteCallback(filterContext, false);
 
             if (!filterContext.IsChildAction)
