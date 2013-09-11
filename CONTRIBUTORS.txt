@@ -1,2 +1,3 @@
 Evgeniya Polyakova <epolyakova@knoema.com> : Fixed issue #2584
 Gustavo Rubinsky <grubinsky@yellowspot.com.ar> : Similar fix for issue #2584
+blanciq <pawel.olesiejuk@gmail.com> : Fixed issue #2533

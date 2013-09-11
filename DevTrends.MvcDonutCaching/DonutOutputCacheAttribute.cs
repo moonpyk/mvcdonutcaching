@@ -105,7 +105,7 @@ namespace DevTrends.MvcDonutCaching
                 return;
             }
 
-            ExecuteCallback(filterContext, false);
+            ExecuteCallback(filterContext, filterContext.Exception != null);
 
             if (!filterContext.IsChildAction)
             {
