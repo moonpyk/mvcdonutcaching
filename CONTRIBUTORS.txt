@@ -1,3 +1,7 @@
-Evgeniya Polyakova <epolyakova@knoema.com> : Fixed issue #2584
-Gustavo Rubinsky <grubinsky@yellowspot.com.ar> : Similar fix for issue #2584
-Paweł Olesiejuk <pawel.olesiejuk@gmail.com> : Fixed issue #2533
+Original author : Paul Hiles <paul@devtrends.co.uk> (http://www.devtrends.co.uk/)
+Clément Bourgeois <moonpyk@gmail.com> : Maintenance and evolutions starting 2013/09/11.
+----
+Evgeniya Polyakova <epolyakova@knoema.com> : Fixed codeplex issue #2584
+Gustavo Rubinsky <grubinsky@yellowspot.com.ar> : Similar fix for codeplex issue #2584
+Paweł Olesiejuk <pawel.olesiejuk@gmail.com> : Fixed codeplex issue #2533
+Ramgopal <itsramgopal@gmail.com> : Fixed codeplex issue issue #2578
