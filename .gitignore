@@ -8,3 +8,6 @@ packages/
 *.user
 *.suo
 *.Publish.xml
+
+# RS
+_[Rr]esharper.*
