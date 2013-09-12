@@ -79,20 +79,22 @@ namespace DevTrends.MvcDonutCaching
 
                     filterContext.HttpContext.Response.Output = originalWriter;
 
-                    if (!hasErrors)
+                    if (hasErrors)
                     {
-                        var cacheItem = new CacheItem
-                        {
-                            Content = cachingWriter.ToString(),
-                            ContentType = filterContext.HttpContext.Response.ContentType
-                        };
+                        return;
+                    }
 
-                        filterContext.HttpContext.Response.Write(_donutHoleFiller.RemoveDonutHoleWrappers(cacheItem.Content, filterContext));
+                    var cacheItem = new CacheItem
+                    {
+                        Content = cachingWriter.ToString(),
+                        ContentType = filterContext.HttpContext.Response.ContentType
+                    };
 
-                        if (_cacheSettings.IsServerCachingEnabled && filterContext.HttpContext.Response.StatusCode == 200)
-                        {
-                            _outputCacheManager.AddItem(cacheKey, cacheItem, DateTime.UtcNow.AddSeconds(_cacheSettings.Duration));
-                        }
+                    filterContext.HttpContext.Response.Write(_donutHoleFiller.RemoveDonutHoleWrappers(cacheItem.Content, filterContext));
+
+                    if (_cacheSettings.IsServerCachingEnabled && filterContext.HttpContext.Response.StatusCode == 200)
+                    {
+                        _outputCacheManager.AddItem(cacheKey, cacheItem, DateTime.UtcNow.AddSeconds(_cacheSettings.Duration));
                     }
                 });
             }
