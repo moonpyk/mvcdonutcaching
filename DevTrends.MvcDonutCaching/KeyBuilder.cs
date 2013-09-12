@@ -6,7 +6,19 @@ namespace DevTrends.MvcDonutCaching
 {
     public class KeyBuilder : IKeyBuilder
     {
-        private const string CacheKeyPrefix = "_d0nutc@che.";
+        private string _cacheKeyPrefix = "_d0nutc@che.";
+
+        public string CacheKeyPrefix
+        {
+            get
+            {
+                return _cacheKeyPrefix;
+            }
+            set
+            {
+                _cacheKeyPrefix = value;
+            }
+        }
 
         public string BuildKey(string controllerName)
         {
@@ -20,7 +32,7 @@ namespace DevTrends.MvcDonutCaching
 
         public string BuildKey(string controllerName, string actionName, RouteValueDictionary routeValues)
         {
-            var builder = new StringBuilder(CacheKeyPrefix);
+            var builder = new StringBuilder(_cacheKeyPrefix);
 
             if (controllerName != null)
             {
