@@ -2,13 +2,13 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>MvcDonutCaching</id>
-    <version>1.2.1</version>
-    <authors>Paul Hiles</authors>
-    <owners>DevTrends</owners>
-    <licenseUrl>http://mvcdonutcaching.codeplex.com/license</licenseUrl>
-    <projectUrl>http://mvcdonutcaching.codeplex.com/</projectUrl>
+    <version>1.2.2</version>
+    <authors>MvcDonutCaching contributors</authors>
+    <owners>Clément Bourgeois</owners>
+    <licenseUrl>https://raw.github.com/moonpyk/mvcdonutcaching/master/LICENSE.txt</licenseUrl>
+    <projectUrl>https://github.com/moonpyk/mvcdonutcaching/</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>MvcDonutCaching provides extensible donut output caching for ASP.NET MVC 3 and above.</description>
-    <tags>mvc3 donut caching mvc outputcaching substitution</tags>
+    <tags>mvc3 mvc4 donut caching mvc outputcaching outputcache substitution</tags>
   </metadata>
 </package>
