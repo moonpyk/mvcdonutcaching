@@ -10,6 +10,8 @@ namespace DevTrends.MvcDonutCaching
         public string VaryByCustom { get; set; }
         public OutputCacheLocation Location { get; set; }
         public bool NoStore { get; set; }
+        public bool IgnorePostData { get; set; }
+        public bool IgnoreQueryStringData { get; set; }
 
         public bool IsServerCachingEnabled
         {

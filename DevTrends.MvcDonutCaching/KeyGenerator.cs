@@ -38,38 +38,44 @@ namespace DevTrends.MvcDonutCaching
             {
                 // note that route values take priority over form values and form values take priority over query string values
 
-                foreach (var formKey in context.HttpContext.Request.Form.AllKeys)
+                if (!cacheSettings.IgnorePostData)
                 {
-                    if (routeValues.ContainsKey(formKey.ToLowerInvariant()))
+                    foreach (var formKey in context.HttpContext.Request.Form.AllKeys)
                     {
-                        continue;
-                    }
+                        if (routeValues.ContainsKey(formKey.ToLowerInvariant()))
+                        {
+                            continue;
+                        }
 
-                    var item = context.HttpContext.Request.Form[formKey];
-                    routeValues.Add(
-                        formKey.ToLowerInvariant(), 
-                        item != null 
-                            ? item.ToLowerInvariant() 
-                            : string.Empty
-                    );
+                        var item = context.HttpContext.Request.Form[formKey];
+                        routeValues.Add(
+                            formKey.ToLowerInvariant(),
+                            item != null 
+                                ? item.ToLowerInvariant() 
+                                : string.Empty
+                        );
+                    } 
                 }
 
-                foreach (var queryStringKey in context.HttpContext.Request.QueryString.AllKeys)
+                if (!cacheSettings.IgnoreQueryStringData)
                 {
-                    // queryStringKey is null if url has qs name without value. e.g. test.com?q
-                    if (queryStringKey == null || routeValues.ContainsKey(queryStringKey.ToLowerInvariant()))
+                    foreach (var queryStringKey in context.HttpContext.Request.QueryString.AllKeys)
                     {
-                        continue;
-                    }
+                        // queryStringKey is null if url has qs name without value. e.g. test.com?q
+                        if (queryStringKey == null || routeValues.ContainsKey(queryStringKey.ToLowerInvariant()))
+                        {
+                            continue;
+                        }
 
-                    var item = context.HttpContext.Request.QueryString[queryStringKey];
-                    routeValues.Add(
-                        queryStringKey.ToLowerInvariant(),
-                        item != null 
-                            ? item.ToLowerInvariant() 
-                            : string.Empty
-                    );
-                }                
+                        var item = context.HttpContext.Request.QueryString[queryStringKey];
+                        routeValues.Add(
+                            queryStringKey.ToLowerInvariant(),
+                            item != null 
+                                ? item.ToLowerInvariant() 
+                                : string.Empty
+                        );
+                    }
+                }
             }
 
             if (!string.IsNullOrEmpty(cacheSettings.VaryByParam))

@@ -16,6 +16,8 @@ namespace DevTrends.MvcDonutCaching
         private readonly IKeyGenerator _keyGenerator;
         private readonly IExtendedOutputCacheManager _outputCacheManager;
         private CacheSettings _cacheSettings;
+        private bool? _ignorePostData;
+        private bool? _ignoreQueryStringData;
         private bool? _noStore;
 
         public DonutOutputCacheAttribute()
@@ -74,6 +76,30 @@ namespace DevTrends.MvcDonutCaching
             }
         }
 
+        public bool IgnoreQueryStringData
+        {
+            get
+            {
+                return _ignoreQueryStringData ?? false;
+            }
+            set
+            {
+                _ignoreQueryStringData = value;
+            }
+        }
+
+        public bool IgnorePostData
+        {
+            get
+            {
+                return _ignorePostData ?? false;
+            }
+            set
+            {
+                _ignorePostData = value;
+            }
+        }
+
         public void OnException(ExceptionContext filterContext)
         {
             if (_cacheSettings != null)
@@ -102,39 +128,41 @@ namespace DevTrends.MvcDonutCaching
                 }
             }
 
-            if (filterContext.Result == null)
+            if (filterContext.Result != null)
             {
-                var cachingWriter = new StringWriter(CultureInfo.InvariantCulture);
-
-                var originalWriter = filterContext.HttpContext.Response.Output;
-
-                filterContext.HttpContext.Response.Output = cachingWriter;
-
-                filterContext.HttpContext.Items[cacheKey] = new Action<bool>(hasErrors =>
-                {
-                    filterContext.HttpContext.Items.Remove(cacheKey);
-
-                    filterContext.HttpContext.Response.Output = originalWriter;
-
-                    if (hasErrors)
-                    {
-                        return;
-                    }
-
-                    var cacheItem = new CacheItem
-                    {
-                        Content = cachingWriter.ToString(),
-                        ContentType = filterContext.HttpContext.Response.ContentType
-                    };
-
-                    filterContext.HttpContext.Response.Write(_donutHoleFiller.RemoveDonutHoleWrappers(cacheItem.Content, filterContext));
-
-                    if (_cacheSettings.IsServerCachingEnabled && filterContext.HttpContext.Response.StatusCode == 200)
-                    {
-                        _outputCacheManager.AddItem(cacheKey, cacheItem, DateTime.UtcNow.AddSeconds(_cacheSettings.Duration));
-                    }
-                });
+                return;
             }
+
+            var cachingWriter = new StringWriter(CultureInfo.InvariantCulture);
+
+            var originalWriter = filterContext.HttpContext.Response.Output;
+
+            filterContext.HttpContext.Response.Output = cachingWriter;
+
+            filterContext.HttpContext.Items[cacheKey] = new Action<bool>(hasErrors =>
+            {
+                filterContext.HttpContext.Items.Remove(cacheKey);
+
+                filterContext.HttpContext.Response.Output = originalWriter;
+
+                if (hasErrors)
+                {
+                    return;
+                }
+
+                var cacheItem = new CacheItem
+                {
+                    Content = cachingWriter.ToString(),
+                    ContentType = filterContext.HttpContext.Response.ContentType
+                };
+
+                filterContext.HttpContext.Response.Write(_donutHoleFiller.RemoveDonutHoleWrappers(cacheItem.Content, filterContext));
+
+                if (_cacheSettings.IsServerCachingEnabled && filterContext.HttpContext.Response.StatusCode == 200)
+                {
+                    _outputCacheManager.AddItem(cacheKey, cacheItem, DateTime.UtcNow.AddSeconds(_cacheSettings.Duration));
+                }
+            });
         }
 
         public override void OnResultExecuted(ResultExecutedContext filterContext)
@@ -160,12 +188,14 @@ namespace DevTrends.MvcDonutCaching
             {
                 cacheSettings = new CacheSettings
                 {
-                    IsCachingEnabled = _cacheSettingsManager.IsCachingEnabledGlobally,
-                    Duration = Duration,
-                    VaryByCustom = VaryByCustom,
-                    VaryByParam = VaryByParam,
-                    Location = (int)Location == -1 ? OutputCacheLocation.Server : Location,
-                    NoStore = NoStore
+                    IsCachingEnabled      = _cacheSettingsManager.IsCachingEnabledGlobally,
+                    Duration              = Duration,
+                    VaryByCustom          = VaryByCustom,
+                    VaryByParam           = VaryByParam,
+                    Location              = (int)Location == -1 ? OutputCacheLocation.Server : Location,
+                    NoStore               = NoStore,
+                    IgnorePostData        = IgnorePostData,
+                    IgnoreQueryStringData = IgnoreQueryStringData,
                 };
             }
             else
@@ -174,12 +204,14 @@ namespace DevTrends.MvcDonutCaching
 
                 cacheSettings = new CacheSettings
                 {
-                    IsCachingEnabled = _cacheSettingsManager.IsCachingEnabledGlobally && cacheProfile.Enabled,
-                    Duration = Duration == -1 ? cacheProfile.Duration : Duration,
-                    VaryByCustom = VaryByCustom ?? cacheProfile.VaryByCustom,
-                    VaryByParam = VaryByParam ?? cacheProfile.VaryByParam,
-                    Location = (int)Location == -1 ? ((int)cacheProfile.Location == -1 ? OutputCacheLocation.Server : cacheProfile.Location) : Location,
-                    NoStore = _noStore.HasValue ? _noStore.Value : cacheProfile.NoStore
+                    IsCachingEnabled      = _cacheSettingsManager.IsCachingEnabledGlobally && cacheProfile.Enabled,
+                    Duration              = Duration == -1 ? cacheProfile.Duration : Duration,
+                    VaryByCustom          = VaryByCustom ?? cacheProfile.VaryByCustom,
+                    VaryByParam           = VaryByParam ?? cacheProfile.VaryByParam,
+                    Location              = (int)Location == -1 ? ((int)cacheProfile.Location == -1 ? OutputCacheLocation.Server : cacheProfile.Location) : Location,
+                    NoStore               = _noStore.HasValue ? _noStore.Value : cacheProfile.NoStore,
+                    IgnorePostData        = IgnorePostData,
+                    IgnoreQueryStringData = IgnoreQueryStringData,
                 };
             }
 
