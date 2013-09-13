@@ -11,3 +11,6 @@ packages/
 
 # RS
 _[Rr]esharper.*
+
+# Nuget
+nuget/lib/
