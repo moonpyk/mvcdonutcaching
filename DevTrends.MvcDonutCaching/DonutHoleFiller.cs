@@ -44,14 +44,24 @@ namespace DevTrends.MvcDonutCaching
             {
                 var actionSettings = _actionSettingsSerialiser.Deserialise(match.Groups[1].Value);
 
-                return InvokeAction(filterContext.Controller, actionSettings.ActionName, actionSettings.ControllerName, actionSettings.RouteValues);
+                return InvokeAction(
+                    filterContext.Controller,
+                    actionSettings.ActionName, 
+                    actionSettings.ControllerName, 
+                    actionSettings.RouteValues
+                );
             });
         }
 
         private static string InvokeAction(ControllerBase controller, string actionName, string controllerName, RouteValueDictionary routeValues)
         {
-            var viewContext = new ViewContext(controller.ControllerContext, new WebFormView(controller.ControllerContext, "tmp"),
-                                              controller.ViewData, controller.TempData, TextWriter.Null);
+            var viewContext = new ViewContext(
+                controller.ControllerContext, 
+                new WebFormView(controller.ControllerContext, "tmp"),
+                controller.ViewData, 
+                controller.TempData, 
+                TextWriter.Null
+            );
 
             var htmlHelper = new HtmlHelper(viewContext, new ViewPage());
 

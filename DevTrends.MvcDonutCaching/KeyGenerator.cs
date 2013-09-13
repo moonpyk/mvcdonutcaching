@@ -26,9 +26,11 @@ namespace DevTrends.MvcDonutCaching
             var controllerName = context.RouteData.Values["controller"].ToString();
 
             // remove controller, action and DictionaryValueProvider which is added by the framework for child actions
-            var filteredRouteData = context.RouteData.Values.Where(x => x.Key.ToLowerInvariant() != "controller" && 
-                                                                   x.Key.ToLowerInvariant() != "action" && 
-                                                                   !(x.Value is DictionaryValueProvider<object>));
+            var filteredRouteData = context.RouteData.Values.Where(
+                x => x.Key.ToLowerInvariant() != "controller" && 
+                     x.Key.ToLowerInvariant() != "action" &&   
+                     !(x.Value is DictionaryValueProvider<object>)
+            );
 
             var routeValues = new RouteValueDictionary(filteredRouteData.ToDictionary(x => x.Key.ToLowerInvariant(), x => x.Value));
 
@@ -85,7 +87,10 @@ namespace DevTrends.MvcDonutCaching
 
             if (!string.IsNullOrEmpty(cacheSettings.VaryByCustom))
             {
-                routeValues.Add(cacheSettings.VaryByCustom.ToLowerInvariant(), context.HttpContext.ApplicationInstance.GetVaryByCustomString(HttpContext.Current, cacheSettings.VaryByCustom));
+                routeValues.Add(
+                    cacheSettings.VaryByCustom.ToLowerInvariant(), 
+                    context.HttpContext.ApplicationInstance.GetVaryByCustomString(HttpContext.Current, cacheSettings.VaryByCustom)
+                );
             }
 
             var key = _keyBuilder.BuildKey(controllerName, actionName, routeValues);

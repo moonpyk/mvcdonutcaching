@@ -10,26 +10,13 @@ namespace DevTrends.MvcDonutCaching
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = true, AllowMultiple = false)]
     public class DonutOutputCacheAttribute : ActionFilterAttribute, IExceptionFilter
     {
-        private readonly IKeyGenerator _keyGenerator;
-        private readonly IDonutHoleFiller _donutHoleFiller;
-        private readonly IExtendedOutputCacheManager _outputCacheManager;
-        private readonly ICacheSettingsManager _cacheSettingsManager;
         private readonly ICacheHeadersHelper _cacheHeadersHelper;
-
-        private bool? _noStore;
+        private readonly ICacheSettingsManager _cacheSettingsManager;
+        private readonly IDonutHoleFiller _donutHoleFiller;
+        private readonly IKeyGenerator _keyGenerator;
+        private readonly IExtendedOutputCacheManager _outputCacheManager;
         private CacheSettings _cacheSettings;
-
-        public int Duration { get; set; }
-        public string VaryByParam { get; set; }
-        public string VaryByCustom { get; set; }
-        public string CacheProfile { get; set; }
-        public OutputCacheLocation Location { get; set; }
-        
-        public bool NoStore 
-        {
-            get { return _noStore ?? false; }
-            set { _noStore = value; }
-        }
+        private bool? _noStore;
 
         public DonutOutputCacheAttribute()
         {
@@ -45,6 +32,56 @@ namespace DevTrends.MvcDonutCaching
             Location = (OutputCacheLocation)(-1);
         }
 
+        public int Duration
+        {
+            get;
+            set;
+        }
+
+        public string VaryByParam
+        {
+            get;
+            set;
+        }
+
+        public string VaryByCustom
+        {
+            get;
+            set;
+        }
+
+        public string CacheProfile
+        {
+            get;
+            set;
+        }
+
+        public OutputCacheLocation Location
+        {
+            get;
+            set;
+        }
+
+        public bool NoStore
+        {
+            get
+            {
+                return _noStore ?? false;
+            }
+            set
+            {
+                _noStore = value;
+            }
+        }
+
+        public void OnException(ExceptionContext filterContext)
+        {
+            if (_cacheSettings != null)
+            {
+                ExecuteCallback(filterContext, true);
+            }
+        }
+
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
             _cacheSettings = BuildCacheSettings();
@@ -58,7 +95,7 @@ namespace DevTrends.MvcDonutCaching
                 if (cachedItem != null)
                 {
                     filterContext.Result = new ContentResult
-                    { 
+                    {
                         Content = _donutHoleFiller.ReplaceDonutHoleContent(cachedItem.Content, filterContext),
                         ContentType = cachedItem.ContentType
                     };
@@ -115,27 +152,7 @@ namespace DevTrends.MvcDonutCaching
             }
         }
 
-        public void OnException(ExceptionContext filterContext)
-        {
-            if (_cacheSettings != null)
-            {
-                ExecuteCallback(filterContext, true);
-            }
-        }
-
-        private void ExecuteCallback(ControllerContext context, bool hasErrors)
-        {
-            var cacheKey = _keyGenerator.GenerateKey(context, _cacheSettings);
-
-            var callback = context.HttpContext.Items[cacheKey] as Action<bool>;
-
-            if (callback != null)
-            {
-                callback.Invoke(hasErrors);
-            }
-        }
-
-        private CacheSettings BuildCacheSettings()
+        protected CacheSettings BuildCacheSettings()
         {
             CacheSettings cacheSettings;
 
@@ -177,6 +194,18 @@ namespace DevTrends.MvcDonutCaching
             }
 
             return cacheSettings;
-        }        
+        }
+
+        protected void ExecuteCallback(ControllerContext context, bool hasErrors)
+        {
+            var cacheKey = _keyGenerator.GenerateKey(context, _cacheSettings);
+
+            var callback = context.HttpContext.Items[cacheKey] as Action<bool>;
+
+            if (callback != null)
+            {
+                callback.Invoke(hasErrors);
+            }
+        }
     }
 }
