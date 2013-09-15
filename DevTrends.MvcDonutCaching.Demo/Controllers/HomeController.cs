@@ -10,9 +10,10 @@ namespace DevTrends.MvcDonutCaching.Demo.Controllers
     {
         //
         // GET: /Home/
+        [DonutOutputCache(Duration = 24 * 3600)]
         public ActionResult Index()
         {
-            return View();
+            return View(DateTime.Now);
         }
     }
 }
