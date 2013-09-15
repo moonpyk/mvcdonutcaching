@@ -1,7 +1,8 @@
-#OS junk files
+# OS junk files
 [Tt]humbs.db
+*.ide
 
-#Visual Studio files
+# Visual Studio files
 bin/
 obj/
 packages/
