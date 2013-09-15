@@ -34,36 +34,54 @@ namespace DevTrends.MvcDonutCaching
             Location = (OutputCacheLocation)(-1);
         }
 
+        /// <summary>
+        /// Gets or sets the cache duration, in seconds.
+        /// </summary>
         public int Duration
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// Gets or sets the vary-by-param value.
+        /// </summary>
         public string VaryByParam
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// Gets or sets the vary-by-custom value.
+        /// </summary>
         public string VaryByCustom
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// Gets or sets the cache profile name.
+        /// </summary>
         public string CacheProfile
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// Gets or sets the location.
+        /// </summary>
         public OutputCacheLocation Location
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// Gets or sets a value that indicates whether to store the cache.
+        /// </summary>
         public bool NoStore
         {
             get
@@ -108,18 +126,26 @@ namespace DevTrends.MvcDonutCaching
             }
         }
 
+        /// <summary>
+        /// Called before an action method executes.
+        /// </summary>
+        /// <param name="filterContext">The filter context.</param>
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
             _cacheSettings = BuildCacheSettings();
 
             var cacheKey = _keyGenerator.GenerateKey(filterContext, _cacheSettings);
 
+            // Are we actually storing data on the server side ?
             if (_cacheSettings.IsServerCachingEnabled)
             {
                 var cachedItem = _outputCacheManager.GetItem(cacheKey);
 
+                // We have a cached version on the server side
                 if (cachedItem != null)
                 {
+                    // We inject the previous result into the MVC pipeline
+                    // The MVC action won't execute as we injected the previous cached result.
                     filterContext.Result = new ContentResult
                     {
                         Content = _donutHoleFiller.ReplaceDonutHoleContent(cachedItem.Content, filterContext),
@@ -128,28 +154,35 @@ namespace DevTrends.MvcDonutCaching
                 }
             }
 
+            // Did we already injected something ?
             if (filterContext.Result != null)
             {
-                return;
+                return; // No need to continue 
             }
 
+            // We are hooking into the pipeline to replace the response Output writer
+            // by something we own and later eventually gonna cache
             var cachingWriter = new StringWriter(CultureInfo.InvariantCulture);
 
             var originalWriter = filterContext.HttpContext.Response.Output;
 
             filterContext.HttpContext.Response.Output = cachingWriter;
 
+            // Will be called back by OnResultExecuted -> ExecuteCallback
             filterContext.HttpContext.Items[cacheKey] = new Action<bool>(hasErrors =>
             {
+                // Removing this executing action from the context
                 filterContext.HttpContext.Items.Remove(cacheKey);
 
+                // We restore the original writer for response
                 filterContext.HttpContext.Response.Output = originalWriter;
 
                 if (hasErrors)
                 {
-                    return;
+                    return; // Something went wrong, we are not going to cache something bad
                 }
 
+                // Now we use owned caching writer to actually store data
                 var cacheItem = new CacheItem
                 {
                     Content = cachingWriter.ToString(),
@@ -165,6 +198,10 @@ namespace DevTrends.MvcDonutCaching
             });
         }
 
+        /// <summary>
+        /// Called after an action result executes.
+        /// </summary>
+        /// <param name="filterContext">The filter context.</param>
         public override void OnResultExecuted(ResultExecutedContext filterContext)
         {
             if (_cacheSettings == null)
@@ -172,8 +209,11 @@ namespace DevTrends.MvcDonutCaching
                 return;
             }
 
+            // See OnActionExecuting
             ExecuteCallback(filterContext, filterContext.Exception != null);
 
+            // If we are in the context of a child action, the main action is responsible for setting
+            // the right HTTP Cache headers for the final response.
             if (!filterContext.IsChildAction)
             {
                 _cacheHeadersHelper.SetCacheHeaders(filterContext.HttpContext.Response, _cacheSettings);
@@ -228,7 +268,7 @@ namespace DevTrends.MvcDonutCaching
             return cacheSettings;
         }
 
-        protected void ExecuteCallback(ControllerContext context, bool hasErrors)
+        private void ExecuteCallback(ControllerContext context, bool hasErrors)
         {
             var cacheKey = _keyGenerator.GenerateKey(context, _cacheSettings);
 
