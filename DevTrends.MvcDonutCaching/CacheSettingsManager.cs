@@ -20,7 +20,11 @@ namespace DevTrends.MvcDonutCaching
             catch (SecurityException)
             {
                 Trace.WriteLine("MvcDonutCaching does not have permission to read web.config section 'OutputCacheSection'. Using default provider.");
-                _outputCacheSection = new OutputCacheSection { DefaultProviderName = AspnetInternalProviderName, EnableOutputCache = true };
+                _outputCacheSection = new OutputCacheSection
+                {
+                    DefaultProviderName = AspnetInternalProviderName, 
+                    EnableOutputCache = true
+                };
             }
             
         }

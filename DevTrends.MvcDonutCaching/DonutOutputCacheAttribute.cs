@@ -24,11 +24,11 @@ namespace DevTrends.MvcDonutCaching
         {
             var keyBuilder = new KeyBuilder();
 
-            _keyGenerator = new KeyGenerator(keyBuilder);
-            _donutHoleFiller = new DonutHoleFiller(new EncryptingActionSettingsSerialiser(new ActionSettingsSerialiser(), new Encryptor()));
-            _outputCacheManager = new OutputCacheManager(OutputCache.Instance, keyBuilder);
+            _keyGenerator         = new KeyGenerator(keyBuilder);
+            _donutHoleFiller      = new DonutHoleFiller(new EncryptingActionSettingsSerialiser(new ActionSettingsSerialiser(), new Encryptor()));
+            _outputCacheManager   = new OutputCacheManager(OutputCache.Instance, keyBuilder);
             _cacheSettingsManager = new CacheSettingsManager();
-            _cacheHeadersHelper = new CacheHeadersHelper();
+            _cacheHeadersHelper   = new CacheHeadersHelper();
 
             Duration = -1;
             Location = (OutputCacheLocation)(-1);

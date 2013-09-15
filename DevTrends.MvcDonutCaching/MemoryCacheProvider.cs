@@ -32,10 +32,7 @@ namespace DevTrends.MvcDonutCaching
 
         public IEnumerator<KeyValuePair<string, object>> GetEnumerator()
         {
-            foreach (var item in Cache)
-            {
-                yield return item;
-            }
+            return ((IEnumerable<KeyValuePair<string, object>>) Cache).GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
