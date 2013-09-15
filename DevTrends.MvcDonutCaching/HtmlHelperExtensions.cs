@@ -6,7 +6,19 @@ namespace DevTrends.MvcDonutCaching
 {
     public static class HtmlHelperExtensions
     {
-        private static readonly IActionSettingsSerialiser Serialiser = new EncryptingActionSettingsSerialiser(new ActionSettingsSerialiser(), new Encryptor());
+        private static IActionSettingsSerialiser _serialiser;
+
+        public static IActionSettingsSerialiser Serialiser
+        {
+            get
+            {
+                return _serialiser ??  (_serialiser = new EncryptingActionSettingsSerialiser(new ActionSettingsSerialiser(), new Encryptor()));
+            }
+            set
+            {
+                _serialiser = value;
+            }
+        }
 
         /// <summary>
         /// Invokes the specified child action method and returns the result as an HTML string.
@@ -79,7 +91,7 @@ namespace DevTrends.MvcDonutCaching
         /// <param name="htmlHelper">The HTML helper instance that this method extends.</param>
         /// <param name="actionName">The name of the child action method to invoke.</param>
         /// <param name="excludeFromParentCache">A flag that determines whether the action should be excluded from any parent cache.</param>
-        
+
         public static void RenderAction(this HtmlHelper htmlHelper, string actionName, bool excludeFromParentCache)
         {
             RenderAction(htmlHelper, actionName, null, null, excludeFromParentCache);
@@ -92,7 +104,7 @@ namespace DevTrends.MvcDonutCaching
         /// <param name="actionName">The name of the child action method to invoke.</param>
         /// <param name="routeValues">A dictionary that contains the parameters for a route. You can use routeValues to provide the parameters that are bound to the action method parameters. The routeValues parameter is merged with the original route values and overrides them.</param>
         /// <param name="excludeFromParentCache">A flag that determines whether the action should be excluded from any parent cache.</param>
-        
+
         public static void RenderAction(this HtmlHelper htmlHelper, string actionName, object routeValues, bool excludeFromParentCache)
         {
             RenderAction(htmlHelper, actionName, null, new RouteValueDictionary(routeValues), excludeFromParentCache);
@@ -175,7 +187,7 @@ namespace DevTrends.MvcDonutCaching
             {
                 var serialisedActionSettings = GetSerialisedActionSettings(actionName, controllerName, routeValues);
 
-                return new MvcHtmlString(string.Format("<!--Donut#{0}#-->{1}<!--EndDonut-->", serialisedActionSettings, htmlHelper.Action(actionName, controllerName, routeValues)));                
+                return new MvcHtmlString(string.Format("<!--Donut#{0}#-->{1}<!--EndDonut-->", serialisedActionSettings, htmlHelper.Action(actionName, controllerName, routeValues)));
             }
 
             return htmlHelper.Action(actionName, controllerName, routeValues);
