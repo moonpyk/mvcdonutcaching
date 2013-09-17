@@ -12,13 +12,11 @@ namespace DevTrends.MvcDonutCaching
         private readonly OutputCacheProvider _outputCacheProvider;
         private readonly IKeyBuilder _keyBuilder;
 
-        public OutputCacheManager()
+        public OutputCacheManager() : this(OutputCache.Instance, new KeyBuilder())
         {
-            _outputCacheProvider = OutputCache.Instance;
-            _keyBuilder = new KeyBuilder();
         }
 
-        internal OutputCacheManager(OutputCacheProvider outputCacheProvider, IKeyBuilder keyBuilder)
+        public OutputCacheManager(OutputCacheProvider outputCacheProvider, IKeyBuilder keyBuilder)
         {
             _outputCacheProvider = outputCacheProvider;
             _keyBuilder = keyBuilder;

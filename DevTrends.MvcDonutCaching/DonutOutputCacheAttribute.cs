@@ -19,10 +19,10 @@ namespace DevTrends.MvcDonutCaching
         private bool? _noStore;
         private OutputCacheOptions? _options;
 
-        public DonutOutputCacheAttribute()
-        {
-            var keyBuilder = new KeyBuilder();
+        public DonutOutputCacheAttribute() : this(new KeyBuilder()) { }
 
+        public DonutOutputCacheAttribute(IKeyBuilder keyBuilder)
+        {
             _keyGenerator         = new KeyGenerator(keyBuilder);
             _outputCacheManager   = new OutputCacheManager(OutputCache.Instance, keyBuilder);
             _donutHoleFiller      = new DonutHoleFiller(new EncryptingActionSettingsSerialiser(new ActionSettingsSerialiser(), new Encryptor()));
