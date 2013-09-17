@@ -1,0 +1,3 @@
+master : Contains stable and tested code, it's safe to checkout the code, and link your project directly against it, at any time (a nice alternative between official Nuget releases). Pull requests for bug fixes are welcome.
+---
+dev : Work in progress code, contributors should make their pull requests for new features on that branch. Regular merges are done back to master once code quality and stability standards are reached.
