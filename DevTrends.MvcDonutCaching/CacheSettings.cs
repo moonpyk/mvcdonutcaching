@@ -10,8 +10,7 @@ namespace DevTrends.MvcDonutCaching
         public string VaryByCustom { get; set; }
         public OutputCacheLocation Location { get; set; }
         public bool NoStore { get; set; }
-        public bool IgnorePostData { get; set; }
-        public bool IgnoreQueryStringData { get; set; }
+        public OutputCacheOptions Options { get; set; }
 
         public bool IsServerCachingEnabled
         {
@@ -22,5 +21,6 @@ namespace DevTrends.MvcDonutCaching
                                                             Location == OutputCacheLocation.ServerAndClient);                
             }
         }
+
     }
 }

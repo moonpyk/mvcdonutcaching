@@ -16,17 +16,16 @@ namespace DevTrends.MvcDonutCaching
         private readonly IKeyGenerator _keyGenerator;
         private readonly IExtendedOutputCacheManager _outputCacheManager;
         private CacheSettings _cacheSettings;
-        private bool? _ignorePostData;
-        private bool? _ignoreQueryStringData;
         private bool? _noStore;
+        private OutputCacheOptions? _options;
 
         public DonutOutputCacheAttribute()
         {
             var keyBuilder = new KeyBuilder();
 
             _keyGenerator         = new KeyGenerator(keyBuilder);
-            _donutHoleFiller      = new DonutHoleFiller(new EncryptingActionSettingsSerialiser(new ActionSettingsSerialiser(), new Encryptor()));
             _outputCacheManager   = new OutputCacheManager(OutputCache.Instance, keyBuilder);
+            _donutHoleFiller      = new DonutHoleFiller(new EncryptingActionSettingsSerialiser(new ActionSettingsSerialiser(), new Encryptor()));
             _cacheSettingsManager = new CacheSettingsManager();
             _cacheHeadersHelper   = new CacheHeadersHelper();
 
@@ -94,27 +93,15 @@ namespace DevTrends.MvcDonutCaching
             }
         }
 
-        public bool IgnoreQueryStringData
+        public OutputCacheOptions Options
         {
             get
             {
-                return _ignoreQueryStringData ?? false;
+                return _options ?? OutputCacheOptions.None;
             }
             set
             {
-                _ignoreQueryStringData = value;
-            }
-        }
-
-        public bool IgnorePostData
-        {
-            get
-            {
-                return _ignorePostData ?? false;
-            }
-            set
-            {
-                _ignorePostData = value;
+                _options = value;
             }
         }
 
@@ -228,14 +215,13 @@ namespace DevTrends.MvcDonutCaching
             {
                 cacheSettings = new CacheSettings
                 {
-                    IsCachingEnabled      = _cacheSettingsManager.IsCachingEnabledGlobally,
-                    Duration              = Duration,
-                    VaryByCustom          = VaryByCustom,
-                    VaryByParam           = VaryByParam,
-                    Location              = (int)Location == -1 ? OutputCacheLocation.Server : Location,
-                    NoStore               = NoStore,
-                    IgnorePostData        = IgnorePostData,
-                    IgnoreQueryStringData = IgnoreQueryStringData,
+                    IsCachingEnabled = _cacheSettingsManager.IsCachingEnabledGlobally,
+                    Duration         = Duration,
+                    VaryByCustom     = VaryByCustom,
+                    VaryByParam      = VaryByParam,
+                    Location         = (int)Location == -1 ? OutputCacheLocation.Server : Location,
+                    NoStore          = NoStore,
+                    Options          = Options,
                 };
             }
             else
@@ -244,14 +230,13 @@ namespace DevTrends.MvcDonutCaching
 
                 cacheSettings = new CacheSettings
                 {
-                    IsCachingEnabled      = _cacheSettingsManager.IsCachingEnabledGlobally && cacheProfile.Enabled,
-                    Duration              = Duration == -1 ? cacheProfile.Duration : Duration,
-                    VaryByCustom          = VaryByCustom ?? cacheProfile.VaryByCustom,
-                    VaryByParam           = VaryByParam ?? cacheProfile.VaryByParam,
-                    Location              = (int)Location == -1 ? ((int)cacheProfile.Location == -1 ? OutputCacheLocation.Server : cacheProfile.Location) : Location,
-                    NoStore               = _noStore.HasValue ? _noStore.Value : cacheProfile.NoStore,
-                    IgnorePostData        = IgnorePostData,
-                    IgnoreQueryStringData = IgnoreQueryStringData,
+                    IsCachingEnabled = _cacheSettingsManager.IsCachingEnabledGlobally && cacheProfile.Enabled,
+                    Duration         = Duration == -1 ? cacheProfile.Duration : Duration,
+                    VaryByCustom     = VaryByCustom ?? cacheProfile.VaryByCustom,
+                    VaryByParam      = VaryByParam ?? cacheProfile.VaryByParam,
+                    Location         = (int)Location == -1 ? ((int)cacheProfile.Location == -1 ? OutputCacheLocation.Server : cacheProfile.Location) : Location,
+                    NoStore          = _noStore.HasValue ? _noStore.Value : cacheProfile.NoStore,
+                    Options          = Options,
                 };
             }
 

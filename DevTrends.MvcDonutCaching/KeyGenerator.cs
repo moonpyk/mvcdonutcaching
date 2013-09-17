@@ -38,7 +38,7 @@ namespace DevTrends.MvcDonutCaching
             {
                 // note that route values take priority over form values and form values take priority over query string values
 
-                if (!cacheSettings.IgnorePostData)
+                if ((cacheSettings.Options & OutputCacheOptions.IgnoreFormData) != OutputCacheOptions.IgnoreFormData)
                 {
                     foreach (var formKey in context.HttpContext.Request.Form.AllKeys)
                     {
@@ -57,7 +57,7 @@ namespace DevTrends.MvcDonutCaching
                     } 
                 }
 
-                if (!cacheSettings.IgnoreQueryStringData)
+                if ((cacheSettings.Options & OutputCacheOptions.IgnoreQueryString) != OutputCacheOptions.IgnoreQueryString)
                 {
                     foreach (var queryStringKey in context.HttpContext.Request.QueryString.AllKeys)
                     {
