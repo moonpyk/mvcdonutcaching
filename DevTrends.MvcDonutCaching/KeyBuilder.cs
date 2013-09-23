@@ -32,7 +32,7 @@ namespace DevTrends.MvcDonutCaching
 
         public string BuildKey(string controllerName, string actionName, RouteValueDictionary routeValues)
         {
-            var builder = new StringBuilder(_cacheKeyPrefix);
+            var builder = new StringBuilder(CacheKeyPrefix);
 
             if (controllerName != null)
             {

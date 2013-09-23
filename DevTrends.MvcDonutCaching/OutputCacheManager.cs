@@ -12,7 +12,8 @@ namespace DevTrends.MvcDonutCaching
         private readonly OutputCacheProvider _outputCacheProvider;
         private readonly IKeyBuilder _keyBuilder;
 
-        public OutputCacheManager() : this(OutputCache.Instance, new KeyBuilder())
+        public OutputCacheManager()
+            : this(OutputCache.Instance, new KeyBuilder())
         {
         }
 
@@ -110,14 +111,27 @@ namespace DevTrends.MvcDonutCaching
 
             var key = _keyBuilder.BuildKey(controllerName, actionName);
 
-            var keysToDelete = enumerableCache.Where(x => x.Key.StartsWith(key)).Select(x => x.Key);
+            if (string.IsNullOrEmpty(key))
+            {
+                return;
+            }
+
+            var keysToDelete = enumerableCache
+                .Where(_ => !string.IsNullOrEmpty(_.Key) && _.Key.StartsWith(key))
+                .Select(_ => _.Key);
 
             if (routeValues != null)
             {
                 foreach (var routeValue in routeValues)
                 {
-                    var value = routeValue;
-                    keysToDelete = keysToDelete.Where(x => x.Contains(_keyBuilder.BuildKeyFragment(value)));
+                    var keyFrag = _keyBuilder.BuildKeyFragment(routeValue);
+
+                    if (string.IsNullOrEmpty(keyFrag))
+                    {
+                        continue;
+                    }
+
+                    keysToDelete = keysToDelete.Where(_ => !string.IsNullOrEmpty(_) && _.Contains(keyFrag));
                 }
             }
 
