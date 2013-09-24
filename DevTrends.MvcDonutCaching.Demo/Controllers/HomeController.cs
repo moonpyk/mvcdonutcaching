@@ -29,5 +29,17 @@ namespace DevTrends.MvcDonutCaching.Demo.Controllers
         {
             return PartialView(DateTime.Now);
         }
+
+        public void ExpireSimpleDonutCache()
+        {
+            var cacheManager = new OutputCacheManager();
+            cacheManager.RemoveItem("Home", "Simple");
+        }
+
+        public void ExpireSimpleDonutOneCache()
+        {
+            var cacheManager = new OutputCacheManager();
+            cacheManager.RemoveItem("Home", "SimpleDonutOne");
+        }
     }
 }
