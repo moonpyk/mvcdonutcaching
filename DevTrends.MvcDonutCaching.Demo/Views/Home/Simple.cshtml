@@ -10,7 +10,9 @@
 </p>
 
 <div>
-    @Html.Action("SimpleDonutOne", true)
+    @Html.Action("SimpleDonutOne", true) 
+    <button id="btnExpire" onclick="expireDonutCache();">Expire donut cache</button>
+    <button id="btnExpire2" onclick="expireDonutCache2();">Expire2 donut cache</button>
 </div>
 
 <p>
@@ -24,3 +26,29 @@
 <p>
     This is again again the main page
 </p>
+
+<script type="text/javascript" src="~/Scripts/jquery-2.0.3.min.js" ></script>
+<script type="text/javascript">
+    var expireDonutCache = function() {
+        document.getElementById("btnExpire").disabled = true;
+        $.get("@Url.Action("ExpireCache")")
+        //.done(function () {
+        //    document.getElementById("btnExpire").disabled = false;
+        //})
+        .fail(function () {
+            document.getElementById("btnExpire").disabled = false;
+        });
+    }
+</script>
+<script type="text/javascript">
+    var expireDonutCache2 = function () {
+        document.getElementById("btnExpire2").disabled = true;
+        $.get("@Url.Action("ExpireCache2")")
+        //.done(function () {
+        //    document.getElementById("btnExpire2").disabled = false;
+        //})
+        .fail(function () {
+            document.getElementById("btnExpire2").disabled = false;
+        });
+    }
+</script>
