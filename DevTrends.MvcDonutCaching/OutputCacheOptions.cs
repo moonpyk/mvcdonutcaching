@@ -14,5 +14,10 @@ namespace DevTrends.MvcDonutCaching
         /// No matter what, never use the Post data to generate the cache key name
         /// </summary>
         IgnoreFormData = 0x2,
+        /// <summary>
+        /// If the request is a POST, don't lookup for a cached result, execute the the result normally, 
+        /// caching it for subsequent GET (or any other non POST verb).
+        /// </summary>
+        NoCacheLookupForPosts = 0x4,
     }
 }
