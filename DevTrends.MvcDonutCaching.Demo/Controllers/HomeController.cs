@@ -32,18 +32,16 @@ namespace DevTrends.MvcDonutCaching.Demo.Controllers
             return PartialView(DateTime.Now);
         }
 
-        public void ExpireCache()
+        public void ExpireSimpleDonutCache()
         {
-            //Ez AAAA módszer a jó
             var cacheManager = new OutputCacheManager();
-            cacheManager.RemoveItem("Home", "SimpleDonutOne");
+            cacheManager.RemoveItem("Home", "Simple");
         }
 
-        public void ExpireCache2()
+        public void ExpireSimpleDonutOneCache()
         {
-            //Rossz módszer, nem működik, a teljes cache-t kiüti!
-            ((MemoryCache)OutputCacheAttribute.ChildActionCache).Dispose();
-            OutputCacheAttribute.ChildActionCache = new MemoryCache("NewDefault");
+            var cacheManager = new OutputCacheManager();
+            cacheManager.RemoveItem("Home", "SimpleDonutOne");
         }
     }
 }
