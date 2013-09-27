@@ -14,7 +14,6 @@ namespace DevTrends.MvcDonutCaching.Demo.Controllers
         //
         // GET: /Home/
         [DonutOutputCache(Duration = 24 * 3600)]
-        //[OutputCache(Duration = 24 * 3600)] //ez tönkreteszi a hierarchiát, mindent egyben cache-el
         public ActionResult Simple()
         {
             return View(DateTime.Now);
