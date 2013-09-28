@@ -10,7 +10,7 @@
 </p>
 
 <div>
-    @Html.Action("SimpleDonutOne", true) 
+    @Html.Action("SimpleDonutOne", true)
 </div>
 
 <p>
@@ -24,19 +24,31 @@
 <p>
     This is again again the main page
 </p>
-<button id="btnExpirePage" onclick="expirePageCache();">Expire page cache</button>
+<button id="btnExpirePage">Expire page cache</button>
+@section scripts
+{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#btnExpirePage').click(function (e) {
+                var me = $(this);
+                e.preventDefault();
 
-<script type="text/javascript">
-    var expirePageCache = function () {
-        document.getElementById("btnExpirePage").disabled = true;
-        //http://stackoverflow.com/a/4122716/208922
-        var i = document.createElement("img");
-        i.src = "@Url.Action("ExpireSimpleDonutCache")";
-    }
-    var expireSimpleDonutOneCache = function () {
-        document.getElementById("btnExpireDonut").disabled = true;
-        //http://stackoverflow.com/a/4122716/208922
-        var i = document.createElement("img");
-        i.src = "@Url.Action("ExpireSimpleDonutOneCache")";
-    }
-</script>
+                $.get('@Url.Action("ExpireSimpleDonutCache")', function (r) {
+                    console.log(r);
+                    me.prop('disabled', true);
+                });
+            });
+
+            $('#btnExpireDonut').click(function (e) {
+                var me = $(this);
+
+                e.preventDefault();
+
+                $.get('@Url.Action("ExpireSimpleDonutOneCache")', function (r) {
+                    console.log(r);
+                    me.prop('disabled', true);
+                });
+            });
+        });
+    </script>
+}

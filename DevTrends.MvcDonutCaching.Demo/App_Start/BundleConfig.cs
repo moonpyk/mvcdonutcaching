@@ -10,9 +10,13 @@ namespace DevTrends.MvcDonutCaching.Demo
     {
         public static void RegisterBundles(BundleCollection t)
         {
-            t.Add(new ScriptBundle("~/Content/style").Include(
+            t.Add(new StyleBundle("~/Content/style").Include(
                 "~/Content/normalize.css",
                 "~/Content/main.css"
+            ));
+
+            t.Add(new ScriptBundle("~/Scripts/bundle").Include(
+                "~/Scripts/jquery-{version}.js"
             ));
         }
     }
