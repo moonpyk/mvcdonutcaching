@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.Caching;
 using System.Web.Mvc;
 
 namespace DevTrends.MvcDonutCaching.Demo.Controllers
@@ -28,6 +29,18 @@ namespace DevTrends.MvcDonutCaching.Demo.Controllers
         public ActionResult SimpleDonutTwo()
         {
             return PartialView(DateTime.Now);
+        }
+
+        public void ExpireSimpleDonutCache()
+        {
+            var cacheManager = new OutputCacheManager();
+            cacheManager.RemoveItem("Home", "Simple");
+        }
+
+        public void ExpireSimpleDonutOneCache()
+        {
+            var cacheManager = new OutputCacheManager();
+            cacheManager.RemoveItem("Home", "SimpleDonutOne");
         }
     }
 }
