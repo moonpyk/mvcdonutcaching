@@ -3,7 +3,7 @@ using System.Web.Mvc;
 
 namespace DevTrends.MvcDonutCaching.Demo.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : ApplicationController
     {
         public ActionResult Index()
         {
@@ -32,16 +32,14 @@ namespace DevTrends.MvcDonutCaching.Demo.Controllers
 
         public ActionResult ExpireSimpleDonutCache()
         {
-            var cacheManager = new OutputCacheManager();
-            cacheManager.RemoveItem("Home", "Simple");
+            OutputCacheManager.RemoveItem("Home", "Simple");
 
             return Content("OK", "text/plain");
         }
 
         public ActionResult ExpireSimpleDonutOneCache()
         {
-            var cacheManager = new OutputCacheManager();
-            cacheManager.RemoveItem("Home", "SimpleDonutOne");
+            OutputCacheManager.RemoveItem("Home", "SimpleDonutOne");
 
             return Content("OK", "text/plain");
         }

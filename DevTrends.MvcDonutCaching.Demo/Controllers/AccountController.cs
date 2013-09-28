@@ -6,7 +6,7 @@ using DevTrends.MvcDonutCaching.Demo.Models;
 namespace DevTrends.MvcDonutCaching.Demo.Controllers
 {
     [Authorize]
-    public class AccountController : Controller
+    public class AccountController : ApplicationController
     {
         //
         // GET: /Account/LogIn

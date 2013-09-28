@@ -29,7 +29,13 @@ namespace DevTrends.MvcDonutCaching.Demo
         private static IContainer RegisterAutofac()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterControllers(typeof(MvcApplication).Assembly);
+
+            builder.RegisterType<OutputCacheManager>()
+                .AsImplementedInterfaces()
+                .AsSelf()
+                .InstancePerHttpRequest();
+
+            builder.RegisterControllers(typeof(MvcApplication).Assembly).PropertiesAutowired();
             builder.RegisterFilterProvider();
             builder.RegisterModelBinderProvider();
 
