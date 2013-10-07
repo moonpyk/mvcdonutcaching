@@ -6,3 +6,4 @@ Gustavo Rubinsky <grubinsky@yellowspot.com.ar> : Similar fix for codeplex issue 
 Paweł Olesiejuk <pawel.olesiejuk@gmail.com> : Fixed codeplex issue #2533
 Ramgopal <itsramgopal@gmail.com> : Fixed codeplex issue issue #2578
 Gábor Plesz <gplesz@smarterdb.com> : Work on the demo project.
+Luc-Edmond Gaspard <gaspard.le@gmail.com> : Reported and fixed Github issue #5.
