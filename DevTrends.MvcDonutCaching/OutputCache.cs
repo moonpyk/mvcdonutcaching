@@ -10,7 +10,8 @@ namespace DevTrends.MvcDonutCaching
 
         static OutputCache()
         {
-            var providerType = new CacheSettingsManager().RetrieveOutputCacheProviderType();
+            var providerSettings = new CacheSettingsManager().RetrieveOutputCacheProviderSettings();
+            var providerType = providerSettings.Type;
 
             if (providerType == null)
             {
@@ -26,7 +27,7 @@ namespace DevTrends.MvcDonutCaching
                 {
                     throw new ConfigurationErrorsException(string.Format("Unable to instantiate OutputCacheProvider of type '{0}'. Make sure you are specifying the full type name.", providerType), ex);
                 }
-
+                instance.Initialize(providerSettings.Name, providerSettings.Parameters);
             }
         }
 
