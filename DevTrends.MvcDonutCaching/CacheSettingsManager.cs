@@ -1,4 +1,5 @@
-﻿using System.Configuration;
+﻿using System;
+using System.Configuration;
 using System.Diagnostics;
 using System.Security;
 using System.Web;
@@ -22,31 +23,25 @@ namespace DevTrends.MvcDonutCaching
                 Trace.WriteLine("MvcDonutCaching does not have permission to read web.config section 'OutputCacheSection'. Using default provider.");
                 _outputCacheSection = new OutputCacheSection
                 {
-                    DefaultProviderName = AspnetInternalProviderName, 
+                    DefaultProviderName = AspnetInternalProviderName,
                     EnableOutputCache = true
                 };
             }
-            
         }
 
+        [Obsolete("Not used in the library anymore, in favor of RetrieveOutputCacheProviderSettings(), will be removed in 1.4.x branch")]
         public string RetrieveOutputCacheProviderType()
         {
-            if (_outputCacheSection.DefaultProviderName == AspnetInternalProviderName)
-            {
-                return null;
-            }
-
-            return _outputCacheSection.Providers[_outputCacheSection.DefaultProviderName].Type;
+            return _outputCacheSection.DefaultProviderName == AspnetInternalProviderName 
+                ? null 
+                : _outputCacheSection.Providers[_outputCacheSection.DefaultProviderName].Type;
         }
-        
+
         public ProviderSettings RetrieveOutputCacheProviderSettings()
         {
-            if (_outputCacheSection.DefaultProviderName == AspnetInternalProviderName)
-            {
-                return null;
-            }
-
-            return _outputCacheSection.Providers[_outputCacheSection.DefaultProviderName];
+            return _outputCacheSection.DefaultProviderName == AspnetInternalProviderName 
+                ? null 
+                : _outputCacheSection.Providers[_outputCacheSection.DefaultProviderName];
         }
 
         public OutputCacheProfile RetrieveOutputCacheProfile(string cacheProfileName)
