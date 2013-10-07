@@ -38,6 +38,16 @@ namespace DevTrends.MvcDonutCaching
 
             return _outputCacheSection.Providers[_outputCacheSection.DefaultProviderName].Type;
         }
+        
+        public ProviderSettings RetrieveOutputCacheProviderSettings()
+        {
+            if (_outputCacheSection.DefaultProviderName == AspnetInternalProviderName)
+            {
+                return null;
+            }
+
+            return _outputCacheSection.Providers[_outputCacheSection.DefaultProviderName];
+        }
 
         public OutputCacheProfile RetrieveOutputCacheProfile(string cacheProfileName)
         {
