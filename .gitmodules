@@ -1,0 +1,3 @@
+[submodule "DevTrends.MvcDonutCaching.Demo"]
+	path = DevTrends.MvcDonutCaching.Demo
+	url = https://github.com/moonpyk/mvcdonutcaching.demo.git
