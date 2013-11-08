@@ -25,21 +25,11 @@ namespace DevTrends.MvcDonutCaching
 
         public string RemoveDonutHoleWrappers(string content, ControllerContext filterContext)
         {
-            if (filterContext.IsChildAction)
-            {
-                return content;
-            }
-
             return DonutHoles.Replace(content, match => match.Groups[2].Value);
         }
 
         public string ReplaceDonutHoleContent(string content, ControllerContext filterContext)
         {
-            if (filterContext.IsChildAction)
-            {
-                return content;
-            }
-
             return DonutHoles.Replace(content, match =>
             {
                 var actionSettings = _actionSettingsSerialiser.Deserialise(match.Groups[1].Value);
