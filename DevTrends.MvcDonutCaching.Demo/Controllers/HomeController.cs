@@ -24,6 +24,12 @@ namespace DevTrends.MvcDonutCaching.Demo.Controllers
             return PartialView(DateTime.Now);
         }
 
+        [ChildActionOnly, DonutOutputCache(Duration = 5)]
+        public ActionResult NestedDonutOne()
+        {
+            return PartialView(DateTime.Now);
+        }
+
         [ChildActionOnly]
         public ActionResult SimpleDonutTwo()
         {
