@@ -7,3 +7,4 @@ Paweł Olesiejuk <pawel.olesiejuk@gmail.com> : Fixed codeplex issue #2533
 Ramgopal <itsramgopal@gmail.com> : Fixed codeplex issue issue #2578
 Gábor Plesz <gplesz@smarterdb.com> : Work on the demo project.
 Luc-Edmond Gaspard <gaspard.le@gmail.com> : Reported and fixed Github issue #5.
+Magnus Lidbom <magnus.lidbom@gmail.com> : Reported and fixed Github issue #7.
