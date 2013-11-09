@@ -1,0 +1,46 @@
+@model DevTrends.MvcDonutCaching.Demo.Models.LogOnModel
+
+@{
+    ViewBag.Title = "Se connecter";
+}
+
+<h2>Se connecter</h2>
+<p>
+    Entrez un nom d'utilisateur et un mot de passe. @Html.ActionLink("S'inscrire", "Register") si vous ne possédez pas de compte.
+</p>
+
+@Html.ValidationSummary(true, "Échec de la connexion. Corrigez les erreurs et réessayez.")
+
+@using (Html.BeginForm())
+{
+    <div>
+        <fieldset>
+            <legend>Informations de compte</legend>
+
+            <div class="editor-label">
+                @Html.LabelFor(m => m.UserName)
+            </div>
+            <div class="editor-field">
+                @Html.TextBoxFor(m => m.UserName)
+                @Html.ValidationMessageFor(m => m.UserName)
+            </div>
+
+            <div class="editor-label">
+                @Html.LabelFor(m => m.Password)
+            </div>
+            <div class="editor-field">
+                @Html.PasswordFor(m => m.Password)
+                @Html.ValidationMessageFor(m => m.Password)
+            </div>
+
+            <div class="editor-label">
+                @Html.CheckBoxFor(m => m.RememberMe)
+                @Html.LabelFor(m => m.RememberMe)
+            </div>
+
+            <p>
+                <input type="submit" value="Se connecter" />
+            </p>
+        </fieldset>
+    </div>
+}

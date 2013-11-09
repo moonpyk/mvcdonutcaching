@@ -1,0 +1,54 @@
+﻿@model DateTime
+@{
+    ViewBag.Title = "Donut holes demo";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<p>
+    This page has been rendered at @Model (expires in 24h)
+</p>
+
+<div>
+    @Html.Action("SimpleDonutOne", true)
+</div>
+
+<p>
+    This is again the main page
+</p>
+
+<div>
+    @Html.Action("SimpleDonutTwo", true)
+</div>
+
+<p>
+    This is again again the main page
+</p>
+<button id="btnExpirePage">Expire page cache</button>
+@section scripts
+{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#btnExpirePage').click(function (e) {
+                var me = $(this);
+                e.preventDefault();
+
+                $.get('@Url.Action("ExpireSimpleDonutCache")', function (r) {
+                    console.log(r);
+                    me.prop('disabled', true);
+                });
+            });
+
+            $('#btnExpireDonut').click(function (e) {
+                var me = $(this);
+
+                e.preventDefault();
+
+                $.get('@Url.Action("ExpireSimpleDonutOneCache")', function (r) {
+                    console.log(r);
+                    me.prop('disabled', true);
+                });
+            });
+        });
+    </script>
+}

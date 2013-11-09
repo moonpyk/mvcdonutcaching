@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<ArrayOfXmlUser xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <XmlUser>
+    <UserKey>b96a6344-fd04-45eb-9f1e-240c9140c38b</UserKey>
+    <UserName>client</UserName>
+    <Password>client</Password>
+    <PasswordSalt />
+    <Email>client@exemple.net</Email>
+    <PasswordQuestion />
+    <PasswordAnswer />
+    <CreationDate>0001-01-01T00:00:00</CreationDate>
+    <LastActivityDate>0001-01-01T00:00:00</LastActivityDate>
+    <LastLoginDate>0001-01-01T00:00:00</LastLoginDate>
+    <LastPasswordChangeDate>0001-01-01T00:00:00</LastPasswordChangeDate>
+    <LastLockoutDate>9999-12-31T23:59:59.9999999</LastLockoutDate>
+    <IsApproved>true</IsApproved>
+    <IsLockedOut>false</IsLockedOut>
+    <FailedPasswordAttemptCount>0</FailedPasswordAttemptCount>
+  </XmlUser>
+  <XmlUser>
+    <UserKey>26406e01-d5c6-467f-9b4d-180dc63b822c</UserKey>
+    <UserName>admin</UserName>
+    <Password>admin</Password>
+    <PasswordSalt />
+    <Email>admin@exemple.net</Email>
+    <CreationDate>0001-01-01T00:00:00</CreationDate>
+    <LastActivityDate>0001-01-01T00:00:00</LastActivityDate>
+    <LastLoginDate>0001-01-01T00:00:00</LastLoginDate>
+    <LastPasswordChangeDate>0001-01-01T00:00:00</LastPasswordChangeDate>
+    <LastLockoutDate>9999-12-31T23:59:59.9999999</LastLockoutDate>
+    <IsApproved>true</IsApproved>
+    <IsLockedOut>false</IsLockedOut>
+    <FailedPasswordAttemptCount>0</FailedPasswordAttemptCount>
+  </XmlUser>
+</ArrayOfXmlUser>

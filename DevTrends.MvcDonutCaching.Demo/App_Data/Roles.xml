@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<ArrayOfXmlRole xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <XmlRole>
+    <Name>clients</Name>
+    <Users>
+      <string>client</string>
+    </Users>
+  </XmlRole>
+  <XmlRole>
+    <Name>admin</Name>
+    <Users>
+      <string>admin</string>
+    </Users>
+  </XmlRole>
+</ArrayOfXmlRole>

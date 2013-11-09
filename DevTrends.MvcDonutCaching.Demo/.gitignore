@@ -1,0 +1,17 @@
+# OS junk files
+[Tt]humbs.db
+*.ide
+
+# Visual Studio files
+bin/
+obj/
+packages/
+*.user
+*.suo
+*.Publish.xml
+
+# RS
+_[Rr]esharper.*
+
+# Nuget
+nuget/lib/
