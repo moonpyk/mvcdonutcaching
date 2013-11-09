@@ -23,11 +23,11 @@ namespace DevTrends.MvcDonutCaching
 
         public DonutOutputCacheAttribute(IKeyBuilder keyBuilder)
         {
-            _keyGenerator         = new KeyGenerator(keyBuilder);
-            _outputCacheManager   = new OutputCacheManager(OutputCache.Instance, keyBuilder);
+            _keyGenerator = new KeyGenerator(keyBuilder);
+            _outputCacheManager = new OutputCacheManager(OutputCache.Instance, keyBuilder);
             _donutHoleFiller      = new DonutHoleFiller(new EncryptingActionSettingsSerialiser(new ActionSettingsSerialiser(), new Encryptor()));
             _cacheSettingsManager = new CacheSettingsManager();
-            _cacheHeadersHelper   = new CacheHeadersHelper();
+            _cacheHeadersHelper = new CacheHeadersHelper();
 
             Duration = -1;
             Location = (OutputCacheLocation)(-1);
@@ -131,7 +131,7 @@ namespace DevTrends.MvcDonutCaching
                 // If the request is a POST, we lookup for NoCacheLookupForPosts option
                 // We are fetching the stored value only if the option has not been set and the request is not a POST
                 if (
-                    (_cacheSettings.Options & OutputCacheOptions.NoCacheLookupForPosts) != OutputCacheOptions.NoCacheLookupForPosts || 
+                    (_cacheSettings.Options & OutputCacheOptions.NoCacheLookupForPosts) != OutputCacheOptions.NoCacheLookupForPosts ||
                     filterContext.HttpContext.Request.HttpMethod != "POST"
                 )
                 {
@@ -145,7 +145,7 @@ namespace DevTrends.MvcDonutCaching
                     // The MVC action won't execute as we injected the previous cached result.
                     filterContext.Result = new ContentResult
                     {
-                        Content = _donutHoleFiller.ReplaceDonutHoleContent(cachedItem.Content, filterContext),
+                        Content = _donutHoleFiller.ReplaceDonutHoleContent(cachedItem.Content, filterContext, _cacheSettings.Options),
                         ContentType = cachedItem.ContentType
                     };
                 }
@@ -186,7 +186,9 @@ namespace DevTrends.MvcDonutCaching
                     ContentType = filterContext.HttpContext.Response.ContentType
                 };
 
-                filterContext.HttpContext.Response.Write(_donutHoleFiller.RemoveDonutHoleWrappers(cacheItem.Content, filterContext));
+                filterContext.HttpContext.Response.Write(
+                    _donutHoleFiller.RemoveDonutHoleWrappers(cacheItem.Content, filterContext, _cacheSettings.Options)
+                );
 
                 if (_cacheSettings.IsServerCachingEnabled && filterContext.HttpContext.Response.StatusCode == 200)
                 {
@@ -226,12 +228,12 @@ namespace DevTrends.MvcDonutCaching
                 cacheSettings = new CacheSettings
                 {
                     IsCachingEnabled = _cacheSettingsManager.IsCachingEnabledGlobally,
-                    Duration         = Duration,
-                    VaryByCustom     = VaryByCustom,
-                    VaryByParam      = VaryByParam,
-                    Location         = (int)Location == -1 ? OutputCacheLocation.Server : Location,
-                    NoStore          = NoStore,
-                    Options          = Options,
+                    Duration = Duration,
+                    VaryByCustom = VaryByCustom,
+                    VaryByParam = VaryByParam,
+                    Location = (int)Location == -1 ? OutputCacheLocation.Server : Location,
+                    NoStore = NoStore,
+                    Options = Options,
                 };
             }
             else
@@ -241,12 +243,12 @@ namespace DevTrends.MvcDonutCaching
                 cacheSettings = new CacheSettings
                 {
                     IsCachingEnabled = _cacheSettingsManager.IsCachingEnabledGlobally && cacheProfile.Enabled,
-                    Duration         = Duration == -1 ? cacheProfile.Duration : Duration,
-                    VaryByCustom     = VaryByCustom ?? cacheProfile.VaryByCustom,
-                    VaryByParam      = VaryByParam ?? cacheProfile.VaryByParam,
-                    Location         = (int)Location == -1 ? ((int)cacheProfile.Location == -1 ? OutputCacheLocation.Server : cacheProfile.Location) : Location,
-                    NoStore          = _noStore.HasValue ? _noStore.Value : cacheProfile.NoStore,
-                    Options          = Options,
+                    Duration = Duration == -1 ? cacheProfile.Duration : Duration,
+                    VaryByCustom = VaryByCustom ?? cacheProfile.VaryByCustom,
+                    VaryByParam = VaryByParam ?? cacheProfile.VaryByParam,
+                    Location = (int)Location == -1 ? ((int)cacheProfile.Location == -1 ? OutputCacheLocation.Server : cacheProfile.Location) : Location,
+                    NoStore = _noStore.HasValue ? _noStore.Value : cacheProfile.NoStore,
+                    Options = Options,
                 };
             }
 

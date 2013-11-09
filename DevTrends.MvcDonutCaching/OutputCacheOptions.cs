@@ -11,7 +11,7 @@ namespace DevTrends.MvcDonutCaching
         /// </summary>
         IgnoreQueryString = 0x1,
         /// <summary>
-        /// No matter what, never use the Post data to generate the cache key name
+        /// No matter what, never use the POST data to generate the cache key name
         /// </summary>
         IgnoreFormData = 0x2,
         /// <summary>
@@ -19,5 +19,10 @@ namespace DevTrends.MvcDonutCaching
         /// caching it for subsequent GET (or any other non POST verb).
         /// </summary>
         NoCacheLookupForPosts = 0x4,
+        /// <summary>
+        /// Replace donuts in child actions, may affect performance but needed if you intent to have nested
+        /// donut holes in child actions
+        /// </summary>
+        ReplaceDonutsInChildActions = 0x8,
     }
 }

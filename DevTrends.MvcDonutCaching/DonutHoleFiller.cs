@@ -23,21 +23,35 @@ namespace DevTrends.MvcDonutCaching
             _actionSettingsSerialiser = actionSettingsSerialiser;
         }
 
-        public string RemoveDonutHoleWrappers(string content, ControllerContext filterContext)
+        public string RemoveDonutHoleWrappers(string content, ControllerContext filterContext, OutputCacheOptions options)
         {
+            if (
+                filterContext.IsChildAction &&
+                (options & OutputCacheOptions.ReplaceDonutsInChildActions) != OutputCacheOptions.ReplaceDonutsInChildActions)
+            {
+                return content;
+            }
+
             return DonutHoles.Replace(content, match => match.Groups[2].Value);
         }
 
-        public string ReplaceDonutHoleContent(string content, ControllerContext filterContext)
+        public string ReplaceDonutHoleContent(string content, ControllerContext filterContext, OutputCacheOptions options)
         {
+            if (
+                filterContext.IsChildAction &&
+                (options & OutputCacheOptions.ReplaceDonutsInChildActions) != OutputCacheOptions.ReplaceDonutsInChildActions)
+            {
+                return content;
+            }
+
             return DonutHoles.Replace(content, match =>
             {
                 var actionSettings = _actionSettingsSerialiser.Deserialise(match.Groups[1].Value);
 
                 return InvokeAction(
                     filterContext.Controller,
-                    actionSettings.ActionName, 
-                    actionSettings.ControllerName, 
+                    actionSettings.ActionName,
+                    actionSettings.ControllerName,
                     actionSettings.RouteValues
                 );
             });
@@ -46,10 +60,10 @@ namespace DevTrends.MvcDonutCaching
         private static string InvokeAction(ControllerBase controller, string actionName, string controllerName, RouteValueDictionary routeValues)
         {
             var viewContext = new ViewContext(
-                controller.ControllerContext, 
+                controller.ControllerContext,
                 new WebFormView(controller.ControllerContext, "tmp"),
-                controller.ViewData, 
-                controller.TempData, 
+                controller.ViewData,
+                controller.TempData,
                 TextWriter.Null
             );
 
