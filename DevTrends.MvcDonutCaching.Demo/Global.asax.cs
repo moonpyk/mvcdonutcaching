@@ -33,7 +33,7 @@ namespace DevTrends.MvcDonutCaching.Demo
             builder.RegisterType<OutputCacheManager>()
                 .AsImplementedInterfaces()
                 .AsSelf()
-                .InstancePerHttpRequest();
+                .SingleInstance();
 
             builder.RegisterControllers(typeof(MvcApplication).Assembly).PropertiesAutowired();
             builder.RegisterFilterProvider();
