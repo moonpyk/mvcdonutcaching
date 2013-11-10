@@ -1,7 +1,7 @@
 ﻿
 namespace DevTrends.MvcDonutCaching
 {
-    public class EncryptingActionSettingsSerialiser : IActionSettingsSerialiser
+    public class EncryptingActionSettingsSerialiser : IEncryptingActionSettingsSerialiser
     {
         private readonly IActionSettingsSerialiser _serialiser;
         private readonly IEncryptor _encryptor;
