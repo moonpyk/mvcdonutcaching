@@ -7,7 +7,7 @@ using DevTrends.MvcDonutCaching.Annotations;
 
 namespace DevTrends.MvcDonutCaching
 {
-    public class OutputCacheManager : IExtendedOutputCacheManager
+    public class OutputCacheManager : IReadWriteOutputCacheManager
     {
         private readonly OutputCacheProvider _outputCacheProvider;
         private readonly IKeyBuilder _keyBuilder;

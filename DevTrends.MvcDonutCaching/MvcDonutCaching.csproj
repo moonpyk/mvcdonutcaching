@@ -73,7 +73,7 @@
     <Compile Include="Interfaces\ICacheItem.cs" />
     <Compile Include="Interfaces\ICacheHeadersHelper.cs" />
     <Compile Include="Interfaces\IEncryptor.cs" />
-    <Compile Include="Interfaces\IExtendedOutputCacheManager.cs" />
+    <Compile Include="Interfaces\IReadWriteOutputCacheManager.cs" />
     <Compile Include="DonutHoleFiller.cs" />
     <Compile Include="Interfaces\IActionSettingsSerialiser.cs" />
     <Compile Include="Interfaces\ICacheSettingsManager.cs" />

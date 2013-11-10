@@ -14,7 +14,7 @@ namespace DevTrends.MvcDonutCaching
         private readonly ICacheSettingsManager _cacheSettingsManager;
         private readonly IDonutHoleFiller _donutHoleFiller;
         private readonly IKeyGenerator _keyGenerator;
-        private readonly IExtendedOutputCacheManager _outputCacheManager;
+        private readonly IReadWriteOutputCacheManager _outputCacheManager;
         private CacheSettings _cacheSettings;
         private bool? _noStore;
         private OutputCacheOptions? _options;
