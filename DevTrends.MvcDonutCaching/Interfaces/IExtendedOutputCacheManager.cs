@@ -4,7 +4,7 @@ namespace DevTrends.MvcDonutCaching
 {
     internal interface IExtendedOutputCacheManager : IOutputCacheManager
     {
-        void AddItem(string key, CacheItem cacheItem, DateTime utcExpiry);
-        CacheItem GetItem(string key);
+        void AddItem(string key, ICacheItem cacheItem, DateTime utcExpiry);
+        ICacheItem GetItem(string key);
     }
 }

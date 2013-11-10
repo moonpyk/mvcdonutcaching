@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace DevTrends.MvcDonutCaching
 {
     [Serializable, DataContract]
-    public class CacheItem
+    public class CacheItem : ICacheItem
     {
         [DataMember(Order = 1)]
         public string ContentType { get; set; }
