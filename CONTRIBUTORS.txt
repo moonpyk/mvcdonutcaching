@@ -1,10 +1,11 @@
 Original author : Paul Hiles <paul@devtrends.co.uk> (http://www.devtrends.co.uk/)
 Clément Bourgeois <moonpyk@gmail.com> : Maintenance and evolutions starting 2013/09/11.
 ----
+Magnus Lidbom <magnus.lidbom@gmail.com> : Various contributions, testing and quality feedback.
 Evgeniya Polyakova <epolyakova@knoema.com> : Fixed codeplex issue #2584
 Gustavo Rubinsky <grubinsky@yellowspot.com.ar> : Similar fix for codeplex issue #2584
 Paweł Olesiejuk <pawel.olesiejuk@gmail.com> : Fixed codeplex issue #2533
 Ramgopal <itsramgopal@gmail.com> : Fixed codeplex issue issue #2578
 Gábor Plesz <gplesz@smarterdb.com> : Work on the demo project.
 Luc-Edmond Gaspard <gaspard.le@gmail.com> : Reported and fixed Github issue #5.
-Magnus Lidbom <magnus.lidbom@gmail.com> : Reported and fixed Github issue #7.
+
