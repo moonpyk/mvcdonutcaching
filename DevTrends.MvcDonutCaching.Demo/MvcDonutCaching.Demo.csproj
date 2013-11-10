@@ -126,6 +126,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\ApplicationController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LoadTestController.cs" />
     <Compile Include="GlimpseSecurityPolicy.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -154,6 +155,10 @@
     <Content Include="Views\Web.config" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
     <Content Include="Views\Home\NestedDonutOne.cshtml" />
+    <Content Include="Views\LoadTest\ApplyLoad.cshtml" />
+    <Content Include="Views\LoadTest\LargeOutPutRootAction.cshtml" />
+    <Content Include="Views\LoadTest\MediumOutPutChildAction.cshtml" />
+    <Content Include="Views\LoadTest\SmallOutPutGrandChildAction.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Home\SimpleDonutOne.cshtml" />
