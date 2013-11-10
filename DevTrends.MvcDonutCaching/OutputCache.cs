@@ -8,6 +8,8 @@ namespace DevTrends.MvcDonutCaching
     {
         static OutputCache()
         {
+            DefaultOptions = OutputCacheOptions.None;
+
             var providerSettings = new CacheSettingsManager().RetrieveOutputCacheProviderSettings();
 
             if (providerSettings == null || providerSettings.Type == null)
@@ -40,6 +42,15 @@ namespace DevTrends.MvcDonutCaching
         {
             get;
             private set;
+        }
+
+        /// <summary>
+        /// Specifies the default value for the <see cref="DonutOutputCacheAttribute.Options"/>
+        /// </summary>
+        public static OutputCacheOptions DefaultOptions
+        {
+            get;
+            set;
         }
     }
 }

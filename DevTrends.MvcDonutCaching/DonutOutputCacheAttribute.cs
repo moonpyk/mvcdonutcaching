@@ -23,14 +23,15 @@ namespace DevTrends.MvcDonutCaching
 
         public DonutOutputCacheAttribute(IKeyBuilder keyBuilder)
         {
-            _keyGenerator = new KeyGenerator(keyBuilder);
-            _outputCacheManager = new OutputCacheManager(OutputCache.Instance, keyBuilder);
+            _keyGenerator         = new KeyGenerator(keyBuilder);
+            _outputCacheManager   = new OutputCacheManager(OutputCache.Instance, keyBuilder);
             _donutHoleFiller      = new DonutHoleFiller(new EncryptingActionSettingsSerialiser(new ActionSettingsSerialiser(), new Encryptor()));
             _cacheSettingsManager = new CacheSettingsManager();
-            _cacheHeadersHelper = new CacheHeadersHelper();
+            _cacheHeadersHelper   = new CacheHeadersHelper();
 
             Duration = -1;
             Location = (OutputCacheLocation)(-1);
+            Options = OutputCache.DefaultOptions;
         }
 
         /// <summary>
@@ -93,6 +94,10 @@ namespace DevTrends.MvcDonutCaching
             }
         }
 
+        /// <summary>
+        /// Get or sets the <see cref="OutputCacheOptions"/> for this attributes. Specifying a value here will
+        /// make the <see cref="OutputCache.DefaultOptions"/> value ignored.
+        /// </summary>
         public OutputCacheOptions Options
         {
             get
