@@ -6,6 +6,11 @@ namespace DevTrends.MvcDonutCaching
 {
     public class CacheHeadersHelper : ICacheHeadersHelper
     {
+        /// <summary>
+        /// Sets the cache headers.
+        /// </summary>
+        /// <param name="response">The response.</param>
+        /// <param name="settings">The settings.</param>
         public void SetCacheHeaders(HttpResponseBase response, CacheSettings settings)
         {
             var cacheability = HttpCacheability.NoCache;

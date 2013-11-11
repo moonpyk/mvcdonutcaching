@@ -240,6 +240,13 @@ namespace DevTrends.MvcDonutCaching
             }
         }
 
+        /// <summary>
+        /// Builds the cache settings.
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="System.Web.HttpException">
+        /// The 'duration' attribute must have a value that is greater than or equal to zero.
+        /// </exception>
         protected CacheSettings BuildCacheSettings()
         {
             CacheSettings cacheSettings;
@@ -286,6 +293,11 @@ namespace DevTrends.MvcDonutCaching
             return cacheSettings;
         }
 
+        /// <summary>
+        /// Executes the callback.
+        /// </summary>
+        /// <param name="context">The context.</param>
+        /// <param name="hasErrors">if set to <c>true</c> [has errors].</param>
         private void ExecuteCallback(ControllerContext context, bool hasErrors)
         {
             var cacheKey = KeyGenerator.GenerateKey(context, CacheSettings);
