@@ -13,6 +13,12 @@ namespace MvcDonutCaching.Tests
     [TestFixture]
     public class CachingControllerWithNoChildActionsTests
     {
+        [SetUp]
+        public void SetupTask()
+        {
+            var result = GetUrlContent("/TestControl/ClearCache");
+            Assert.That(result, Is.EqualTo("Done"), "Failed to clear cache");          
+        }
 
         public static string GetUrlContent(string relativeUrl)
         {
@@ -20,11 +26,38 @@ namespace MvcDonutCaching.Tests
             var webRequest = WebRequest.Create(uri);
             webRequest.CachePolicy = new HttpRequestCachePolicy(HttpRequestCacheLevel.NoCacheNoStore);
 
-            using (var response = webRequest.GetResponse())
-            using (var stream = response.GetResponseStream())
-            using (var reader = new StreamReader(stream))
+            try
             {
-                return reader.ReadToEnd();
+                using(var response = webRequest.GetResponse())
+                return ReadResponse(response);
+            }
+            catch(WebException e)
+            {
+                string responseText = null;
+                try
+                {
+                    responseText = ReadResponse(e.Response);
+                }
+                catch(Exception inner)
+                {
+                    
+                }
+                if(responseText != null)
+                {
+                    throw new Exception(responseText, e);
+                }
+                throw;
+            }  
+        }
+
+        private static string ReadResponse(WebResponse response)
+        {
+            using(var stream = response.GetResponseStream())
+            {
+                using(var reader = new StreamReader(stream))
+                {
+                    return reader.ReadToEnd();
+                }
             }
         }
 
