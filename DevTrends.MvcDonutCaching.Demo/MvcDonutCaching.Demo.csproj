@@ -81,8 +81,12 @@
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.5.0.8\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="protobuf-net">
+      <HintPath>..\packages\protobuf-net.2.0.0.668\lib\net40\protobuf-net.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -141,6 +145,8 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Lib\ProtobufActionSettingsSerialiser.cs" />
+    <Compile Include="Lib\ProtoBufDonutCacheAttribute.cs" />
     <Compile Include="Models\AccountModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

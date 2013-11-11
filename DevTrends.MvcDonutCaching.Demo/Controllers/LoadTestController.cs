@@ -12,6 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using DevTrends.MvcDonutCaching.Demo.Lib;
 
 namespace DevTrends.MvcDonutCaching.Demo.Controllers
 {
@@ -68,9 +69,9 @@ namespace DevTrends.MvcDonutCaching.Demo.Controllers
         }
 
 #if PROFILE_DONUTS_CHILDACTION
-        [DonutOutputCache(Duration = 3600, Options = OutputCacheOptions.ReplaceDonutsInChildActions)]
+        [ProtoBufDonutCache(Duration = 3600, Options = OutputCacheOptions.ReplaceDonutsInChildActions)]
 #else
-        [DonutOutputCache(Duration = 3600)]
+        [ProtoBufDonutCache(Duration = 3600)]
 #endif
         public ActionResult LargeOutPutRootAction()
         {
@@ -78,9 +79,9 @@ namespace DevTrends.MvcDonutCaching.Demo.Controllers
         }
 
 #if PROFILE_DONUTS_CHILDACTION
-        [DonutOutputCache(Duration = 3600, Options = OutputCacheOptions.ReplaceDonutsInChildActions)]
+        [ProtoBufDonutCache(Duration = 3600, Options = OutputCacheOptions.ReplaceDonutsInChildActions)]
 #else
-        [DonutOutputCache(Duration = 3600)]
+        [ProtoBufDonutCache(Duration = 3600)]
 #endif
         public ActionResult MediumOutPutChildAction()
         {
@@ -88,9 +89,9 @@ namespace DevTrends.MvcDonutCaching.Demo.Controllers
         }
 
 #if PROFILE_DONUTS_CHILDACTION
-        [DonutOutputCache(Duration = 3600, Options = OutputCacheOptions.ReplaceDonutsInChildActions)]
+        [ProtoBufDonutCache(Duration = 3600, Options = OutputCacheOptions.ReplaceDonutsInChildActions)]
 #else
-        [DonutOutputCache(Duration = 3600)]
+        [ProtoBufDonutCache(Duration = 3600)]
 #endif
         public ActionResult SmallOutPutGrandChildAction()
         {

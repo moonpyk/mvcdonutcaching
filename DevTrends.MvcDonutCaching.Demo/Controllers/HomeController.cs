@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Web.Mvc;
+using DevTrends.MvcDonutCaching.Demo.Lib;
 
 namespace DevTrends.MvcDonutCaching.Demo.Controllers
 {
@@ -12,19 +13,19 @@ namespace DevTrends.MvcDonutCaching.Demo.Controllers
 
         //
         // GET: /Home/
-        [DonutOutputCache(Duration = 24 * 3600)]
+        [ProtoBufDonutCache(Duration = 24 * 3600)]
         public ActionResult Simple()
         {
             return View(DateTime.Now);
         }
 
-        [ChildActionOnly, DonutOutputCache(Duration = 60, Options = OutputCacheOptions.ReplaceDonutsInChildActions)]
+        [ChildActionOnly, ProtoBufDonutCache(Duration = 60)]
         public ActionResult SimpleDonutOne()
         {
             return PartialView(DateTime.Now);
         }
 
-        [ChildActionOnly, DonutOutputCache(Duration = 5)]
+        [ChildActionOnly, ProtoBufDonutCache(Duration = 5)]
         public ActionResult NestedDonutOne()
         {
             return PartialView(DateTime.Now);
