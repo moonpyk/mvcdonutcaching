@@ -3,12 +3,14 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Cache;
+using System.Web.Mvc;
 using NUnit.Framework;
 
 namespace MvcDonutCaching.Tests
 {
 
-    public class TestsBase {
+    public class TestsBase 
+    {
         [SetUp]
         public void SetupTask()
         {
@@ -19,6 +21,25 @@ namespace MvcDonutCaching.Tests
         public void TearDownTask()
         {
             UseDefaultSettingsGlobally();
+        }
+
+        protected void RetryThreeTimesOnFailureSinceTimingIssuesWithTheWebServerAndStartUpMayCauseIntermittentFailures(Action test)
+        {
+            for(int tries = 0; tries <= 3; tries++)
+            {
+                try
+                {
+                    test();
+                    return;
+                }
+                catch(Exception)
+                {
+                    if(tries == 3)
+                    {
+                        throw;
+                    }
+                }
+            }
         }
 
         protected void AssertRenderedDuringSameRequest(
