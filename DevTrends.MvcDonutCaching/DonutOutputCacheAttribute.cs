@@ -147,7 +147,7 @@ namespace DevTrends.MvcDonutCaching
             // Are we actually storing data on the server side ?
             if (CacheSettings.IsServerCachingEnabled)
             {
-                ICacheItem cachedItem = null;
+                CacheItem cachedItem = null;
 
                 // If the request is a POST, we lookup for NoCacheLookupForPosts option
                 // We are fetching the stored value only if the option has not been set and the request is not a POST

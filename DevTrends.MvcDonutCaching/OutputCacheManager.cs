@@ -23,14 +23,14 @@ namespace DevTrends.MvcDonutCaching
             _keyBuilder = keyBuilder;
         }
 
-        public void AddItem(string key, ICacheItem cacheItem, DateTime utcExpiry)
+        public void AddItem(string key, CacheItem cacheItem, DateTime utcExpiry)
         {
             _outputCacheProvider.Add(key, cacheItem, utcExpiry);
         }
 
-        public ICacheItem GetItem(string key)
+        public CacheItem GetItem(string key)
         {
-            return _outputCacheProvider.Get(key) as ICacheItem;
+            return _outputCacheProvider.Get(key) as CacheItem;
         }
 
         /// <summary>
