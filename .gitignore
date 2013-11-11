@@ -18,3 +18,4 @@ nuget/lib/
 
 # Doxygen
 doc/*
+*.crunchsolution.cache

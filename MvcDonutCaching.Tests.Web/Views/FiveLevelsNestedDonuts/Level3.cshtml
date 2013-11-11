@@ -1,2 +1,3 @@
-﻿Level3#@DateTime.Now.ToString("o")<br/>
-@Html.Action("Level4", true)
+﻿@model dynamic
+@Model.Title#@Model.Time<br/>
+@Html.Action("Level4", new {time = DateTime.Now, title = "Level4"}, true)

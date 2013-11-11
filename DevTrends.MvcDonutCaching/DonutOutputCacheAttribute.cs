@@ -208,7 +208,7 @@ namespace DevTrends.MvcDonutCaching
                 };
 
                 filterContext.HttpContext.Response.Write(
-                    DonutHoleFiller.RemoveDonutHoleWrappers(cacheItem.Content, filterContext, CacheSettings.Options)
+                  WrapInDonutIfNeeded(filterContext,  DonutHoleFiller.RemoveDonutHoleWrappers(cacheItem.Content, filterContext, CacheSettings.Options))
                 );
 
                 if (CacheSettings.IsServerCachingEnabled && filterContext.HttpContext.Response.StatusCode == 200)
@@ -216,6 +216,11 @@ namespace DevTrends.MvcDonutCaching
                     OutputCacheManager.AddItem(cacheKey, cacheItem, DateTime.UtcNow.AddSeconds(CacheSettings.Duration));
                 }
             });
+        }
+
+        protected virtual string WrapInDonutIfNeeded(ActionExecutingContext filterContext, string content)
+        {
+            return content;
         }
 
         /// <summary>

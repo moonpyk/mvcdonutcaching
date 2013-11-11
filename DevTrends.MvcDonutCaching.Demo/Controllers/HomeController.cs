@@ -19,7 +19,7 @@ namespace DevTrends.MvcDonutCaching.Demo.Controllers
         }
 
         [ChildActionOnly, DonutOutputCache(Duration = 60, Options = OutputCacheOptions.ReplaceDonutsInChildActions)]
-        public ActionResult SimpleDonutOne()
+        public ActionResult SimpleDonutOne(DateTime time, string title)
         {
             return PartialView(DateTime.Now);
         }

@@ -72,6 +72,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FiveLevelsNestedDonutsControllerTests.cs" />
+    <Compile Include="FiveLevelsNestedDonutsExcludeFromParentCacheAttributeManagedControllerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Caching1SecondControllerWithNoChildActionsTests.cs" />
     <Compile Include="TestsBase.cs" />
@@ -80,6 +81,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DevTrends.MvcDonutCaching\MvcDonutCaching.csproj">
+      <Project>{854E90C7-8320-4EB6-A286-24A8EE5EBE9B}</Project>
+      <Name>MvcDonutCaching</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MvcDonutCaching.Tests.Web\MvcDonutCaching.Tests.Web.csproj">
       <Project>{65659FA3-FDF2-4ECA-9C22-CD949CD2D242}</Project>
       <Name>MvcDonutCaching.Tests.Web</Name>

@@ -1,0 +1,3 @@
+﻿@model dynamic
+@Model.Title#@Model.Time<br/>
+@Html.Action("Level2", new {time = DateTime.Now, title = "Level2"})

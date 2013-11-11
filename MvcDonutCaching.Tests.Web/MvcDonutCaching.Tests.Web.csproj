@@ -120,10 +120,12 @@
   <ItemGroup>
     <Compile Include="Controllers\Caching1SecondControllerWithNoChildActionsController.cs" />
     <Compile Include="Controllers\FiveLevelsNestedDonutsController.cs" />
+    <Compile Include="Controllers\FiveLevelsNestedDonutsExcludeFromParentCacheAttributeManagedController.cs" />
     <Compile Include="Controllers\TestControlController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\TitleAndTime.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -142,7 +144,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
@@ -173,6 +174,16 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\FiveLevelsNestedDonuts\Level3.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\FiveLevelsNestedDonutsExcludeFromParentCacheAttributeManaged\Level1.cshtml" />
+    <Content Include="Views\FiveLevelsNestedDonutsExcludeFromParentCacheAttributeManaged\Level2.cshtml" />
+    <Content Include="Views\FiveLevelsNestedDonutsExcludeFromParentCacheAttributeManaged\Level3.cshtml" />
+    <Content Include="Views\FiveLevelsNestedDonutsExcludeFromParentCacheAttributeManaged\Level4.cshtml" />
+    <Content Include="Views\FiveLevelsNestedDonutsExcludeFromParentCacheAttributeManaged\Level5.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\FiveLevelsNestedDonutsExcludeFromParentCacheAttributeManaged\Index.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

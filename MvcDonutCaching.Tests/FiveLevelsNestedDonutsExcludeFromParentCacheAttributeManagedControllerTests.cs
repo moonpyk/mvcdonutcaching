@@ -6,9 +6,9 @@ using NUnit.Framework;
 namespace MvcDonutCaching.Tests
 {
     [TestFixture]
-    public class FiveLevelsNestedDonutsControllerTests : TestsBase
+    public class FiveLevelsNestedDonutsExcludeFromParentCacheAttributeManagedControllerTests : TestsBase
     {
-        private const string ControllerUrl = "/FiveLevelsNestedDonuts";
+        private const string ControllerUrl = "/FiveLevelsNestedDonutsExcludeFromParentCacheAttributeManaged";
 
         [Test]
         public void CanExecuteAtAll()
@@ -34,11 +34,11 @@ namespace MvcDonutCaching.Tests
         [Test]
         public void OnlyLevel5HasUpdatedContentAfter100Milliseconds()
         {
-            var originalRenderTime = RenderAndFetchLevelTimes().Level5Duration0;
+            GetUrlContent(ControllerUrl);
 
             Thread.Sleep(TimeSpan.FromMilliseconds(100));
             var levelTimes = FetchAndPrintLevelTimes();
-            AssertRenderedDuringSameRequest(originalRenderTime, levelTimes.Level0Duration5, levelTimes.Level1Duration4, levelTimes.Level2Duration3, levelTimes.Level3Duration2, levelTimes.Level4Duration1);
+            AssertRenderedDuringSameRequest(levelTimes.Level0Duration5,levelTimes.Level1Duration4,levelTimes.Level2Duration3,levelTimes.Level3Duration2,levelTimes.Level4Duration1);
 
             AssertRenderedDuringLastRequest(levelTimes.Level5Duration0);
         }
@@ -46,11 +46,11 @@ namespace MvcDonutCaching.Tests
         [Test]
         public void OnlyLevel5And4ShouldHaveCurrentValuesAfter1100Milliseconds()
         {
-            var originalRenderTime = RenderAndFetchLevelTimes().Level5Duration0;
+            GetUrlContent(ControllerUrl);
             
             Thread.Sleep(TimeSpan.FromMilliseconds(1100));
             var levelTimes = FetchAndPrintLevelTimes();
-            AssertRenderedDuringSameRequest(originalRenderTime, levelTimes.Level0Duration5, levelTimes.Level1Duration4, levelTimes.Level2Duration3, levelTimes.Level3Duration2);
+            AssertRenderedDuringSameRequest(levelTimes.Level0Duration5, levelTimes.Level1Duration4, levelTimes.Level2Duration3, levelTimes.Level3Duration2);
 
             AssertRenderedDuringLastRequest(levelTimes.Level4Duration1);
             AssertRenderedDuringLastRequest(levelTimes.Level5Duration0);
@@ -59,12 +59,12 @@ namespace MvcDonutCaching.Tests
         [Test]
         public void Level5_4_and_3ShouldHaveCurrentValuesAfter2100Milliseconds()
         {
-            var originalRenderTime = RenderAndFetchLevelTimes().Level5Duration0;
+            GetUrlContent(ControllerUrl);            
 
             Thread.Sleep(TimeSpan.FromMilliseconds(2100));
             var levelTimes = FetchAndPrintLevelTimes();
 
-            AssertRenderedDuringSameRequest(originalRenderTime, levelTimes.Level0Duration5, levelTimes.Level1Duration4, levelTimes.Level2Duration3);
+            AssertRenderedDuringSameRequest(levelTimes.Level0Duration5, levelTimes.Level1Duration4, levelTimes.Level2Duration3);
 
             AssertRenderedDuringLastRequest(levelTimes.Level3Duration2);
             AssertRenderedDuringLastRequest(levelTimes.Level4Duration1);
@@ -73,26 +73,21 @@ namespace MvcDonutCaching.Tests
 
         private LevelRenderTimes FetchAndPrintLevelTimes()
         {
-            var levelTimes = RenderAndFetchLevelTimes();
+            var levelTimes = new LevelRenderTimes(GetUrlContent(ControllerUrl));
             PrintDurationsAndCurrentTime(levelTimes);
             return levelTimes;
-        }
-
-        private static LevelRenderTimes RenderAndFetchLevelTimes()
-        {
-            return new LevelRenderTimes(GetUrlContent(ControllerUrl));
         }
 
 
         [Test]
         public void Level5_4_3_and2ShouldHaveCurrentValuesAfter3100Milliseconds()
         {
-            var originalRenderTime = RenderAndFetchLevelTimes().Level5Duration0;
+            GetUrlContent(ControllerUrl);            
 
             Thread.Sleep(TimeSpan.FromMilliseconds(3100));
             var levelTimes = FetchAndPrintLevelTimes();
 
-            AssertRenderedDuringSameRequest(originalRenderTime, levelTimes.Level0Duration5, levelTimes.Level1Duration4);
+            AssertRenderedDuringSameRequest(levelTimes.Level0Duration5, levelTimes.Level1Duration4);
 
             AssertRenderedDuringLastRequest(levelTimes.Level2Duration3);
             AssertRenderedDuringLastRequest(levelTimes.Level3Duration2);
@@ -104,11 +99,11 @@ namespace MvcDonutCaching.Tests
         [Test]
         public void AllButRootShouldHaveCurrentValuesAfter4100Milliseconds()
         {
-            var originalRenderTime = RenderAndFetchLevelTimes().Level5Duration0;
+            GetUrlContent(ControllerUrl);            
 
             Thread.Sleep(TimeSpan.FromMilliseconds(4100));
             var levelTimes = FetchAndPrintLevelTimes();
-            AssertRenderedDuringSameRequest(originalRenderTime, levelTimes.Level0Duration5);
+            AssertRenderedDuringSameRequest(levelTimes.Level0Duration5);
 
             AssertRenderedDuringLastRequest(levelTimes.Level1Duration4);
             AssertRenderedDuringLastRequest(levelTimes.Level2Duration3);
@@ -120,7 +115,7 @@ namespace MvcDonutCaching.Tests
         [Test]
         public void AllLevelsHaveCurrentValuesAfter5100Milliseconds()
         {
-            var originalRenderTime = RenderAndFetchLevelTimes().Level5Duration0;
+            GetUrlContent(ControllerUrl);
 
             Thread.Sleep(TimeSpan.FromMilliseconds(5100));
             var levelTimes = FetchAndPrintLevelTimes();
@@ -167,14 +162,12 @@ namespace MvcDonutCaching.Tests
             public readonly DateTime Level5Duration0;
             public LevelRenderTimes(string viewOutPut)
             {
-
-                for(int i = 0; i < 6; i++)
+                for (int i = 0; i < 7; i++)
                 {
                     viewOutPut = DonutHoleFiller.RemoveDonutHoleWrappers(viewOutPut);
                 }
 
-                var levels = viewOutPut.Replace("<br/>", "").Split(new[] {Environment.NewLine}, StringSplitOptions.None);
-
+                var levels = viewOutPut.Replace("<br/>", "").Split(new[] { Environment.NewLine }, StringSplitOptions.None);
                 Level0Duration5 = DateTime.Parse(levels[0].Split('#')[1]);
                 Level1Duration4 = DateTime.Parse(levels[1].Split('#')[1]);
                 Level2Duration3 = DateTime.Parse(levels[2].Split('#')[1]);
