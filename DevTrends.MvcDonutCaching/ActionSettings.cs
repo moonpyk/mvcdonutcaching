@@ -5,19 +5,21 @@ namespace DevTrends.MvcDonutCaching
     public class ActionSettings
     {
         /// <summary>
-        /// Gets or sets the name of the action.
+        /// Gets or sets the action name.
         /// </summary>
         /// <value>
-        /// The name of the action.
+        /// The action's name.
         /// </value>
         public string ActionName { get; set; }
+        
         /// <summary>
-        /// Gets or sets the name of the controller.
+        /// Gets or sets the controller name.
         /// </summary>
         /// <value>
-        /// The name of the controller.
+        /// The the controller name.
         /// </value>
         public string ControllerName { get; set; }
+        
         /// <summary>
         /// Gets or sets the route values.
         /// </summary>
