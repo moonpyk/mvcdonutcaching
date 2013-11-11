@@ -15,3 +15,6 @@ _[Rr]esharper.*
 
 # Nuget
 nuget/lib/
+
+# Doxygen
+doc/*
