@@ -118,13 +118,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controllers\CachingControllerWithNoChildActionsController.cs" />
+    <Compile Include="Controllers\Caching1SecondControllerWithNoChildActionsController.cs" />
     <Compile Include="Controllers\TestControlController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestTimeSource.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\FilterConfig.cs" />
@@ -148,7 +147,7 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\CachingControllerWithNoChildActions\Index.cshtml" />
+    <Content Include="Views\Caching1SecondControllerWithNoChildActions\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DevTrends.MvcDonutCaching\MvcDonutCaching.csproj">

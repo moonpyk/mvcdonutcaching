@@ -3,21 +3,23 @@ using System.IO;
 using System.Net;
 using System.Net.Cache;
 using System.Threading;
-using System.Web.Mvc;
-using MvcDonutCaching.Tests.Web;
-using MvcDonutCaching.Tests.Web.Controllers;
 using NUnit.Framework;
 
 namespace MvcDonutCaching.Tests
 {
     [TestFixture]
-    public class CachingControllerWithNoChildActionsTests
+    public class Caching1SecondControllerWithNoChildActionsTests
     {
         [SetUp]
         public void SetupTask()
         {
+            ClearCache();
+        }
+
+        private static void ClearCache()
+        {
             var result = GetUrlContent("/TestControl/ClearCache");
-            Assert.That(result, Is.EqualTo("Done"), "Failed to clear cache");          
+            Assert.That(result, Is.EqualTo("Done"), "Failed to clear cache");
         }
 
         public static string GetUrlContent(string relativeUrl)
@@ -64,8 +66,26 @@ namespace MvcDonutCaching.Tests
         [Test]
         public void CanExecuteAtAll()
         {
-            var result = GetUrlContent("/CachingControllerWithNoChildActions");
+            var result = GetUrlContent("/Caching1SecondControllerWithNoChildActions");
             Console.WriteLine(result);
+        }
+
+        [Test]
+        public void CallingTwiceWith100MillisecondsApartReturnsIdenticalResults()
+        {
+            var result1 = GetUrlContent("/Caching1SecondControllerWithNoChildActions");
+            Thread.Sleep(TimeSpan.FromMilliseconds(100));
+            var result100MillisecondsLater = GetUrlContent("/Caching1SecondControllerWithNoChildActions");
+            Assert.That(result1, Is.EqualTo(result100MillisecondsLater));
+        }
+
+        [Test]
+        public void CallingTwiceWith2SecondsApartReturnsDifferentResults()
+        {
+            var result1 = GetUrlContent("/Caching1SecondControllerWithNoChildActions");
+            Thread.Sleep(TimeSpan.FromMilliseconds(2000));
+            var result2SecondsLater = GetUrlContent("/Caching1SecondControllerWithNoChildActions");
+            Assert.That(result1, Is.Not.EqualTo(result2SecondsLater));
         }
     }
 }
