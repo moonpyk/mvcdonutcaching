@@ -3,6 +3,7 @@ using System.Globalization;
 using System.IO;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Routing;
 using System.Web.UI;
 
 namespace DevTrends.MvcDonutCaching
@@ -126,6 +127,8 @@ namespace DevTrends.MvcDonutCaching
             }
         }
 
+        public bool ExcludeFromParentCache { get; set; }
+
         public void OnException(ExceptionContext filterContext)
         {
             if (CacheSettings != null)
@@ -220,7 +223,19 @@ namespace DevTrends.MvcDonutCaching
 
         protected virtual string WrapInDonutIfNeeded(ActionExecutingContext filterContext, string content)
         {
-            return content;
+            if(!ExcludeFromParentCache)
+            {
+                return content;
+            }
+
+            var routeValues = new RouteValueDictionary(filterContext.ActionParameters);
+
+            var serializedActionSettings = HtmlHelperExtensions.GetSerialisedActionSettings(
+                filterContext.ActionDescriptor.ActionName,
+                filterContext.ActionDescriptor.ControllerDescriptor.ControllerName,
+                routeValues);
+
+            return string.Format("<!--Donut#{0}#-->{1}<!--EndDonut-->", serializedActionSettings, content);
         }
 
         /// <summary>
