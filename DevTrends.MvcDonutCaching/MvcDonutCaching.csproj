@@ -71,7 +71,6 @@
     <Compile Include="EncryptingActionSettingsSerialiser.cs" />
     <Compile Include="Encryptor.cs" />
     <Compile Include="ExcludeFromParentCacheAttribute.cs" />
-    <Compile Include="Interfaces\ICacheItem.cs" />
     <Compile Include="Interfaces\ICacheHeadersHelper.cs" />
     <Compile Include="Interfaces\IEncryptingActionSettingsSerialiser.cs" />
     <Compile Include="Interfaces\IEncryptor.cs" />

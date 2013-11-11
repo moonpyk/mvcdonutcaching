@@ -8,7 +8,7 @@ namespace MvcDonutCaching.Tests
     [TestFixture]
     public class FiveLevelsNestedDonutsControllerTests : TestsBase
     {
-        private const string ControllerUrl = "/FiveLevelsNestedDonuts";
+        protected virtual string ControllerUrl { get { return "/FiveLevelsNestedDonuts"; } }
 
         [Test]
         public void CanExecuteAtAll()
