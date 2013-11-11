@@ -20,19 +20,19 @@ namespace MvcDonutCaching.Tests
         }
 
         [Test]
-        public void CallingTwiceWith100MillisecondsApartReturnsIdenticalResults()
+        public void CallingTwiceWith50MillisecondsApartReturnsIdenticalResults()
         {
             var result1 = GetUrlContent(ControllerUrl);
-            Thread.Sleep(TimeSpan.FromMilliseconds(100));
+            Thread.Sleep(TimeSpan.FromMilliseconds(50));
             var result100MillisecondsLater = GetUrlContent(ControllerUrl);
             Assert.That(result1, Is.EqualTo(result100MillisecondsLater));
         }
 
         [Test]
-        public void CallingTwiceWith2SecondsApartReturnsDifferentResults()
+        public void CallingTwiceWith200MillisecondsApartReturnsDifferentResults()
         {
             var result1 = GetUrlContent(ControllerUrl);
-            Thread.Sleep(TimeSpan.FromMilliseconds(2000));
+            Thread.Sleep(TimeSpan.FromMilliseconds(200));
             var result2SecondsLater = GetUrlContent(ControllerUrl);
             Assert.That(result1, Is.Not.EqualTo(result2SecondsLater));
         }

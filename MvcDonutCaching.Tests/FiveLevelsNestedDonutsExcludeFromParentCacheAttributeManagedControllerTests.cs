@@ -36,7 +36,7 @@ namespace MvcDonutCaching.Tests
         {
             GetUrlContent(ControllerUrl);
 
-            Thread.Sleep(TimeSpan.FromMilliseconds(100));
+            Thread.Sleep(TimeSpan.FromMilliseconds(10));
             var levelTimes = FetchAndPrintLevelTimes();
             AssertRenderedDuringSameRequest(levelTimes.Level0Duration5,levelTimes.Level1Duration4,levelTimes.Level2Duration3,levelTimes.Level3Duration2,levelTimes.Level4Duration1);
 
@@ -48,7 +48,7 @@ namespace MvcDonutCaching.Tests
         {
             GetUrlContent(ControllerUrl);
             
-            Thread.Sleep(TimeSpan.FromMilliseconds(1100));
+            Thread.Sleep(TimeSpan.FromMilliseconds(110));
             var levelTimes = FetchAndPrintLevelTimes();
             AssertRenderedDuringSameRequest(levelTimes.Level0Duration5, levelTimes.Level1Duration4, levelTimes.Level2Duration3, levelTimes.Level3Duration2);
 
@@ -61,7 +61,7 @@ namespace MvcDonutCaching.Tests
         {
             GetUrlContent(ControllerUrl);            
 
-            Thread.Sleep(TimeSpan.FromMilliseconds(2100));
+            Thread.Sleep(TimeSpan.FromMilliseconds(210));
             var levelTimes = FetchAndPrintLevelTimes();
 
             AssertRenderedDuringSameRequest(levelTimes.Level0Duration5, levelTimes.Level1Duration4, levelTimes.Level2Duration3);
@@ -84,7 +84,7 @@ namespace MvcDonutCaching.Tests
         {
             GetUrlContent(ControllerUrl);            
 
-            Thread.Sleep(TimeSpan.FromMilliseconds(3100));
+            Thread.Sleep(TimeSpan.FromMilliseconds(310));
             var levelTimes = FetchAndPrintLevelTimes();
 
             AssertRenderedDuringSameRequest(levelTimes.Level0Duration5, levelTimes.Level1Duration4);
@@ -101,7 +101,7 @@ namespace MvcDonutCaching.Tests
         {
             GetUrlContent(ControllerUrl);            
 
-            Thread.Sleep(TimeSpan.FromMilliseconds(4100));
+            Thread.Sleep(TimeSpan.FromMilliseconds(410));
             var levelTimes = FetchAndPrintLevelTimes();
             AssertRenderedDuringSameRequest(levelTimes.Level0Duration5);
 
@@ -117,7 +117,7 @@ namespace MvcDonutCaching.Tests
         {
             GetUrlContent(ControllerUrl);
 
-            Thread.Sleep(TimeSpan.FromMilliseconds(5100));
+            Thread.Sleep(TimeSpan.FromMilliseconds(510));
             var levelTimes = FetchAndPrintLevelTimes();
 
             AssertRenderedDuringLastRequest(levelTimes.Level0Duration5);

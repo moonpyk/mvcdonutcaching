@@ -7,7 +7,7 @@ using DevTrends.MvcDonutCaching;
 
 namespace MvcDonutCaching.Tests.Web.Controllers
 {
-    [DonutOutputCache(Duration = 1)]
+    [DonutOutputCache(Duration = .1)]
     public class Caching1SecondControllerWithNoChildActionsController : Controller
     {
         public ActionResult Index()

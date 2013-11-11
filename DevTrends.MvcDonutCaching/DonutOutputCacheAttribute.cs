@@ -53,7 +53,7 @@ namespace DevTrends.MvcDonutCaching
         /// <summary>
         /// Gets or sets the cache duration, in seconds.
         /// </summary>
-        public int Duration
+        public double Duration
         {
             get;
             set;
