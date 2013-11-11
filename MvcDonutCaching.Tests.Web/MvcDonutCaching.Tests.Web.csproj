@@ -119,6 +119,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\Caching1SecondControllerWithNoChildActionsController.cs" />
+    <Compile Include="Controllers\FiveLevelsNestedDonutsController.cs" />
     <Compile Include="Controllers\TestControlController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -154,6 +155,24 @@
       <Project>{854E90C7-8320-4EB6-A286-24A8EE5EBE9B}</Project>
       <Name>MvcDonutCaching</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\FiveLevelsNestedDonuts\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\FiveLevelsNestedDonuts\Level1.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\FiveLevelsNestedDonuts\Level2.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\FiveLevelsNestedDonuts\Level5.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\FiveLevelsNestedDonuts\Level4.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\FiveLevelsNestedDonuts\Level3.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -23,5 +23,17 @@ namespace MvcDonutCaching.Tests.Web.Controllers
             return Content("Done");
         }
 
+        public ActionResult EnableReplaceDonutsInChildActionsGlobally()
+        {
+            OutputCache.DefaultOptions = OutputCacheOptions.ReplaceDonutsInChildActions;
+            return Content("Done");
+        }
+
+        public ActionResult UseDefaultSettingsGlobally()
+        {
+            OutputCache.DefaultOptions = OutputCacheOptions.None;
+            return Content("Done");
+        }
+
     }
 }
