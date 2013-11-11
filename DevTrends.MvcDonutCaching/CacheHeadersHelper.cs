@@ -7,10 +7,10 @@ namespace DevTrends.MvcDonutCaching
     public class CacheHeadersHelper : ICacheHeadersHelper
     {
         /// <summary>
-        /// Sets the cache headers.
+        /// Sets the cache headers for the HTTP response given <see cref="settings" />.
         /// </summary>
-        /// <param name="response">The response.</param>
-        /// <param name="settings">The settings.</param>
+        /// <param name="response">The HTTP response.</param>
+        /// <param name="settings">The cache settings.</param>
         public void SetCacheHeaders(HttpResponseBase response, CacheSettings settings)
         {
             var cacheability = HttpCacheability.NoCache;
