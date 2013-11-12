@@ -72,6 +72,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FiveLevelsNestedDonutsExcludeFromParentCacheAttributeManagedLevel2and4AreMissingExcludeFromParentCacheAttributeControllerTests.cs" />
     <Compile Include="FiveLevelsNestedDonutsControllerTests.cs" />
     <Compile Include="FiveLevelsNestedDonutsExcludeFromParentCacheAttributeManagedControllerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

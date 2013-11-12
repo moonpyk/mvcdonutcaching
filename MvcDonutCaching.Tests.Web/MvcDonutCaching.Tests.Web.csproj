@@ -121,6 +121,7 @@
     <Compile Include="Controllers\Caching1SecondControllerWithNoChildActionsController.cs" />
     <Compile Include="Controllers\FiveLevelsNestedDonutsController.cs" />
     <Compile Include="Controllers\FiveLevelsNestedDonutsExcludeFromParentCacheAttributeManagedController.cs" />
+    <Compile Include="Controllers\FiveLevelsNestedDonutsExcludeFromParentCacheAttributeManagedLevel2and4AreMissingExcludeFromParentCacheAttribute.cs" />
     <Compile Include="Controllers\TestControlController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -184,6 +185,14 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\FiveLevelsNestedDonutsExcludeFromParentCacheAttributeManaged\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\FiveLevelsNestedDonutsExcludeFromParentCacheAttributeManagedLevel2and4AreMissingExcludeFromParentCacheAttribute\Index.cshtml" />
+    <Content Include="Views\FiveLevelsNestedDonutsExcludeFromParentCacheAttributeManagedLevel2and4AreMissingExcludeFromParentCacheAttribute\Level1.cshtml" />
+    <Content Include="Views\FiveLevelsNestedDonutsExcludeFromParentCacheAttributeManagedLevel2and4AreMissingExcludeFromParentCacheAttribute\Level2.cshtml" />
+    <Content Include="Views\FiveLevelsNestedDonutsExcludeFromParentCacheAttributeManagedLevel2and4AreMissingExcludeFromParentCacheAttribute\Level3.cshtml" />
+    <Content Include="Views\FiveLevelsNestedDonutsExcludeFromParentCacheAttributeManagedLevel2and4AreMissingExcludeFromParentCacheAttribute\Level4.cshtml" />
+    <Content Include="Views\FiveLevelsNestedDonutsExcludeFromParentCacheAttributeManagedLevel2and4AreMissingExcludeFromParentCacheAttribute\Level5.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
