@@ -10,6 +10,12 @@ namespace MvcDonutCaching.Tests
     {
         protected virtual string ControllerUrl { get { return "/FiveLevelsNestedDonuts"; } }
 
+        [SetUp]
+        public void SetupTask()
+        {
+            EnableReplaceDonutsInChildActionsGlobally();
+        }
+
         [Test]
         public void CanExecuteAtAll()
         {

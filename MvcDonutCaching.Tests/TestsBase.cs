@@ -69,7 +69,7 @@ namespace MvcDonutCaching.Tests
             Assert.That((object)result, Is.EqualTo("Done"), "Failed to clear cache");
         }
 
-        private static void EnableReplaceDonutsInChildActionsGlobally()
+        protected static void EnableReplaceDonutsInChildActionsGlobally()
         {
             var result = GetUrlContent("/TestControl/EnableReplaceDonutsInChildActionsGlobally");
             Assert.That((object)result, Is.EqualTo("Done"), "Failed:EnableReplaceDonutsInChildActionsGlobally");
