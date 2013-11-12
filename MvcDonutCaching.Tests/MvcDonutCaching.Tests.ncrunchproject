@@ -19,5 +19,37 @@
   <UseCPUArchitecture>AutoDetect</UseCPUArchitecture>
   <MSTestThreadApartmentState>STA</MSTestThreadApartmentState>
   <BuildProcessArchitecture>x86</BuildProcessArchitecture>
+  <IgnoredTests>
+    <RegexTestSelector>
+      <RegularExpression>MvcDonutCaching\.Tests\.Caching100MillisecondsControllerWithNoChildActionsTests\..*</RegularExpression>
+    </RegexTestSelector>
+    <RegexTestSelector>
+      <RegularExpression>MvcDonutCaching\.Tests\.FiveLevelsNestedDonutsControllerTests\..*</RegularExpression>
+    </RegexTestSelector>
+    <RegexTestSelector>
+      <RegularExpression>MvcDonutCaching\.Tests\.FiveLevelsNestedDonutsExcludeFromParentCacheAttributeManagedControllerTests\..*</RegularExpression>
+    </RegexTestSelector>
+    <RegexTestSelector>
+      <RegularExpression>MvcDonutCaching\.Tests\.FiveLevelsNestedDonutsExcludeFromParentCacheAttributeManagedLevel2and4AreMissingExcludeFromParentCacheAttributeControllerTests\..*</RegularExpression>
+    </RegexTestSelector>
+    <NamedTestSelector>
+      <TestName>MvcDonutCaching.Tests.FiveLevelsNestedDonutsExcludeFromParentCacheAttributeManagedLevel2and4AreMissingExcludeFromParentCacheAttributeControllerTests.AllButRootShouldHaveCurrentValuesAfter410Milliseconds</TestName>
+    </NamedTestSelector>
+    <NamedTestSelector>
+      <TestName>MvcDonutCaching.Tests.FiveLevelsNestedDonutsExcludeFromParentCacheAttributeManagedLevel2and4AreMissingExcludeFromParentCacheAttributeControllerTests.AllLevelsHaveCurrentValuesAfter510Milliseconds</TestName>
+    </NamedTestSelector>
+    <NamedTestSelector>
+      <TestName>MvcDonutCaching.Tests.FiveLevelsNestedDonutsExcludeFromParentCacheAttributeManagedLevel2and4AreMissingExcludeFromParentCacheAttributeControllerTests.CanExecuteAtAll</TestName>
+    </NamedTestSelector>
+    <NamedTestSelector>
+      <TestName>MvcDonutCaching.Tests.FiveLevelsNestedDonutsExcludeFromParentCacheAttributeManagedLevel2and4AreMissingExcludeFromParentCacheAttributeControllerTests.EachLevelReturnsTheSameTimeOnFirstCall</TestName>
+    </NamedTestSelector>
+    <NamedTestSelector>
+      <TestName>MvcDonutCaching.Tests.FiveLevelsNestedDonutsExcludeFromParentCacheAttributeManagedLevel2and4AreMissingExcludeFromParentCacheAttributeControllerTests.Level5_4_and_3ShouldHaveCurrentValuesAfter210Milliseconds</TestName>
+    </NamedTestSelector>
+    <NamedTestSelector>
+      <TestName>MvcDonutCaching.Tests.FiveLevelsNestedDonutsExcludeFromParentCacheAttributeManagedLevel2and4AreMissingExcludeFromParentCacheAttributeControllerTests.OnlyLevel5HasUpdatedContentAfter10Milliseconds</TestName>
+    </NamedTestSelector>
+  </IgnoredTests>
   <HiddenWarnings>LongTestTimesWithoutParallelExecution</HiddenWarnings>
 </ProjectConfiguration>
