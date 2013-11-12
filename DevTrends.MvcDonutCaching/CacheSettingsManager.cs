@@ -29,14 +29,6 @@ namespace DevTrends.MvcDonutCaching
             }
         }
 
-        [Obsolete("Not used in the library anymore, in favor of RetrieveOutputCacheProviderSettings(), will be removed in 1.4.x branch")]
-        public string RetrieveOutputCacheProviderType()
-        {
-            return _outputCacheSection.DefaultProviderName == AspnetInternalProviderName 
-                ? null 
-                : _outputCacheSection.Providers[_outputCacheSection.DefaultProviderName].Type;
-        }
-
         public ProviderSettings RetrieveOutputCacheProviderSettings()
         {
             return _outputCacheSection.DefaultProviderName == AspnetInternalProviderName 
