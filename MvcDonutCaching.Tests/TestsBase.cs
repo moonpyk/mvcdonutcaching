@@ -14,8 +14,12 @@ namespace MvcDonutCaching.Tests
     {
         private static readonly string TestSiteBaseUrl = ConfigurationManager.AppSettings["TestSiteBaseUrl"];
 
-        [SetUp]
-        public void SetupTask()
+        public virtual void RunBeforeEachTest()
+        {
+            ClearCache();
+        }
+
+        public virtual void RunAfterEachTest()
         {
             ClearCache();
         }
@@ -32,7 +36,9 @@ namespace MvcDonutCaching.Tests
             {
                 try
                 {
+                    RunBeforeEachTest();
                     test();
+                    RunAfterEachTest();
                     return;
                 }
                 catch(Exception)
