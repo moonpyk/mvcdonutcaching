@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -11,6 +12,8 @@ namespace MvcDonutCaching.Tests
 
     public class TestsBase 
     {
+        private static readonly string TestSiteBaseUrl = ConfigurationManager.AppSettings["TestSiteBaseUrl"];
+
         [SetUp]
         public void SetupTask()
         {
@@ -83,7 +86,7 @@ namespace MvcDonutCaching.Tests
 
         public static string GetUrlContent(string relativeUrl)
         {
-            var uri = string.Format("http://localhost:{0}{1}",49421, relativeUrl);
+            var uri = string.Format("{0}{1}", TestSiteBaseUrl, relativeUrl);
             var webRequest = WebRequest.Create(uri);
             webRequest.CachePolicy = new HttpRequestCachePolicy(HttpRequestCacheLevel.NoCacheNoStore);
 

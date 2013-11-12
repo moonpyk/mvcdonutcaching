@@ -15,7 +15,7 @@
     <AssemblyName>MvcDonutCaching.Tests.Web</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
-    <UseIISExpress>true</UseIISExpress>
+    <UseIISExpress>false</UseIISExpress>
     <IISExpressSSLPort />
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
@@ -203,7 +203,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>50052</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:49421/</IISUrl>
+          <IISUrl>http://localhost/MvcDonutCaching.Tests.Web</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
