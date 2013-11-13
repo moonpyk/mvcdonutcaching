@@ -107,37 +107,87 @@ namespace MvcDonutCaching.Tests
             context.HttpContext.Response.Output.Write(level1EndOutput);
             level1Donut = DonutOutputManager.Pop(context); //Done
 
-            Assert.That(level3Donut1.OutputList, Is.EqualTo(new[] {level3Output}));
+            Assert.That(level3Donut1.OutputSegments, Is.EqualTo(new[] {level3Output}));
             Assert.That(level3Donut1.ChildActions.Count, Is.EqualTo(0));
 
-            Assert.That(level3Donut2.OutputList, Is.EqualTo(new[] {level3Output}));
+            Assert.That(level3Donut2.OutputSegments, Is.EqualTo(new[] {level3Output}));
             Assert.That(level3Donut2.ChildActions.Count, Is.EqualTo(0));
 
-            Assert.That(level2Donut1.OutputList, Is.EqualTo(new[] {level2StartOutput, level2EndOutput}));
+            Assert.That(level2Donut1.OutputSegments, Is.EqualTo(new[] {level2StartOutput, level2EndOutput}));
             Assert.That(level2Donut1.ChildActions.Count, Is.EqualTo(1));
 
-            Assert.That(level2Donut2.OutputList, Is.EqualTo(new[] {level2StartOutput, level2EndOutput}));
+            Assert.That(level2Donut2.OutputSegments, Is.EqualTo(new[] {level2StartOutput, level2EndOutput}));
             Assert.That(level2Donut2.ChildActions.Count, Is.EqualTo(1));
 
-            Assert.That(level1Donut.OutputList, Is.EqualTo(new[] {level1StartOutput, "", level1EndOutput}));
+            Assert.That(level1Donut.OutputSegments, Is.EqualTo(new[] {level1StartOutput, "", level1EndOutput}));
             Assert.That(level1Donut.ChildActions.Count, Is.EqualTo(2));
         }
 
         [Test]
-        public void henEveryThingIsCached()
+        public void WhenEveryThingIsCached()
         {
             var context = CreateMockActionExecutingControllerContext().Object;
 
             var rootOutput = new StringWriter();
             context.HttpContext.Response.Output = rootOutput;
 
-            Donut level1Donut, level2Donut1, level2Donut2, level3Donut1, level3Donut2 = null;
             const string level1StartOutput = "_1",
                 level1EndOutput = "1_",
                 level2StartOutput = "_2",
                 level2EndOutput = "2_",
                 level3Output = "_3_";
 
+            StaticActionDescriptor level1ActionDescriptor, level2ActionDescriptor, level3ActionDescriptor;
+
+            //Level1
+            context.ActionDescriptor = level1ActionDescriptor = new StaticActionDescriptor(controllerName: "dummy", actionName: "level1");
+            context.ActionParameters = new Dictionary<string, object>() { { "title", "level1" } };
+            DonutOutputManager.Push(context); //Level1
+            context.HttpContext.Response.Output.Write(level1StartOutput);
+
+            //Level2
+            context.ActionDescriptor = level2ActionDescriptor = new StaticActionDescriptor(controllerName: "dummy", actionName: "level2");
+            context.ActionParameters = new Dictionary<string, object>() { { "title", "level2_1" } };
+            DonutOutputManager.Push(context); //Level2
+            context.HttpContext.Response.Output.Write(level2StartOutput);
+
+            //Level3
+            context.ActionDescriptor = level3ActionDescriptor = new StaticActionDescriptor(controllerName: "dummy", actionName: "level3");
+            context.ActionParameters = new Dictionary<string, object>() { { "title", "level3" } };
+            DonutOutputManager.Push(context); //Level3
+            context.HttpContext.Response.Output.Write(level3Output);
+
+            //Level2
+            var level3Donut = DonutOutputManager.Pop(context);
+            context.HttpContext.Response.Output.Write(level2EndOutput);
+
+            //Level1
+            var level2Donut1 = DonutOutputManager.Pop(context);
+            context.ActionDescriptor = new StaticActionDescriptor(controllerName: "dummy", actionName: "level2");
+            context.ActionParameters = new Dictionary<string, object>() { { "title", "level2_1" } };
+
+            //Done
+            context.HttpContext.Response.Output.Write(level1EndOutput);
+            var level1Donut = DonutOutputManager.Pop(context);
+            Assert.That(
+                rootOutput.ToString(),
+                Is.EqualTo(string.Format(@"{0}{1}{2}{3}{4}", level1StartOutput, level2StartOutput, level3Output, level2EndOutput, level1EndOutput)));
+
+
+            context = CreateMockActionExecutingControllerContext().Object;
+
+            rootOutput = new StringWriter();
+            context.HttpContext.Response.Output = rootOutput;
+
+            level1ActionDescriptor.DonutToDelegateTo = level1Donut;
+            level2ActionDescriptor.DonutToDelegateTo = level2Donut1;
+            level3ActionDescriptor.DonutToDelegateTo = level3Donut;
+
+            level1Donut.Execute(context);
+
+            Assert.That(
+                rootOutput.ToString(),
+                Is.EqualTo(string.Format(@"{0}{1}{2}{3}{4}", level1StartOutput, level2StartOutput, level3Output, level2EndOutput, level1EndOutput)));
 
         }
 
@@ -145,6 +195,7 @@ namespace MvcDonutCaching.Tests
         {
             var response = new Mock<HttpResponseBase>(MockBehavior.Strict);
             response.SetupProperty(resp => resp.Output);
+            response.Setup(resp => resp.Write(It.IsAny<string>())).Callback((string output) => response.Object.Output.Write(output));
 
             var httpContextMock = new Mock<HttpContextBase>(MockBehavior.Strict);
             httpContextMock.Setup(http => http.Response).Returns(response.Object);
@@ -162,20 +213,34 @@ namespace MvcDonutCaching.Tests
 
     public class StaticActionDescriptor : ActionDescriptor
     {
-        private readonly string _controllerName;
         private readonly string _actionName;
+        public Action<ControllerContext, StaticActionDescriptor> ExcecuteDelegate;
+        public Donut DonutToDelegateTo;
         private ControllerDescriptor _controllerDescriptor;
 
-        public StaticActionDescriptor(string controllerName, string actionName)
+        public StaticActionDescriptor(string controllerName, string actionName, Action<ControllerContext, StaticActionDescriptor> excecuteDelegate = null, Donut executeDonutDelegate = null)
         {
-            _controllerName = controllerName;
             _actionName = actionName;
-            _controllerDescriptor = new StaticControllerDescriptor(_controllerName);
+            DonutToDelegateTo = executeDonutDelegate;
+            ExcecuteDelegate = excecuteDelegate;
+            _controllerDescriptor = new StaticControllerDescriptor(controllerName);
         }
 
         override public object Execute(ControllerContext controllerContext, IDictionary<string, object> parameters)
         {
-            throw new System.NotImplementedException();
+            if (DonutToDelegateTo != null)
+            {
+                DonutToDelegateTo.Execute((ActionExecutingContext)controllerContext);
+                return null;
+            }
+
+            if(ExcecuteDelegate != null)
+            {
+                ExcecuteDelegate(controllerContext, this);
+                return null;
+            }            
+
+            throw new NotImplementedException();
         }
 
         override public ParameterDescriptor[] GetParameters()

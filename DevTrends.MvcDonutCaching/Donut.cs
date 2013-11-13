@@ -11,8 +11,8 @@ namespace DevTrends.MvcDonutCaching
     /// <summary>
     /// Keeps track of the output of executing a controller action.
     /// 
-    /// <para> Stores output specifically created by this action in <see cref="OutputList"/></para>
-    /// <para>Track of which actions can fill the holes between the values in <see cref="OutputList"/> in <see cref="ChildActions"/>.</para>
+    /// <para> Stores output specifically created by this action in <see cref="OutputSegments"/></para>
+    /// <para>Track of which child actions can fill the holes in <see cref="OutputSegments"/> in <see cref="ChildActions"/>.</para>
     /// <para>Call <see cref="Execute"/> to output the cached data and recurse down to child actions to fill in the blanks.</para>
     /// </summary>
     public class Donut
@@ -20,7 +20,7 @@ namespace DevTrends.MvcDonutCaching
         internal readonly Donut Parent;
         private TextWriter _realOutput;
         public ControllerAction ControllerAction { get; set; }
-        public readonly List<string> OutputList = new List<string>();
+        public readonly List<string> OutputSegments = new List<string>();
         public readonly List<IControllerAction> ChildActions = new List<IControllerAction>();
 
         internal StringWriter Output { get; private set; }
@@ -48,9 +48,9 @@ namespace DevTrends.MvcDonutCaching
         public void Execute(ActionExecutingContext context)
         {            
             Contract.Parameter.NotNull(context);
-            for(int currentOutputSegment = 0; currentOutputSegment < OutputList.Count -1; currentOutputSegment++)
+            for(int currentOutputSegment = 0; currentOutputSegment < OutputSegments.Count; currentOutputSegment++)
             {
-                context.HttpContext.Response.Write(OutputList[currentOutputSegment]);
+                context.HttpContext.Response.Write(OutputSegments[currentOutputSegment]);
                 if(ChildActions.Count > currentOutputSegment)
                 {
                     ChildActions[currentOutputSegment].Execute(context);
@@ -62,7 +62,7 @@ namespace DevTrends.MvcDonutCaching
         {
             var outputSegment = Output.ToString();
             Output = new StringWriter(CultureInfo.InvariantCulture);
-            OutputList.Add(outputSegment);            
+            OutputSegments.Add(outputSegment);            
             _realOutput.Write(outputSegment);
         }
 
