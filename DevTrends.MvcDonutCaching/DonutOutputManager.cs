@@ -44,6 +44,10 @@ namespace DevTrends.MvcDonutCaching
         {
             Contract.Parameter.NotNull(context);
             var manager = (DonutOutputManager)context.HttpContext.Items[OutPutManagerId];
+            if(manager == null)
+            {
+                throw new InvalidOperationException("Attempt to pop when no donut has been pushed during this request.");
+            }
             manager._depth--;
             var popped = manager._current;
             popped.OnAfterExecute();

@@ -15,50 +15,113 @@ namespace MvcDonutCaching.Tests
     public class DonutOutputManagerTests
     {
         [Test]
+        public void RenderesCorrectOutputWhenEverythingIsCached()
+        {
+            var scenario = ThreeLevelNestedOutputActionScenario.CreateByExecutingUnCached();
+            scenario.ExecuteAndValidateOutputFirstAsIsAndThenFullyCached();
+        }
+
+        [Test]
+        public void RendersCorrectOutputWhenLevel1IsNotCached()
+        {
+            var scenario = ThreeLevelNestedOutputActionScenario.CreateByExecutingUnCached();
+            scenario.EvictLevel1FromCache();
+            scenario.Level1StartOutput = Guid.NewGuid().ToString();
+            scenario.Level1EndOutput = Guid.NewGuid().ToString();
+            var output = scenario.ExecuteAndValidateOutputFirstAsIsAndThenFullyCached();
+            Assert.That(output, Contains.Substring(scenario.Level1StartOutput));
+            Assert.That(output, Contains.Substring(scenario.Level1EndOutput));
+        }
+
+        [Test]
+        public void RendersCorrectOutputWhenLevel2IsNotCached()
+        {
+            var scenario = ThreeLevelNestedOutputActionScenario.CreateByExecutingUnCached();
+            scenario.EvictLevel2FromCache();
+            scenario.Level2StartOutput = Guid.NewGuid().ToString();
+            scenario.Level2EndOutput = Guid.NewGuid().ToString();
+            var output = scenario.ExecuteAndValidateOutputFirstAsIsAndThenFullyCached();
+            Assert.That(output, Contains.Substring(scenario.Level2StartOutput));
+            Assert.That(output, Contains.Substring(scenario.Level2EndOutput));
+        }
+
+        [Test]
+        public void RendersCorrectOutputWhenLevel3IsNotCached()
+        {
+            var scenario = ThreeLevelNestedOutputActionScenario.CreateByExecutingUnCached();
+            scenario.EvictLevel3FromCache();
+            scenario.Level3Output = Guid.NewGuid().ToString();
+            var output = scenario.ExecuteAndValidateOutputFirstAsIsAndThenFullyCached();
+            Assert.That(output, Contains.Substring(scenario.Level3Output));
+        }
+
+        [Test]
+        public void RendersCorrectOutputWhenLevel2And3AreNotCached()
+        {
+            var scenario = ThreeLevelNestedOutputActionScenario.CreateByExecutingUnCached();
+            scenario.EvictLevel2FromCache();
+            scenario.EvictLevel3FromCache();
+            scenario.Level2StartOutput = Guid.NewGuid().ToString();
+            scenario.Level2EndOutput = Guid.NewGuid().ToString();
+            scenario.Level3Output = Guid.NewGuid().ToString();
+            var output = scenario.ExecuteAndValidateOutputFirstAsIsAndThenFullyCached();
+            Assert.That(output, Contains.Substring(scenario.Level2StartOutput));
+            Assert.That(output, Contains.Substring(scenario.Level2EndOutput));
+            Assert.That(output, Contains.Substring(scenario.Level3Output));
+        }
+
+        [Test]
+        public void RendersCorrectOutputWhenLevel1And3AreNotCached()
+        {
+            var scenario = ThreeLevelNestedOutputActionScenario.CreateByExecutingUnCached();
+            scenario.EvictLevel1FromCache();
+            scenario.EvictLevel3FromCache();
+            scenario.Level1StartOutput = Guid.NewGuid().ToString();
+            scenario.Level1EndOutput = Guid.NewGuid().ToString();
+            scenario.Level3Output = Guid.NewGuid().ToString();
+            var output = scenario.ExecuteAndValidateOutputFirstAsIsAndThenFullyCached();
+            Assert.That(output, Contains.Substring(scenario.Level1StartOutput));
+            Assert.That(output, Contains.Substring(scenario.Level1EndOutput));
+            Assert.That(output, Contains.Substring(scenario.Level3Output));
+        }
+
+        [Test]
+        public void RendersCorrectOutputWhenLevel1And2AreNotCached()
+        {
+            var scenario = ThreeLevelNestedOutputActionScenario.CreateByExecutingUnCached();
+            scenario.EvictLevel1FromCache();
+            scenario.EvictLevel2FromCache();
+            scenario.Level1StartOutput = Guid.NewGuid().ToString();
+            scenario.Level1EndOutput = Guid.NewGuid().ToString();
+            scenario.Level2StartOutput = Guid.NewGuid().ToString();
+            scenario.Level2EndOutput = Guid.NewGuid().ToString();
+            var output = scenario.ExecuteAndValidateOutputFirstAsIsAndThenFullyCached();
+            Assert.That(output, Contains.Substring(scenario.Level1StartOutput));
+            Assert.That(output, Contains.Substring(scenario.Level1EndOutput));
+            Assert.That(output, Contains.Substring(scenario.Level2StartOutput));
+            Assert.That(output, Contains.Substring(scenario.Level2EndOutput));
+        }
+
+        [Test]
         public void ReplacesAndRestoresResponseOutPutCorrectly()
         {
-            var context = CreateMockActionExecutingControllerContext().Object;
+            var context = CreateMockActionExecutingControllerContext();
 
             var rootOutput = new StringWriter();
             context.HttpContext.Response.Output = rootOutput;
 
-            context.ActionDescriptor = new StaticActionDescriptor(controllerName:"dummy", actionName:"level1");
-            context.ActionParameters = new Dictionary<string, object>(){ {"title", "level1"} };
+            context.ActionDescriptor = new StaticActionDescriptor(controllerName: "dummy", actionName: "level1");
+            context.ActionParameters = new Dictionary<string, object>() { { "title", "level1" } };
             DonutOutputManager.Push(context);
             Assert.That(context.HttpContext.Response.Output, Is.Not.SameAs(rootOutput), "output should have been replaced");
-            context.HttpContext.Response.Output.WriteLine("");
-            context.HttpContext.Response.Output.WriteLine("1");
-
-            context.ActionDescriptor = new StaticActionDescriptor(controllerName: "dummy", actionName: "level2");
-            context.ActionParameters = new Dictionary<string, object>() { { "title", "level2" } };
-            DonutOutputManager.Push(context);
-            context.HttpContext.Response.Output.WriteLine(" 2");
-
-            context.ActionDescriptor = new StaticActionDescriptor(controllerName: "dummy", actionName: "level3");
-            context.ActionParameters = new Dictionary<string, object>() { { "title", "level3" } };
-            DonutOutputManager.Push(context);
-            context.HttpContext.Response.Output.WriteLine("  3");
-            DonutOutputManager.Pop(context);
-            context.HttpContext.Response.Output.WriteLine(" 2");
-            DonutOutputManager.Pop(context);
-            context.HttpContext.Response.Output.WriteLine("1");
             DonutOutputManager.Pop(context);
             Assert.That(context.HttpContext.Response.Output, Is.SameAs(rootOutput), "output should have been restored");
-            Assert.That(rootOutput.ToString(),
-                Is.EqualTo(
-                    @"
-1
- 2
-  3
- 2
-1
-"));
         }
 
         [Test]
         public void SetsDonutOutputListAndDonutListCorrectly()
         {
-            var context = CreateMockActionExecutingControllerContext().Object;
+            var context = CreateMockActionExecutingControllerContext();
 
             var rootOutput = new StringWriter();
             context.HttpContext.Response.Output = rootOutput;
@@ -121,160 +184,146 @@ namespace MvcDonutCaching.Tests
 
             Assert.That(level1Donut.OutputSegments, Is.EqualTo(new[] {level1StartOutput, "", level1EndOutput}));
             Assert.That(level1Donut.ChildActions.Count, Is.EqualTo(2));
-        }
+        }       
 
-        [Test]
-        public void WhenEveryThingIsCached()
+        public class ThreeLevelNestedOutputActionScenario
         {
-            var context = CreateMockActionExecutingControllerContext().Object;
-
-            var rootOutput = new StringWriter();
-            context.HttpContext.Response.Output = rootOutput;
-
-            const string level1StartOutput = "_1",
-                level1EndOutput = "1_",
-                level2StartOutput = "_2",
-                level2EndOutput = "2_",
-                level3Output = "_3_";
-
-            StaticActionDescriptor level1ActionDescriptor, level2ActionDescriptor, level3ActionDescriptor;
-
-            //Level1
-            context.ActionDescriptor = level1ActionDescriptor = new StaticActionDescriptor(controllerName: "dummy", actionName: "level1");
-            context.ActionParameters = new Dictionary<string, object>() { { "title", "level1" } };
-            DonutOutputManager.Push(context); //Level1
-            context.HttpContext.Response.Output.Write(level1StartOutput);
-
-            //Level2
-            context.ActionDescriptor = level2ActionDescriptor = new StaticActionDescriptor(controllerName: "dummy", actionName: "level2");
-            context.ActionParameters = new Dictionary<string, object>() { { "title", "level2_1" } };
-            DonutOutputManager.Push(context); //Level2
-            context.HttpContext.Response.Output.Write(level2StartOutput);
-
-            //Level3
-            context.ActionDescriptor = level3ActionDescriptor = new StaticActionDescriptor(controllerName: "dummy", actionName: "level3");
-            context.ActionParameters = new Dictionary<string, object>() { { "title", "level3" } };
-            DonutOutputManager.Push(context); //Level3
-            context.HttpContext.Response.Output.Write(level3Output);
-
-            //Level2
-            var level3Donut = DonutOutputManager.Pop(context);
-            context.HttpContext.Response.Output.Write(level2EndOutput);
-
-            //Level1
-            var level2Donut1 = DonutOutputManager.Pop(context);
-            context.ActionDescriptor = new StaticActionDescriptor(controllerName: "dummy", actionName: "level2");
-            context.ActionParameters = new Dictionary<string, object>() { { "title", "level2_1" } };
-
-            //Done
-            context.HttpContext.Response.Output.Write(level1EndOutput);
-            var level1Donut = DonutOutputManager.Pop(context);
-            Assert.That(
-                rootOutput.ToString(),
-                Is.EqualTo(string.Format(@"{0}{1}{2}{3}{4}", level1StartOutput, level2StartOutput, level3Output, level2EndOutput, level1EndOutput)));
+            private Donut _level1Donut;
+            private Donut _level2Donut;
+            private Donut _level3Donut;
 
 
-            context = CreateMockActionExecutingControllerContext().Object;
+            private StaticActionDescriptor Level1DonutActionDescriptor{ get { return (StaticActionDescriptor)_level1Donut.ControllerAction.ActionDescriptor; }}
+            private StaticActionDescriptor Level2DonutActionDescriptor { get { return (StaticActionDescriptor)_level2Donut.ControllerAction.ActionDescriptor; } }
+            private StaticActionDescriptor Level3DonutActionDescriptor { get { return (StaticActionDescriptor)_level3Donut.ControllerAction.ActionDescriptor; } }
+           
+            // ReSharper disable MemberCanBePrivate.Global
+            public string Level1StartOutput = "_1";
+            public string Level1EndOutput = "1_";
+            public string Level2StartOutput = "_2";
+            public string Level2EndOutput = "2_";
+                public string Level3Output = "_3_";
+            // ReSharper restore MemberCanBePrivate.Global
 
-            rootOutput = new StringWriter();
-            context.HttpContext.Response.Output = rootOutput;
+            public void EvictLevel1FromCache()
+            {
+                _level1Donut = null;
+            }
 
-            level1ActionDescriptor.DonutToDelegateTo = level1Donut;
-            level2ActionDescriptor.DonutToDelegateTo = level2Donut1;
-            level3ActionDescriptor.DonutToDelegateTo = level3Donut;
+            public void EvictLevel2FromCache()
+            {
+                _level2Donut = null;
+            }
 
-            level1Donut.Execute(context);
+            public void EvictLevel3FromCache()
+            {
+                _level3Donut = null;
+            }
 
-            Assert.That(
-                rootOutput.ToString(),
-                Is.EqualTo(string.Format(@"{0}{1}{2}{3}{4}", level1StartOutput, level2StartOutput, level3Output, level2EndOutput, level1EndOutput)));
+            public string CorrectUnCachedOutputBasedOnOutputProperties
+            {
+                get { return string.Format(@"{0}{1}{2}{3}{4}", Level1StartOutput, Level2StartOutput, Level3Output, Level2EndOutput, Level1EndOutput); }
+            }
 
-        }
+            public Action<ActionExecutingContext> ExecuteLevel3;
+            public Action<ActionExecutingContext> ExecuteLevel2;
+            public Action<ActionExecutingContext> ExecuteLevel1;
 
-        [Test]
-        public void WhenLevel2IsNotCached()
-        {
-            var context = CreateMockActionExecutingControllerContext().Object;
+            public static ThreeLevelNestedOutputActionScenario CreateByExecutingUnCached()
+            {
+                var scenario = new ThreeLevelNestedOutputActionScenario();
+                scenario.ExecuteScenario();
+                return scenario;
+            }
 
-            var rootOutput = new StringWriter();
-            context.HttpContext.Response.Output = rootOutput;
-
-            const string level1StartOutput = "_1",
-                level1EndOutput = "1_",
-                level2StartOutput = "_2",
-                level2EndOutput = "2_",
-                level3Output = "_3_";
-
-            StaticActionDescriptor level1ActionDescriptor, level2ActionDescriptor = null, level3ActionDescriptor = null;
-
-            //Level1
-            context.ActionDescriptor = level1ActionDescriptor = new StaticActionDescriptor(controllerName: "dummy", actionName: "level1");
-            context.ActionParameters = new Dictionary<string, object>() { { "title", "level1" } };
-            DonutOutputManager.Push(context); //Level1
-            context.HttpContext.Response.Output.Write(level1StartOutput);
-
-
-            Donut level1Donut = null, level2Donut = null, level3Donut = null;
-            Action<ActionExecutingContext> executeLevel3 =
-                    actionContext =>
-                    {
-                        //Level3
-                        context.ActionDescriptor = level3ActionDescriptor = new StaticActionDescriptor(controllerName: "dummy", actionName: "level3");
-                        context.ActionParameters = new Dictionary<string, object>() { { "title", "level3" } };
-                        DonutOutputManager.Push(context); //Level3
-                        context.HttpContext.Response.Output.Write(level3Output);
-
-                        //Level2
-                        level3Donut = DonutOutputManager.Pop(context);
-                    };
-
-            //Level2            
-            Action<ActionExecutingContext> executeLevel2 =
-                actionContext =>
+            private ThreeLevelNestedOutputActionScenario()
+            {
+                ExecuteLevel3 = actionContext =>
                 {
-                    actionContext.ActionDescriptor = level2ActionDescriptor = new StaticActionDescriptor(controllerName: "dummy", actionName: "level2");
+                    if(_level3Donut != null)
+                    {
+                        _level3Donut.Execute(actionContext);
+                        return;
+                    }
+                    
+                    actionContext.ActionDescriptor = new StaticActionDescriptor(controllerName: "dummy", actionName: "level3");
+                    actionContext.ActionParameters = new Dictionary<string, object>() {{"title", "level3"}};
+                    DonutOutputManager.Push(actionContext); //Level3
+                    actionContext.HttpContext.Response.Output.Write(Level3Output);
+
+                    _level3Donut = DonutOutputManager.Pop(actionContext);
+                };
+
+                ExecuteLevel2 = actionContext =>
+                {
+                    if(_level2Donut != null)
+                    {
+                        _level2Donut.Execute(actionContext);
+                        return;
+                    }
+                    
+                    actionContext.ActionDescriptor = new StaticActionDescriptor(controllerName: "dummy", actionName: "level2");
                     actionContext.ActionParameters = new Dictionary<string, object>() {{"title", "level2_1"}};
                     DonutOutputManager.Push(actionContext);
-                    actionContext.HttpContext.Response.Output.Write(level2StartOutput);
+                    actionContext.HttpContext.Response.Output.Write(Level2StartOutput);
 
-                    executeLevel3(actionContext);
+                    ExecuteLevel3(actionContext);
 
-                    context.HttpContext.Response.Output.Write(level2EndOutput);
+                    actionContext.HttpContext.Response.Output.Write(Level2EndOutput);
 
-                    //Level1
-                    level2Donut = DonutOutputManager.Pop(context);
+                    _level2Donut = DonutOutputManager.Pop(actionContext);
                 };
-            executeLevel2(context);
 
+                ExecuteLevel1 = actionContext =>
+                {
+                    if(_level1Donut != null)
+                    {
+                        _level1Donut.Execute(actionContext);
+                        return;
+                    }
+                    
+                    actionContext.ActionDescriptor = new StaticActionDescriptor(controllerName: "dummy", actionName: "level1");
+                    actionContext.ActionParameters = new Dictionary<string, object>() {{"title", "level1"}};
+                    DonutOutputManager.Push(actionContext); //Level1
+                    actionContext.HttpContext.Response.Output.Write(Level1StartOutput);
 
-            //Done
-            context.HttpContext.Response.Output.Write(level1EndOutput);
-            level1Donut = DonutOutputManager.Pop(context);
-            Assert.That(
-                rootOutput.ToString(),
-                Is.EqualTo(string.Format(@"{0}{1}{2}{3}{4}", level1StartOutput, level2StartOutput, level3Output, level2EndOutput, level1EndOutput)));
+                    ExecuteLevel2(actionContext);
 
+                    actionContext.HttpContext.Response.Output.Write(Level1EndOutput);
+                    _level1Donut = DonutOutputManager.Pop(actionContext);
+                };   
+            }
 
-            context = CreateMockActionExecutingControllerContext().Object;
+            private string ExecuteScenario()
+            {               
+                var context = CreateMockActionExecutingControllerContext();
 
-            rootOutput = new StringWriter();
-            context.HttpContext.Response.Output = rootOutput;
+                var rootOutput = new StringWriter();
+                context.HttpContext.Response.Output = rootOutput;
+                ExecuteLevel1(context);
 
-            level1ActionDescriptor.DonutToDelegateTo = level1Donut;
-            level2ActionDescriptor.ExcecuteDelegate = executeLevel2;
-            level3ActionDescriptor.DonutToDelegateTo = level3Donut;
+                Level1DonutActionDescriptor.ExcecuteDelegate = ExecuteLevel1;
+                Level2DonutActionDescriptor.ExcecuteDelegate = ExecuteLevel2;
+                Level3DonutActionDescriptor.ExcecuteDelegate = ExecuteLevel3;
 
-            executeLevel3 = executingContext => level3Donut.Execute(executingContext);
+                return rootOutput.ToString();
+            }
 
-            level1Donut.Execute(context);
+            public string ExecuteAndValidateOutputFirstAsIsAndThenFullyCached(string expectedOutput = null, params object[] formatValues)
+            {
+                if(expectedOutput == null)
+                {
+                    expectedOutput = CorrectUnCachedOutputBasedOnOutputProperties;
+                }
+                Assert.That(ExecuteScenario(), Is.EqualTo(string.Format(expectedOutput, formatValues)));
 
-            Assert.That(
-                rootOutput.ToString(),
-                Is.EqualTo(string.Format(@"{0}{1}{2}{3}{4}", level1StartOutput, level2StartOutput, level3Output, level2EndOutput, level1EndOutput)));
-
+                var output = ExecuteScenario();
+                Assert.That(output, Is.EqualTo(string.Format(expectedOutput, formatValues)));
+                return output;
+            }
         }
 
-        private static Mock<ActionExecutingContext> CreateMockActionExecutingControllerContext()
+        internal static ActionExecutingContext CreateMockActionExecutingControllerContext()
         {
             var response = new Mock<HttpResponseBase>(MockBehavior.Strict);
             response.SetupProperty(resp => resp.Output);
@@ -285,12 +334,11 @@ namespace MvcDonutCaching.Tests
             IDictionary items = new Hashtable();
             httpContextMock.Setup(http => http.Items).Returns(items);
 
-            var contextMock = new Mock<ActionExecutingContext>(MockBehavior.Strict);
-            contextMock.Setup(context => context.HttpContext).Returns(httpContextMock.Object);
-            contextMock.SetupProperty(context => context.ActionDescriptor);
-            contextMock.SetupProperty(context => context.ActionParameters);
+            var context = new ActionExecutingContext();
+            context.HttpContext = httpContextMock.Object;
 
-            return contextMock;
+
+            return context;
         }
     }
 
@@ -311,17 +359,17 @@ namespace MvcDonutCaching.Tests
 
         override public object Execute(ControllerContext controllerContext, IDictionary<string, object> parameters)
         {
+            if (ExcecuteDelegate != null)
+            {
+                ExcecuteDelegate((ActionExecutingContext)controllerContext);
+                return null;
+            } 
+
             if (DonutToDelegateTo != null)
             {
                 DonutToDelegateTo.Execute((ActionExecutingContext)controllerContext);
                 return null;
-            }
-
-            if(ExcecuteDelegate != null)
-            {
-                ExcecuteDelegate((ActionExecutingContext)controllerContext);
-                return null;
-            }            
+            }           
 
             throw new NotImplementedException();
         }
