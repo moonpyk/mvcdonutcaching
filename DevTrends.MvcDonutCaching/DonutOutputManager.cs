@@ -22,6 +22,7 @@ namespace DevTrends.MvcDonutCaching
 
         public static void Push(ActionExecutingContext context)
         {
+            Contract.Parameter.NotNull(context);
             var manager = context.HttpContext.Items[OutPutManagerId] as DonutOutputManager;
             if(manager == null)
             {
@@ -41,6 +42,7 @@ namespace DevTrends.MvcDonutCaching
 
         public static Donut Pop(ControllerContext context)
         {
+            Contract.Parameter.NotNull(context);
             var manager = (DonutOutputManager)context.HttpContext.Items[OutPutManagerId];
             manager._depth--;
             var popped = manager._current;

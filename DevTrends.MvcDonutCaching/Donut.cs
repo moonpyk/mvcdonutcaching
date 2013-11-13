@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Web.Mvc;
+using System.Web.UI.WebControls;
 
 namespace DevTrends.MvcDonutCaching
 {
@@ -11,32 +14,35 @@ namespace DevTrends.MvcDonutCaching
         private TextWriter _realOutput;
         public ControllerAction ControllerAction { get; set; }
         public readonly List<string> OutputList = new List<string>();
-        public readonly List<IControllerAction> TrailingDonutList = new List<IControllerAction>();
+        public readonly List<IControllerAction> ChildActions = new List<IControllerAction>();
 
         internal StringWriter Output { get; private set; }
 
         public Donut(ActionExecutingContext context, Donut parent, TextWriter realOutput)
         {
+            Contract.Parameter.NotNull(context, realOutput);
             ControllerAction = new ControllerAction(context);
             Parent = parent;
             _realOutput = realOutput;
             Output = new StringWriter(CultureInfo.InvariantCulture);
-        }        
+        }
 
         internal void AddDonut(Donut child)
         {
-            TrailingDonutList.Add(child.ControllerAction);
+            Contract.Parameter.NotNull(child);
+            ChildActions.Add(child.ControllerAction);
             FlushOutputSegment();
         }
 
         public void Execute(ActionExecutingContext context)
-        {
+        {            
+            Contract.Parameter.NotNull(context);
             for(int currentOutputSegment = 0; currentOutputSegment < OutputList.Count -1; currentOutputSegment++)
             {
                 context.HttpContext.Response.Write(OutputList[currentOutputSegment]);
-                if(TrailingDonutList.Count > currentOutputSegment)
+                if(ChildActions.Count > currentOutputSegment)
                 {
-                    TrailingDonutList[currentOutputSegment].Execute(context);
+                    ChildActions[currentOutputSegment].Execute(context);
                 }
             }
         }

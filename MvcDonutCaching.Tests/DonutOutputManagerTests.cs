@@ -108,19 +108,19 @@ namespace MvcDonutCaching.Tests
             level1Donut = DonutOutputManager.Pop(context); //Done
 
             Assert.That(level3Donut1.OutputList, Is.EqualTo(new[] {level3Output}));
-            Assert.That(level3Donut1.TrailingDonutList.Count, Is.EqualTo(0));
+            Assert.That(level3Donut1.ChildActions.Count, Is.EqualTo(0));
 
             Assert.That(level3Donut2.OutputList, Is.EqualTo(new[] {level3Output}));
-            Assert.That(level3Donut2.TrailingDonutList.Count, Is.EqualTo(0));
+            Assert.That(level3Donut2.ChildActions.Count, Is.EqualTo(0));
 
             Assert.That(level2Donut1.OutputList, Is.EqualTo(new[] {level2StartOutput, level2EndOutput}));
-            Assert.That(level2Donut1.TrailingDonutList.Count, Is.EqualTo(1));
+            Assert.That(level2Donut1.ChildActions.Count, Is.EqualTo(1));
 
             Assert.That(level2Donut2.OutputList, Is.EqualTo(new[] {level2StartOutput, level2EndOutput}));
-            Assert.That(level2Donut2.TrailingDonutList.Count, Is.EqualTo(1));
+            Assert.That(level2Donut2.ChildActions.Count, Is.EqualTo(1));
 
             Assert.That(level1Donut.OutputList, Is.EqualTo(new[] {level1StartOutput, "", level1EndOutput}));
-            Assert.That(level1Donut.TrailingDonutList.Count, Is.EqualTo(2));
+            Assert.That(level1Donut.ChildActions.Count, Is.EqualTo(2));
         }
 
         [Test]

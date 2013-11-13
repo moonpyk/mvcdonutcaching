@@ -2,7 +2,8 @@
 
 namespace DevTrends.MvcDonutCaching
 {
-    public interface IControllerAction {
+    public interface IControllerAction
+    {
         void Execute(ControllerContext context);
     }
 }
