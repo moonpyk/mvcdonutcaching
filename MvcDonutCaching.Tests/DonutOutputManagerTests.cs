@@ -24,19 +24,19 @@ namespace MvcDonutCaching.Tests
 
             context.ActionDescriptor = new StaticActionDescriptor(controllerName:"dummy", actionName:"level1");
             context.ActionParameters = new Dictionary<string, object>(){ {"title", "level1"} };
-            DonutOutputManager.Push(context, cacheKey: "level1");
+            DonutOutputManager.Push(context);
             Assert.That(context.HttpContext.Response.Output, Is.Not.SameAs(rootOutput), "output should have been replaced");
             context.HttpContext.Response.Output.WriteLine("");
             context.HttpContext.Response.Output.WriteLine("1");
 
             context.ActionDescriptor = new StaticActionDescriptor(controllerName: "dummy", actionName: "level2");
             context.ActionParameters = new Dictionary<string, object>() { { "title", "level2" } };
-            DonutOutputManager.Push(context, cacheKey: "level2");
+            DonutOutputManager.Push(context);
             context.HttpContext.Response.Output.WriteLine(" 2");
 
             context.ActionDescriptor = new StaticActionDescriptor(controllerName: "dummy", actionName: "level3");
             context.ActionParameters = new Dictionary<string, object>() { { "title", "level3" } };
-            DonutOutputManager.Push(context, cacheKey: "level3");
+            DonutOutputManager.Push(context);
             context.HttpContext.Response.Output.WriteLine("  3");
             DonutOutputManager.Pop(context);
             context.HttpContext.Response.Output.WriteLine(" 2");
@@ -72,19 +72,19 @@ namespace MvcDonutCaching.Tests
 
             context.ActionDescriptor = new StaticActionDescriptor(controllerName: "dummy", actionName: "level1");
             context.ActionParameters = new Dictionary<string, object>() { { "title", "level1" } };
-            DonutOutputManager.Push(context, cacheKey: "level1"); //Level1
+            DonutOutputManager.Push(context); //Level1
             Assert.That(context.HttpContext.Response.Output, Is.Not.SameAs(rootOutput), "output should have been replaced");
             context.HttpContext.Response.Output.Write(level1StartOutput);
 
 
             context.ActionDescriptor = new StaticActionDescriptor(controllerName: "dummy", actionName: "level2");
             context.ActionParameters = new Dictionary<string, object>() { { "title", "level2_1" } };
-            DonutOutputManager.Push(context, cacheKey: "level2_1"); //Level2
+            DonutOutputManager.Push(context); //Level2
             context.HttpContext.Response.Output.Write(level2StartOutput);
 
             context.ActionDescriptor = new StaticActionDescriptor(controllerName: "dummy", actionName: "level3");
             context.ActionParameters = new Dictionary<string, object>() { { "title", "level3" } };
-            DonutOutputManager.Push(context, cacheKey: "level3_1"); //Level3
+            DonutOutputManager.Push(context); //Level3
             context.HttpContext.Response.Output.Write(level3Output);
             level3Donut1 = DonutOutputManager.Pop(context); //Level2
             context.HttpContext.Response.Output.Write(level2EndOutput);
@@ -92,13 +92,13 @@ namespace MvcDonutCaching.Tests
 
             context.ActionDescriptor = new StaticActionDescriptor(controllerName: "dummy", actionName: "level2");
             context.ActionParameters = new Dictionary<string, object>() { { "title", "level2_1" } };
-            DonutOutputManager.Push(context, cacheKey: "level2_2"); //Level2
+            DonutOutputManager.Push(context); //Level2
             context.HttpContext.Response.Output.Write(level2StartOutput);
 
 
             context.ActionDescriptor = new StaticActionDescriptor(controllerName: "dummy", actionName: "level3");
             context.ActionParameters = new Dictionary<string, object>() { { "title", "level3_2" } };
-            DonutOutputManager.Push(context, cacheKey: "level3_2"); //Level3
+            DonutOutputManager.Push(context); //Level3
             context.HttpContext.Response.Output.Write(level3Output);
             level3Donut2 = DonutOutputManager.Pop(context); //Level2
             context.HttpContext.Response.Output.Write(level2EndOutput);
@@ -115,16 +115,12 @@ namespace MvcDonutCaching.Tests
 
             Assert.That(level2Donut1.OutputList, Is.EqualTo(new[] {level2StartOutput, level2EndOutput}));
             Assert.That(level2Donut1.TrailingDonutList.Count, Is.EqualTo(1));
-            Assert.That(level2Donut1.TrailingDonutList[0], Is.EqualTo(level3Donut1.CacheKey));
 
             Assert.That(level2Donut2.OutputList, Is.EqualTo(new[] {level2StartOutput, level2EndOutput}));
             Assert.That(level2Donut2.TrailingDonutList.Count, Is.EqualTo(1));
-            Assert.That(level2Donut2.TrailingDonutList[0], Is.EqualTo(level3Donut2.CacheKey));
 
             Assert.That(level1Donut.OutputList, Is.EqualTo(new[] {level1StartOutput, "", level1EndOutput}));
             Assert.That(level1Donut.TrailingDonutList.Count, Is.EqualTo(2));
-            Assert.That(level1Donut.TrailingDonutList[0], Is.EqualTo(level2Donut1.CacheKey));
-            Assert.That(level1Donut.TrailingDonutList[1], Is.EqualTo(level2Donut2.CacheKey));
         }
 
         [Test]
