@@ -8,6 +8,13 @@ using System.Web.UI.WebControls;
 
 namespace DevTrends.MvcDonutCaching
 {
+    /// <summary>
+    /// Keeps track of the output of executing a controller action.
+    /// 
+    /// <para> Stores output specifically created by this action in <see cref="OutputList"/></para>
+    /// <para>Track of which actions can fill the holes between the values in <see cref="OutputList"/> in <see cref="ChildActions"/>.</para>
+    /// <para>Call <see cref="Execute"/> to output the cached data and recurse down to child actions to fill in the blanks.</para>
+    /// </summary>
     public class Donut
     {
         internal readonly Donut Parent;
@@ -34,6 +41,10 @@ namespace DevTrends.MvcDonutCaching
             FlushOutputSegment();
         }
 
+        /// <summary>
+        /// Writes the stored output to the response stream and recurses down to <see cref="ChildActions"/> to fill in the holes.
+        /// </summary>
+        /// <param name="context">Execute </param>
         public void Execute(ActionExecutingContext context)
         {            
             Contract.Parameter.NotNull(context);
