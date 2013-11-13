@@ -68,9 +68,12 @@
     <Compile Include="CacheItem.cs" />
     <Compile Include="CacheSettings.cs" />
     <Compile Include="CacheSettingsManager.cs" />
+    <Compile Include="ControllerAction.cs" />
+    <Compile Include="Donut.cs" />
     <Compile Include="DonutOutputManager.cs" />
     <Compile Include="EncryptingActionSettingsSerialiser.cs" />
     <Compile Include="Encryptor.cs" />
+    <Compile Include="IControllerAction.cs" />
     <Compile Include="Interfaces\ICacheHeadersHelper.cs" />
     <Compile Include="Interfaces\IEncryptingActionSettingsSerialiser.cs" />
     <Compile Include="Interfaces\IEncryptor.cs" />
