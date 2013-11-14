@@ -18,10 +18,12 @@ namespace MvcDonutCaching.Tests
             string output = null,
             IDictionary<string, object> parameters = null)
         {
-            var popper = new ContextPopper(context, ctx => output);
-            context.ActionParameters = parameters ?? new Dictionary<string, object>();
-            context.ActionDescriptor = new StaticActionDescriptor(controllerName: controller, actionName: action);
-            DonutOutputManager.Push(context);
+            var popper = new ContextPopper(
+                context, ctx => output,
+                parameters ?? new Dictionary<string, object>(),
+                controller, 
+                action
+                );            
             return popper;
         }
     }
@@ -47,13 +49,20 @@ namespace MvcDonutCaching.Tests
             }
         }
 
-        public ContextPopper(ActionExecutingContext context, Func<ActionExecutingContext, string> render)
+        public ContextPopper(
+            ActionExecutingContext context, 
+            Func<ActionExecutingContext, string> render,
+            IDictionary<string, object> parameters,
+            string controller, 
+            string action)
         {
-            _originalOutput = context.HttpContext.Response.Output;
+            ActionParameters = context.ActionParameters = parameters ?? new Dictionary<string, object>();
+            ActionDescriptor = context.ActionDescriptor = new StaticActionDescriptor(controllerName: controller, actionName: action);
+
+            DonutOutputManager.Push(context);
+
             _render = render;
             Context = context;
-            ActionParameters = context.ActionParameters;
-            ActionDescriptor = context.ActionDescriptor;
 
             if(PopperStack.Count > 0)
             {
