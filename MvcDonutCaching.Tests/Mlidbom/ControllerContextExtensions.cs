@@ -6,9 +6,9 @@ using System.Web.Mvc;
 using DevTrends.MvcDonutCaching.Mlidbom;
 using NUnit.Framework;
 
-namespace MvcDonutCaching.Tests
+namespace MvcDonutCaching.Tests.Mlidbom
 {
-    public static class DonutOutputManagerTestExtensions
+    public static class ControllerContextExtensions
     {
         public static ActionInvocationSimulator InvokeAction(
             this ActionExecutingContext context, 

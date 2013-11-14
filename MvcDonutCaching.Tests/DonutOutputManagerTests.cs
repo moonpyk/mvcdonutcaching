@@ -8,6 +8,7 @@ using System.Web.Mvc;
 using DevTrends.MvcDonutCaching;
 using DevTrends.MvcDonutCaching.Mlidbom;
 using Moq;
+using MvcDonutCaching.Tests.Mlidbom;
 using NUnit.Framework;
 
 namespace MvcDonutCaching.Tests

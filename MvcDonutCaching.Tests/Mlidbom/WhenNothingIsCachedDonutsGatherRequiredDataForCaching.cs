@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using DevTrends.MvcDonutCaching;
+﻿using System.IO;
 using NUnit.Framework;
 
-namespace MvcDonutCaching.Tests
+namespace MvcDonutCaching.Tests.Mlidbom
 {
     [TestFixture]
-    public class HowActionExecutionActuallyWorksTest
+    public class WhenNothingIsCachedDonutsGatherRequiredDataForCaching
     {
         [Test]
         public void RendersInitialRequestCorrectlyForDepth1()
@@ -23,7 +20,7 @@ namespace MvcDonutCaching.Tests
             using(actionContext.InvokeAction(action: "level1", output: expectedLevel1Result))
             {                
             }
-            Assert.That(output.ToString(), Is.EqualTo(expectedLevel1Result));
+            actionContext.AssertOutputEquals(expectedLevel1Result);
         }
 
         [Test]
@@ -41,23 +38,16 @@ namespace MvcDonutCaching.Tests
             using(actionContext.InvokeAction(action: "level1", output: l1Content))
             {
                 using(actionContext.InvokeAction(action: "level2", output: l2Content))
-                {
-                    
-                }   
-            }            
-            Assert.That(output.ToString(), Is.EqualTo(expectedLevel1Result));
+                {}   
+            }     
+       
+            actionContext.AssertOutputEquals(expectedLevel1Result);
         }
 
         [Test]
         public void RendersInitialRequestCorrectlyForDepth3()
         {
             var actionContext = TestUtil.CreateMockActionExecutingControllerContext();
-
-            actionContext.ActionDescriptor = new StaticActionDescriptor(controllerName: "dummy", actionName: "level1");
-            actionContext.ActionParameters = new Dictionary<string, object> { { "title", "level1" } };
-
-            var output = new StringWriter();
-            actionContext.HttpContext.Response.Output = output;
 
             const string l1Output = "<L1>{0}</L1>", l2Output = "<L2>{0}</L2>", l3Output = "<L3></L3>";
 
@@ -69,14 +59,10 @@ namespace MvcDonutCaching.Tests
                 using (actionContext.InvokeAction(action: "L2", output: l2Output))
                 {
                     using (actionContext.InvokeAction(action: "L3", output: l3Output))
-                    {
-
-                    }
+                    {}
                 }
-            }  
-
-            Assert.That(output.ToString(), Is.EqualTo(expectedLevel1Result));
-
+            }
+            actionContext.AssertOutputEquals(expectedLevel1Result);
         }
     }
 }
