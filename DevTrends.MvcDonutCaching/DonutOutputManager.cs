@@ -27,17 +27,14 @@ namespace DevTrends.MvcDonutCaching
             if(manager == null)
             {
                 context.HttpContext.Items[OutPutManagerId] = manager = new DonutOutputManager();
-                manager.OriginalOutput = context.HttpContext.Response.Output;
-                manager._current = new Donut(context, null, manager.OriginalOutput);                
+                manager._current = new Donut(context, null);                
             }
             else
             {
-                var pushed = new Donut(context, manager._current, manager.OriginalOutput);
-                manager._current.AddDonut(pushed);
+                var pushed = new Donut(context, manager._current);
                 manager._current = pushed;
             }
             manager._depth++;
-            context.HttpContext.Response.Output = manager._current.Output;
         }
 
         public static Donut ResultExecuted(ControllerContext context)
@@ -55,12 +52,10 @@ namespace DevTrends.MvcDonutCaching
             {
                 manager._current = null;
                 context.HttpContext.Items[OutPutManagerId] = null;
-                context.HttpContext.Response.Output = manager.OriginalOutput;
             }
             else
             {
                 manager._current = popped.Parent;
-                context.HttpContext.Response.Output = manager._current.Output;
             }            
             return popped;
         }

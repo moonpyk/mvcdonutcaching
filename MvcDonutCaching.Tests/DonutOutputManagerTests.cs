@@ -171,19 +171,19 @@ namespace MvcDonutCaching.Tests
             level1Donut = DonutOutputManager.ResultExecuted(context); //Done
 
             Assert.That(level3Donut1.OutputSegments, Is.EqualTo(new[] {level3Output}));
-            Assert.That(level3Donut1.ChildActions.Count, Is.EqualTo(0));
+            Assert.That(level3Donut1.Children.Count, Is.EqualTo(0));
 
             Assert.That(level3Donut2.OutputSegments, Is.EqualTo(new[] {level3Output}));
-            Assert.That(level3Donut2.ChildActions.Count, Is.EqualTo(0));
+            Assert.That(level3Donut2.Children.Count, Is.EqualTo(0));
 
             Assert.That(level2Donut1.OutputSegments, Is.EqualTo(new[] {level2StartOutput, level2EndOutput}));
-            Assert.That(level2Donut1.ChildActions.Count, Is.EqualTo(1));
+            Assert.That(level2Donut1.Children.Count, Is.EqualTo(1));
 
             Assert.That(level2Donut2.OutputSegments, Is.EqualTo(new[] {level2StartOutput, level2EndOutput}));
-            Assert.That(level2Donut2.ChildActions.Count, Is.EqualTo(1));
+            Assert.That(level2Donut2.Children.Count, Is.EqualTo(1));
 
             Assert.That(level1Donut.OutputSegments, Is.EqualTo(new[] {level1StartOutput, "", level1EndOutput}));
-            Assert.That(level1Donut.ChildActions.Count, Is.EqualTo(2));
+            Assert.That(level1Donut.Children.Count, Is.EqualTo(2));
         }       
 
         public class ThreeLevelNestedOutputActionScenario

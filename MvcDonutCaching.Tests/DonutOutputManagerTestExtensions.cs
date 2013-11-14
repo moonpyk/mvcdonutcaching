@@ -59,6 +59,10 @@ namespace MvcDonutCaching.Tests
             ActionParameters = context.ActionParameters = parameters ?? new Dictionary<string, object>();
             ActionDescriptor = context.ActionDescriptor = new StaticActionDescriptor(controllerName: controller, actionName: action);
 
+            _originalOutput = context.HttpContext.Response.Output;
+            _tmpOutput = context.HttpContext.Response.Output;
+            context.HttpContext.Response.Output = _tmpOutput;
+
             DonutOutputManager.ActionExecuting(context);
 
             _render = render;
@@ -73,6 +77,7 @@ namespace MvcDonutCaching.Tests
         }
 
         public List<ContextPopper> Children = new List<ContextPopper>();
+        private TextWriter _tmpOutput;
         public string Output { get; set; }
 
         private void AddChild(ContextPopper contextPopper)
@@ -83,6 +88,8 @@ namespace MvcDonutCaching.Tests
         public void Dispose()
         {
             Output = string.Format(_render(Context), Children.Select(child => child.Output).ToArray());
+
+            Context.HttpContext.Response.Output = _originalOutput;
             Context.HttpContext.Response.Output.Write(Output);
             DonutOutputManager.ResultExecuted(Context);
             Context.ActionDescriptor = ActionDescriptor;
