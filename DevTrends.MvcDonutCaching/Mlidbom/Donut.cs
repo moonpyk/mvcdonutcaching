@@ -59,6 +59,10 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
 
         public void ResultExecuted()
         {
+            if(!ReferenceEquals(_context.HttpContext.Response.Output, Output))
+            {
+                throw new Exception("Hey! Someone replaced HttpContext.Response.Output and did not restore it correctly. Output will be corrupt.");
+            }
             if(Parent != null)
             {
                 Parent.AddDonut(this);
