@@ -112,9 +112,9 @@ namespace MvcDonutCaching.Tests
 
             context.ActionDescriptor = new StaticActionDescriptor(controllerName: "dummy", actionName: "level1");
             context.ActionParameters = new Dictionary<string, object>() { { "title", "level1" } };
-            DonutOutputManager.Push(context);
+            DonutOutputManager.ActionExecuting(context);
             Assert.That(context.HttpContext.Response.Output, Is.Not.SameAs(rootOutput), "output should have been replaced");
-            DonutOutputManager.Pop(context);
+            DonutOutputManager.ResultExecuted(context);
             Assert.That(context.HttpContext.Response.Output, Is.SameAs(rootOutput), "output should have been restored");
         }
 
@@ -135,40 +135,40 @@ namespace MvcDonutCaching.Tests
 
             context.ActionDescriptor = new StaticActionDescriptor(controllerName: "dummy", actionName: "level1");
             context.ActionParameters = new Dictionary<string, object>() { { "title", "level1" } };
-            DonutOutputManager.Push(context); //Level1
+            DonutOutputManager.ActionExecuting(context); //Level1
             Assert.That(context.HttpContext.Response.Output, Is.Not.SameAs(rootOutput), "output should have been replaced");
             context.HttpContext.Response.Output.Write(level1StartOutput);
 
 
             context.ActionDescriptor = new StaticActionDescriptor(controllerName: "dummy", actionName: "level2");
             context.ActionParameters = new Dictionary<string, object>() { { "title", "level2_1" } };
-            DonutOutputManager.Push(context); //Level2
+            DonutOutputManager.ActionExecuting(context); //Level2
             context.HttpContext.Response.Output.Write(level2StartOutput);
 
             context.ActionDescriptor = new StaticActionDescriptor(controllerName: "dummy", actionName: "level3");
             context.ActionParameters = new Dictionary<string, object>() { { "title", "level3" } };
-            DonutOutputManager.Push(context); //Level3
+            DonutOutputManager.ActionExecuting(context); //Level3
             context.HttpContext.Response.Output.Write(level3Output);
-            level3Donut1 = DonutOutputManager.Pop(context); //Level2
+            level3Donut1 = DonutOutputManager.ResultExecuted(context); //Level2
             context.HttpContext.Response.Output.Write(level2EndOutput);
-            level2Donut1 = DonutOutputManager.Pop(context); //Level1
+            level2Donut1 = DonutOutputManager.ResultExecuted(context); //Level1
 
             context.ActionDescriptor = new StaticActionDescriptor(controllerName: "dummy", actionName: "level2");
             context.ActionParameters = new Dictionary<string, object>() { { "title", "level2_1" } };
-            DonutOutputManager.Push(context); //Level2
+            DonutOutputManager.ActionExecuting(context); //Level2
             context.HttpContext.Response.Output.Write(level2StartOutput);
 
 
             context.ActionDescriptor = new StaticActionDescriptor(controllerName: "dummy", actionName: "level3");
             context.ActionParameters = new Dictionary<string, object>() { { "title", "level3_2" } };
-            DonutOutputManager.Push(context); //Level3
+            DonutOutputManager.ActionExecuting(context); //Level3
             context.HttpContext.Response.Output.Write(level3Output);
-            level3Donut2 = DonutOutputManager.Pop(context); //Level2
+            level3Donut2 = DonutOutputManager.ResultExecuted(context); //Level2
             context.HttpContext.Response.Output.Write(level2EndOutput);
-            level2Donut2 = DonutOutputManager.Pop(context); //Level1
+            level2Donut2 = DonutOutputManager.ResultExecuted(context); //Level1
 
             context.HttpContext.Response.Output.Write(level1EndOutput);
-            level1Donut = DonutOutputManager.Pop(context); //Done
+            level1Donut = DonutOutputManager.ResultExecuted(context); //Done
 
             Assert.That(level3Donut1.OutputSegments, Is.EqualTo(new[] {level3Output}));
             Assert.That(level3Donut1.ChildActions.Count, Is.EqualTo(0));
@@ -248,10 +248,10 @@ namespace MvcDonutCaching.Tests
                     
                     actionContext.ActionDescriptor = new StaticActionDescriptor(controllerName: "dummy", actionName: "level3");
                     actionContext.ActionParameters = new Dictionary<string, object>() {{"title", "level3"}};
-                    DonutOutputManager.Push(actionContext); //Level3
+                    DonutOutputManager.ActionExecuting(actionContext); //Level3
                     actionContext.HttpContext.Response.Output.Write(Level3Output);
 
-                    _level3Donut = DonutOutputManager.Pop(actionContext);
+                    _level3Donut = DonutOutputManager.ResultExecuted(actionContext);
                 };
 
                 ExecuteLevel2 = actionContext =>
@@ -264,14 +264,14 @@ namespace MvcDonutCaching.Tests
                     
                     actionContext.ActionDescriptor = new StaticActionDescriptor(controllerName: "dummy", actionName: "level2");
                     actionContext.ActionParameters = new Dictionary<string, object>() {{"title", "level2_1"}};
-                    DonutOutputManager.Push(actionContext);
+                    DonutOutputManager.ActionExecuting(actionContext);
                     actionContext.HttpContext.Response.Output.Write(Level2StartOutput);
 
                     ExecuteLevel3(actionContext);
 
                     actionContext.HttpContext.Response.Output.Write(Level2EndOutput);
 
-                    _level2Donut = DonutOutputManager.Pop(actionContext);
+                    _level2Donut = DonutOutputManager.ResultExecuted(actionContext);
                 };
 
                 ExecuteLevel1 = actionContext =>
@@ -284,13 +284,13 @@ namespace MvcDonutCaching.Tests
                     
                     actionContext.ActionDescriptor = new StaticActionDescriptor(controllerName: "dummy", actionName: "level1");
                     actionContext.ActionParameters = new Dictionary<string, object>() {{"title", "level1"}};
-                    DonutOutputManager.Push(actionContext); //Level1
+                    DonutOutputManager.ActionExecuting(actionContext); //Level1
                     actionContext.HttpContext.Response.Output.Write(Level1StartOutput);
 
                     ExecuteLevel2(actionContext);
 
                     actionContext.HttpContext.Response.Output.Write(Level1EndOutput);
-                    _level1Donut = DonutOutputManager.Pop(actionContext);
+                    _level1Donut = DonutOutputManager.ResultExecuted(actionContext);
                 };   
             }
 

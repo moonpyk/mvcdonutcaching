@@ -20,7 +20,7 @@ namespace DevTrends.MvcDonutCaching
         private static readonly Guid OutPutManagerId = Guid.Parse("ADECE17F-38DD-420D-B7B8-AA15430A9920");
         internal TextWriter OriginalOutput;
 
-        public static void Push(ActionExecutingContext context)
+        public static void ActionExecuting(ActionExecutingContext context)
         {
             Contract.Parameter.NotNull(context);
             var manager = context.HttpContext.Items[OutPutManagerId] as DonutOutputManager;
@@ -40,7 +40,7 @@ namespace DevTrends.MvcDonutCaching
             context.HttpContext.Response.Output = manager._current.Output;
         }
 
-        public static Donut Pop(ControllerContext context)
+        public static Donut ResultExecuted(ControllerContext context)
         {
             Contract.Parameter.NotNull(context);
             var manager = (DonutOutputManager)context.HttpContext.Items[OutPutManagerId];
@@ -50,7 +50,7 @@ namespace DevTrends.MvcDonutCaching
             }
             manager._depth--;
             var popped = manager._current;
-            popped.OnAfterExecute();
+            popped.ResultExecuted();
             if (manager._depth == 0)
             {
                 manager._current = null;

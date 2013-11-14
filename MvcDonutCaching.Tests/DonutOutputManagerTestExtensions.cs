@@ -59,7 +59,7 @@ namespace MvcDonutCaching.Tests
             ActionParameters = context.ActionParameters = parameters ?? new Dictionary<string, object>();
             ActionDescriptor = context.ActionDescriptor = new StaticActionDescriptor(controllerName: controller, actionName: action);
 
-            DonutOutputManager.Push(context);
+            DonutOutputManager.ActionExecuting(context);
 
             _render = render;
             Context = context;
@@ -84,7 +84,7 @@ namespace MvcDonutCaching.Tests
         {
             Output = string.Format(_render(Context), Children.Select(child => child.Output).ToArray());
             Context.HttpContext.Response.Output.Write(Output);
-            DonutOutputManager.Pop(Context);
+            DonutOutputManager.ResultExecuted(Context);
             Context.ActionDescriptor = ActionDescriptor;
             Context.ActionParameters = ActionParameters;            
         }
