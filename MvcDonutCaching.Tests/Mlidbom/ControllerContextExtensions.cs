@@ -15,13 +15,16 @@ namespace MvcDonutCaching.Tests.Mlidbom
             string controller = "controller", 
             string action = "action",
             string output = null,
-            IDictionary<string, object> parameters = null)
+            IDictionary<string, object> parameters = null,
+            Action<Donut> afterResultExecuted = null 
+            )
         {
             var popper = new ActionInvocationSimulator(
                 context, ctx => output,
                 parameters ?? new Dictionary<string, object>(),
                 controller, 
-                action
+                action,
+                afterResultExecuted
                 );            
             return popper;
         }
@@ -30,6 +33,7 @@ namespace MvcDonutCaching.Tests.Mlidbom
     public class ActionInvocationSimulator : IDisposable
     {
         private readonly Func<ActionExecutingContext, string> _render;
+        private readonly Action<Donut> _afterResultExecuted;
         private readonly TextWriter _originalOutput;
         private ActionDescriptor ActionDescriptor { get; set; }
         private IDictionary<string, object> ActionParameters { get; set; }
@@ -53,7 +57,8 @@ namespace MvcDonutCaching.Tests.Mlidbom
             Func<ActionExecutingContext, string> render,
             IDictionary<string, object> parameters,
             string controller, 
-            string action)
+            string action,
+            Action<Donut> afterResultExecuted = null)
         {
             ActionParameters = context.ActionParameters = parameters ?? new Dictionary<string, object>();
             ActionDescriptor = context.ActionDescriptor = new StaticActionDescriptor(controllerName: controller, actionName: action);
@@ -61,6 +66,7 @@ namespace MvcDonutCaching.Tests.Mlidbom
   
 
             _render = render;
+            _afterResultExecuted = afterResultExecuted;
             Context = context;
 
             if(PopperStack.Count > 0)
@@ -90,7 +96,11 @@ namespace MvcDonutCaching.Tests.Mlidbom
             
             Context.HttpContext.Response.Output.Write(Output);//Simulate an action actually having executed and delivered output.
 
-            DonutOutputManager.ResultExecuted(Context);
+            var donut = DonutOutputManager.ResultExecuted(Context);
+            if(_afterResultExecuted != null)
+            {
+                _afterResultExecuted(donut);
+            }
 
             var popped = PopperStack.Pop();
             Assert.That(popped, Is.SameAs(this), "Should be me....");

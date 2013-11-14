@@ -63,21 +63,26 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
             {
                 throw new Exception("Hey! Someone replaced HttpContext.Response.Output and did not restore it correctly. Output will be corrupt.");
             }
+            string totalOutput = Output.ToString();
+            ParseAndStoreOutput(totalOutput);
             if(Parent != null)
             {
                 Parent.AddDonut(this);
-                Console.WriteLine("ResultExecuted1: _originalOutput: '{0}', Output: '{1}'", _originalOutput, Output);
-                _originalOutput.Write(Output.ToString());
+                _originalOutput.Write(totalOutput);
             }
             else
             {
-                Console.WriteLine("ResultExecuted2: _originalOutput: '{0}', Output: '{1}'", _originalOutput, Output);
-                _originalOutput.Write(Output.ToString());
-            }            
+                _originalOutput.Write(totalOutput);
+            }
             
             _context.HttpContext.Response.Output = _originalOutput;
 
             Output = null;            
-        }        
+        }
+
+        private void ParseAndStoreOutput(string totalOutput)
+        {
+            OutputSegments.Add(totalOutput);
+        }
     }
 }
