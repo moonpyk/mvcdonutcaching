@@ -7,6 +7,7 @@ using System.Runtime.Remoting.Contexts;
 using System.Web.Mvc;
 using DevTrends.MvcDonutCaching;
 using DevTrends.MvcDonutCaching.Mlidbom;
+using NUnit.Framework;
 
 namespace MvcDonutCaching.Tests
 {
@@ -60,11 +61,7 @@ namespace MvcDonutCaching.Tests
             ActionParameters = context.ActionParameters = parameters ?? new Dictionary<string, object>();
             ActionDescriptor = context.ActionDescriptor = new StaticActionDescriptor(controllerName: controller, actionName: action);
 
-            _originalOutput = context.HttpContext.Response.Output;
-            _tmpOutput = context.HttpContext.Response.Output;
-            context.HttpContext.Response.Output = _tmpOutput;
-
-            DonutOutputManager.ActionExecuting(context);
+  
 
             _render = render;
             Context = context;
@@ -74,6 +71,12 @@ namespace MvcDonutCaching.Tests
                 var parent = PopperStack.Peek();
                 parent.AddChild(this);
             }
+
+            _originalOutput = context.HttpContext.Response.Output;
+            _tmpOutput = new StringWriter();
+            context.HttpContext.Response.Output = _tmpOutput;
+
+            DonutOutputManager.ActionExecuting(context);
             PopperStack.Push(this);
         }
 
@@ -89,10 +92,23 @@ namespace MvcDonutCaching.Tests
         public void Dispose()
         {
             Output = string.Format(_render(Context), Children.Select(child => child.Output).ToArray());
-
-            Context.HttpContext.Response.Output = _originalOutput;
+            
             Context.HttpContext.Response.Output.Write(Output);
             DonutOutputManager.ResultExecuted(Context);
+
+            var popped = PopperStack.Pop();
+            Assert.That(popped, Is.SameAs(this), "Should be me....");
+
+            if(PopperStack.Count > 0)
+            {
+                Context.HttpContext.Response.Output = _originalOutput;
+            }else
+            {
+                var whatTheDonutsDid = Context.HttpContext.Response.Output.ToString();
+                Context.HttpContext.Response.Output = _originalOutput;
+                Context.HttpContext.Response.Output.Write(whatTheDonutsDid);   
+            }
+
             Context.ActionDescriptor = ActionDescriptor;
             Context.ActionParameters = ActionParameters;            
         }
