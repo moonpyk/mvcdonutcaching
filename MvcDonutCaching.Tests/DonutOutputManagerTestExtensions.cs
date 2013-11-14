@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.Remoting.Contexts;
 using System.Web.Mvc;
 using DevTrends.MvcDonutCaching;
+using DevTrends.MvcDonutCaching.Mlidbom;
 
 namespace MvcDonutCaching.Tests
 {

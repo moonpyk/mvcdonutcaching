@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Web.Mvc;
-using System.Web.UI.WebControls;
 
-namespace DevTrends.MvcDonutCaching
+namespace DevTrends.MvcDonutCaching.Mlidbom
 {
     /// <summary>
     /// Keeps track of the output of executing a controller action.
@@ -24,7 +21,7 @@ namespace DevTrends.MvcDonutCaching
         public readonly List<string> OutputSegments = new List<string>();
         public readonly List<Donut> Children = new List<Donut>();
 
-        internal StringWriter Output { get; private set; }
+        internal DonutOutputWriter Output { get; private set; }
 
         public Donut(ActionExecutingContext context, Donut parent)
         {
@@ -33,7 +30,7 @@ namespace DevTrends.MvcDonutCaching
             _context = context;
             Parent = parent;
             _originalOutput = _context.HttpContext.Response.Output;
-            Output = new StringWriter(CultureInfo.InvariantCulture);
+            Output = new DonutOutputWriter(context.ActionDescriptor);
             context.HttpContext.Response.Output = Output;
         }
 
@@ -65,13 +62,14 @@ namespace DevTrends.MvcDonutCaching
             if(Parent != null)
             {
                 Parent.AddDonut(this);
-                _originalOutput.Write("<NUT>{0}</NUT>", Output.ToString());
+                Console.WriteLine("ResultExecuted1: _originalOutput: '{0}', Output: '{1}'", _originalOutput, Output);
+                _originalOutput.Write(Output.ToString());
             }
             else
             {
-                //_originalOutput.Write(Output.ToString());
-            }
-            Console.WriteLine("ResultExecuted1: _originalOutput: '{0}', Output: '{1}'", _originalOutput, Output);
+                Console.WriteLine("ResultExecuted2: _originalOutput: '{0}', Output: '{1}'", _originalOutput, Output);
+                _originalOutput.Write(Output.ToString());
+            }            
             
             _context.HttpContext.Response.Output = _originalOutput;
 

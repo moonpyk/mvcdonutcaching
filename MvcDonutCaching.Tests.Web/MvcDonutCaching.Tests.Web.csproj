@@ -118,6 +118,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\AutoOutputCacheAttribute.cs" />
     <Compile Include="Controllers\Caching1SecondControllerWithNoChildActionsController.cs" />
     <Compile Include="Controllers\FiveLevelsNestedDonutsController.cs" />
     <Compile Include="Controllers\FiveLevelsNestedDonutsExcludeFromParentCacheAttributeManagedController.cs" />
@@ -198,7 +199,7 @@
   <ItemGroup>
     <Content Include="Views\WriteOrderAnalysisHelper\Level1.cshtml" />
     <Content Include="Views\WriteOrderAnalysisHelper\Level2.cshtml" />
-    <Content Include="Views\WriteOrderAnalysisHelper\Root.cshtml" />
+    <Content Include="Views\WriteOrderAnalysisHelper\Index.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

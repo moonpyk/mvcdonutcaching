@@ -2,7 +2,7 @@
 using System.IO;
 using System.Web.Mvc;
 
-namespace DevTrends.MvcDonutCaching
+namespace DevTrends.MvcDonutCaching.Mlidbom
 {
     /// <summary>
     /// Manages the respons output and the stack of Donuts as the request recurses down the action methods.

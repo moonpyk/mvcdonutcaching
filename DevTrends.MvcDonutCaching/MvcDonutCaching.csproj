@@ -64,14 +64,16 @@
   <ItemGroup>
     <Compile Include="ActionSettings.cs" />
     <Compile Include="ActionSettingsSerialiser.cs" />
+    <Compile Include="Mlidbom\AutoOutputCacheAttribute.cs" />
     <Compile Include="CacheHeadersHelper.cs" />
     <Compile Include="CacheItem.cs" />
     <Compile Include="CacheSettings.cs" />
     <Compile Include="CacheSettingsManager.cs" />
     <Compile Include="Contract.cs" />
     <Compile Include="ControllerAction.cs" />
-    <Compile Include="Donut.cs" />
-    <Compile Include="DonutOutputManager.cs" />
+    <Compile Include="Mlidbom\Donut.cs" />
+    <Compile Include="Mlidbom\DonutOutputManager.cs" />
+    <Compile Include="Mlidbom\DonutOutputWriter.cs" />
     <Compile Include="EncryptingActionSettingsSerialiser.cs" />
     <Compile Include="Encryptor.cs" />
     <Compile Include="IControllerAction.cs" />

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using DevTrends.MvcDonutCaching;
+using DevTrends.MvcDonutCaching.Mlidbom;
 using Moq;
 using NUnit.Framework;
 
