@@ -105,7 +105,7 @@ namespace MvcDonutCaching.Tests
         [Test]
         public void ReplacesAndRestoresResponseOutPutCorrectly()
         {
-            var context = CreateMockActionExecutingControllerContext();
+            var context = TestUtil.CreateMockActionExecutingControllerContext();
 
             var rootOutput = new StringWriter();
             context.HttpContext.Response.Output = rootOutput;
@@ -121,7 +121,7 @@ namespace MvcDonutCaching.Tests
         [Test]
         public void SetsDonutOutputListAndDonutListCorrectly()
         {
-            var context = CreateMockActionExecutingControllerContext();
+            var context = TestUtil.CreateMockActionExecutingControllerContext();
 
             var rootOutput = new StringWriter();
             context.HttpContext.Response.Output = rootOutput;
@@ -296,7 +296,7 @@ namespace MvcDonutCaching.Tests
 
             private string ExecuteScenario()
             {               
-                var context = CreateMockActionExecutingControllerContext();
+                var context = TestUtil.CreateMockActionExecutingControllerContext();
 
                 var rootOutput = new StringWriter();
                 context.HttpContext.Response.Output = rootOutput;
@@ -321,24 +321,6 @@ namespace MvcDonutCaching.Tests
                 Assert.That(output, Is.EqualTo(string.Format(expectedOutput, formatValues)));
                 return output;
             }
-        }
-
-        internal static ActionExecutingContext CreateMockActionExecutingControllerContext()
-        {
-            var response = new Mock<HttpResponseBase>(MockBehavior.Strict);
-            response.SetupProperty(resp => resp.Output);
-            response.Setup(resp => resp.Write(It.IsAny<string>())).Callback((string output) => response.Object.Output.Write(output));
-
-            var httpContextMock = new Mock<HttpContextBase>(MockBehavior.Strict);
-            httpContextMock.Setup(http => http.Response).Returns(response.Object);
-            IDictionary items = new Hashtable();
-            httpContextMock.Setup(http => http.Items).Returns(items);
-
-            var context = new ActionExecutingContext();
-            context.HttpContext = httpContextMock.Object;
-
-
-            return context;
         }
     }
 
