@@ -123,6 +123,7 @@
     <Compile Include="Controllers\FiveLevelsNestedDonutsExcludeFromParentCacheAttributeManagedController.cs" />
     <Compile Include="Controllers\FiveLevelsNestedDonutsExcludeFromParentCacheAttributeManagedLevel2and4AreMissingExcludeFromParentCacheAttribute.cs" />
     <Compile Include="Controllers\TestControlController.cs" />
+    <Compile Include="Controllers\WriteOrderAnalysisHelperController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -193,6 +194,11 @@
     <Content Include="Views\FiveLevelsNestedDonutsExcludeFromParentCacheAttributeManagedLevel2and4AreMissingExcludeFromParentCacheAttribute\Level3.cshtml" />
     <Content Include="Views\FiveLevelsNestedDonutsExcludeFromParentCacheAttributeManagedLevel2and4AreMissingExcludeFromParentCacheAttribute\Level4.cshtml" />
     <Content Include="Views\FiveLevelsNestedDonutsExcludeFromParentCacheAttributeManagedLevel2and4AreMissingExcludeFromParentCacheAttribute\Level5.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\WriteOrderAnalysisHelper\Level1.cshtml" />
+    <Content Include="Views\WriteOrderAnalysisHelper\Level2.cshtml" />
+    <Content Include="Views\WriteOrderAnalysisHelper\Root.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
