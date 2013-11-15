@@ -54,5 +54,31 @@ namespace MvcDonutCaching.Tests.Mlidbom
             }
             actionContext.AssertOutputEquals(expectedLevel1Result);
         }
+
+        [Test]
+        public void RendersInitialRequestCorrectlyForForDepth3WithDualChildrenForEachChildLevelAndAdjacentChildren()
+        {
+            var actionContext = TestUtil.CreateMockActionExecutingControllerContext();
+
+            const string l1Template = "<L1>{0}{1}</L1>", l2Template = "<L2>{0}Between{1}</L2>", l3Output = "<L3></L3>";
+            var l2Output = string.Format(l2Template, l3Output, l3Output);
+            var l1Output = string.Format(l1Template, l2Output, l2Output);
+
+            using(actionContext.InvokeAction(output: l1Template))
+            {
+                using(actionContext.InvokeAction(output: l2Template))
+                {
+                    using(actionContext.InvokeAction(output: l3Output)) {}
+                    using(actionContext.InvokeAction(output: l3Output)) {}
+                }
+                using(actionContext.InvokeAction(output: l2Template))
+                {
+                    using(actionContext.InvokeAction(output: l3Output)) {}
+                    using(actionContext.InvokeAction(output: l3Output)) {}
+                }
+            }
+
+            actionContext.AssertOutputEquals(l1Output);
+        }
     }
 }

@@ -4,7 +4,7 @@ using System.Web.Mvc;
 
 namespace DevTrends.MvcDonutCaching.Mlidbom
 {
-    public class DonutOutputManager
+    public static class DonutOutputManager
     {
         private static readonly Guid DonutStackId = Guid.Parse("BBD4587E-4905-43CB-9BEC-6B68D3704F4E");
 
@@ -22,7 +22,8 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
         public static void ActionExecuting(ActionExecutingContext context)
         {
             var donutStack = DonutStack(context);
-            var pushed = new Donut(context, donutStack.Count > 0 ? donutStack.Peek() : null);
+            var parent = donutStack.Count > 0 ? donutStack.Peek() : null;
+            var pushed = new Donut(context, parent);
             donutStack.Push(pushed);
         }
 
