@@ -21,13 +21,11 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
         public ControllerAction ControllerAction { get; set; }
         public readonly List<string> OutputSegments = new List<string>();
         public readonly List<Donut> Children = new List<Donut>();
-        public readonly Guid Id;
 
         internal DonutOutputWriter Output { get; private set; }
 
         public Donut(ActionExecutingContext context, Donut parent)
         {
-            Id = Guid.NewGuid();
             Contract.Parameter.NotNull(context);
             ControllerAction = new ControllerAction(context);
             _context = context;
@@ -84,21 +82,19 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
 
         private string WrapInDonut(string totalOutput)
         {
-            string wrapInDonut = string.Format(DonutCreationPattern, Id, totalOutput);
+            string wrapInDonut = string.Format(DonutCreationPattern, totalOutput);
             return wrapInDonut;
         }
 
         private const string DonutHoleStart = "#StartDonut#18C1E8F8-B296-44BF-A768-89D4F41D14A6#ID:";
-        private const string DonutHoleSeparator = "#18C1E8F8-B296-44BF-A768-89D4F41D14A6#Value:";
         private const string DonutHoleEnd = "#18C1E8F8-B296-44BF-A768-89D4F41D14A6#EndDonut#";
 
         //todo:Remove. I used these to make it easier to see the structure during initial development/debugging.
         //private const string DonutHoleStart = "<Donut>";
-        //private const string DonutHoleSeparator = "#Value:";
         //private const string DonutHoleEnd = "</Donut>";
 
-        private static readonly string DonutCreationPattern = string.Format("{0}{{0}}{1}{{1}}{2}", DonutHoleStart, DonutHoleSeparator, DonutHoleEnd);
-        private static readonly string DonutHolesPattern = string.Format("{0}(.*?){1}(.*?){2}", DonutHoleStart, DonutHoleSeparator, DonutHoleEnd);
+        private static readonly string DonutCreationPattern = string.Format("{0}{{0}}{1}", DonutHoleStart,  DonutHoleEnd);
+        private static readonly string DonutHolesPattern = string.Format("{0}(.*?){1}", DonutHoleStart,  DonutHoleEnd);
 
         private static readonly Regex DonutHolesRegexp = new Regex(DonutHolesPattern, RegexOptions.Compiled | RegexOptions.Singleline);
         private string ParseAndStoreOutput(string totalOutput)
@@ -113,7 +109,7 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
                 currentIndex = match.Index + match.Length;
                 OutputSegments.Add(segment);
                 output.Write(segment);
-                output.Write(match.Groups[2].Value);
+                output.Write(match.Groups[1].Value);
             }
 
             if(currentIndex < totalOutput.Length)
