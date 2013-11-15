@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web.Mvc;
 using System.Web.Mvc.Html;
@@ -18,13 +19,15 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
     public class Donut
     {
         private readonly ActionExecutingContext _context;
-        internal readonly Donut Parent;
+        internal Donut Parent;
         private TextWriter _originalOutput;
         public ControllerAction ControllerAction { get; set; }
         public readonly List<string> OutputSegments = new List<string>();
         public readonly List<Donut> Children = new List<Donut>();
+        public bool Executed { get; set; }
 
         internal DonutOutputWriter Output { get; private set; }
+        public bool Cached { get; set; }
 
         public Donut(ActionExecutingContext context, Donut parent)
         {
@@ -49,7 +52,7 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
         /// <param name="context">Execute </param>
         public string Execute(ActionExecutingContext context)
         {
-            var output = new StringWriter();
+            var output = new StringWriter();            
 
             for(int currentSegment = 0; currentSegment < OutputSegments.Count; currentSegment++)
             {
@@ -60,7 +63,14 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
                 }
             }
 
-            return output.ToString();
+            if(Parent != null && !Parent.Executed)
+            {
+                return WrapInDonut(output.ToString());
+            }
+            else
+            {
+                return output.ToString();
+            }
         }
 
         private string InvokeChildAction(Donut donut, ActionExecutingContext context)
@@ -84,12 +94,21 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
 
         public void ResultExecuted()
         {
+            if(Executed)
+            {
+                if(Parent != null && !Parent.Executed)
+                {
+                    Parent.AddDonut(this);
+                }
+                return;
+            }
+            Executed = true;
             if(!ReferenceEquals(_context.HttpContext.Response.Output, Output))
             {
                 throw new Exception("Hey! Someone replaced HttpContext.Response.Output and did not restore it correctly. Output will be corrupt.");
             }
             string totalOutput = ParseAndStoreOutput(Output.ToString());
-            if(Parent != null)
+            if(Parent != null && !Parent.Executed)
             {
                 Parent.AddDonut(this);
                 _originalOutput.Write(WrapInDonut(totalOutput));
@@ -98,7 +117,7 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
             {
                 _originalOutput.Write(totalOutput);
             }
-            
+
             _context.HttpContext.Response.Output = _originalOutput;
 
             Output = null;            
@@ -113,16 +132,16 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
         private const string DonutHoleStart = "#StartDonut#18C1E8F8-B296-44BF-A768-89D4F41D14A6#ID:";
         private const string DonutHoleEnd = "#18C1E8F8-B296-44BF-A768-89D4F41D14A6#EndDonut#";
 
-        //todo:Remove. I used these to make it easier to see the structure during initial development/debugging.
-        //private const string DonutHoleStart = "<Donut>";
-        //private const string DonutHoleEnd = "</Donut>";
-
         private static readonly string DonutCreationPattern = string.Format("{0}{{0}}{1}", DonutHoleStart,  DonutHoleEnd);
         private static readonly string DonutHolesPattern = string.Format("{0}(.*?){1}", DonutHoleStart,  DonutHoleEnd);
 
         private static readonly Regex DonutHolesRegexp = new Regex(DonutHolesPattern, RegexOptions.Compiled | RegexOptions.Singleline);
         private string ParseAndStoreOutput(string totalOutput)
-        {            
+        {
+            if(OutputSegments.Any())
+            {
+                throw new InvalidOperationException("ParseAndStoreOutput should only ever be called once for a donut.");
+            }
             var matches = DonutHolesRegexp.Matches(totalOutput);
 
             var currentIndex = 0;            
@@ -145,5 +164,11 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
 
             return output.ToString();
         }
+
+        public void PushedFromCache(Donut parent)
+        {
+            Parent = parent;
+            Cached = true;
+        }        
     }
 }

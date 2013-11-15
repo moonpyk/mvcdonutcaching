@@ -145,10 +145,11 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
                 // We are fetching the stored value only if the option has not been set and the request is not a POST
                 if(!CacheSettings.Options.HasFlag(OutputCacheOptions.NoCacheLookupForPosts) || filterContext.HttpContext.Request.HttpMethod != "POST")
                 {
-                    var cachedItem = OutputCacheManager.GetItem(cacheKey);
+                    var cachedItem = OutputCacheManager.GetItem(cacheKey);                    
                     // We have a cached version on the server side
                     if(cachedItem != null)
                     {
+                        DonutOutputManager.ActionExecutingCached(filterContext, cachedItem.Donut);
                         // We inject the previous result into the MVC pipeline
                         // The MVC action won't execute as we injected the previous cached result.
                         filterContext.Result = new ContentResult
@@ -162,21 +163,18 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
             }
 
             DonutOutputManager.ActionExecuting(filterContext);
-            filterContext.HttpContext.Items[cacheKey] = true;
         }
 
         override public void OnResultExecuted(ResultExecutedContext filterContext)
         {
             var cacheKey = KeyGenerator.GenerateKey(filterContext, CacheSettings);
-            var wasRenderedNotReturnedFromCache = filterContext.HttpContext.Items[cacheKey] as bool?;
 
-            if(!wasRenderedNotReturnedFromCache.HasValue || !wasRenderedNotReturnedFromCache.Value)
+            var donut = DonutOutputManager.ResultExecuted(filterContext);
+            if(donut.Cached)
             {
                 return; //We rendered from cache and can stop right here.
             }
-
-
-            var donut = DonutOutputManager.ResultExecuted(filterContext);
+            
             var cacheItem = new CacheItem
                             {
                                 Donut = donut,

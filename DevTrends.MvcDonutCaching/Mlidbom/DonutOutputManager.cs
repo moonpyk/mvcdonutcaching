@@ -19,6 +19,14 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
             return donutStack;
         }
 
+        public static void ActionExecutingCached(ActionExecutingContext context, Donut cached)
+        {
+            var donutStack = DonutStack(context);
+            var parent = donutStack.Count > 0 ? donutStack.Peek() : null;
+            cached.PushedFromCache(parent);
+            donutStack.Push(cached);
+        } 
+
         public static void ActionExecuting(ActionExecutingContext context)
         {
             var donutStack = DonutStack(context);
