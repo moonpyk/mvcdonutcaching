@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Globalization;
-using System.IO;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.UI;
@@ -11,9 +9,7 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
     public class AutoOutputCacheAttribute : ActionFilterAttribute
     {
         // Protected
-        protected readonly ICacheHeadersHelper CacheHeadersHelper;
         protected readonly ICacheSettingsManager CacheSettingsManager;
-        protected readonly IDonutHoleFiller DonutHoleFiller;
         protected readonly IKeyGenerator KeyGenerator;
         protected readonly IReadWriteOutputCacheManager OutputCacheManager;
 
@@ -40,28 +36,22 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
             this(
             new KeyGenerator(keyBuilder),
             new OutputCacheManager(OutputCache.Instance, keyBuilder),
-            new DonutHoleFiller(new EncryptingActionSettingsSerialiser(new ActionSettingsSerialiser(), new Encryptor())),
-            new CacheSettingsManager(),
-            new CacheHeadersHelper()
+            new CacheSettingsManager()
             ) {}
 
         protected AutoOutputCacheAttribute(
             IKeyGenerator keyGenerator,
             IReadWriteOutputCacheManager outputCacheManager,
-            IDonutHoleFiller donutHoleFiller,
-            ICacheSettingsManager cacheSettingsManager,
-            ICacheHeadersHelper cacheHeadersHelper
+            ICacheSettingsManager cacheSettingsManager
             )
         {
             KeyGenerator = keyGenerator;
             OutputCacheManager = outputCacheManager;
-            DonutHoleFiller = donutHoleFiller;
             CacheSettingsManager = cacheSettingsManager;
-            CacheHeadersHelper = cacheHeadersHelper;
 
             Duration = -1;
             Location = (OutputCacheLocation)(-1);
-            Options = OutputCache.DefaultOptions;            
+            Options = OutputCache.DefaultOptions;
         }
 
         /// <summary>Gets or sets the cache duration, in seconds.</summary>
@@ -121,7 +111,7 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
                 cacheSettings = new CacheSettings
                                 {
                                     IsCachingEnabled = CacheSettingsManager.IsCachingEnabledGlobally && cacheProfile.Enabled,
-                                    Duration = Duration == -1 ? cacheProfile.Duration : Duration,
+                                    Duration = (int)Duration == -1 ? cacheProfile.Duration : Duration,
                                     VaryByCustom = VaryByCustom ?? cacheProfile.VaryByCustom,
                                     VaryByParam = VaryByParam ?? cacheProfile.VaryByParam,
                                     Location = (int)Location == -1 ? ((int)cacheProfile.Location == -1 ? OutputCacheLocation.Server : cacheProfile.Location) : Location,
@@ -130,7 +120,7 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
                                 };
             }
 
-            if(cacheSettings.Duration == -1)
+            if((int)cacheSettings.Duration == -1)
             {
                 throw new HttpException("The directive or the configuration settings profile must specify the 'duration' attribute.");
             }
@@ -149,23 +139,23 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
             var cacheKey = KeyGenerator.GenerateKey(filterContext, CacheSettings);
 
             // Are we actually storing data on the server side ?
-            if (CacheSettings.IsServerCachingEnabled)
+            if(CacheSettings.IsServerCachingEnabled)
             {
                 // If the request is a POST, we lookup for NoCacheLookupForPosts option
                 // We are fetching the stored value only if the option has not been set and the request is not a POST
-                if (!CacheSettings.Options.HasFlag(OutputCacheOptions.NoCacheLookupForPosts) || filterContext.HttpContext.Request.HttpMethod != "POST")
+                if(!CacheSettings.Options.HasFlag(OutputCacheOptions.NoCacheLookupForPosts) || filterContext.HttpContext.Request.HttpMethod != "POST")
                 {
                     var cachedItem = OutputCacheManager.GetItem(cacheKey);
                     // We have a cached version on the server side
-                    if (cachedItem != null)
+                    if(cachedItem != null)
                     {
                         // We inject the previous result into the MVC pipeline
                         // The MVC action won't execute as we injected the previous cached result.
                         filterContext.Result = new ContentResult
-                        {
-                            Content = cachedItem.Donut.Execute(filterContext),
-                            ContentType = cachedItem.ContentType
-                        };
+                                               {
+                                                   Content = cachedItem.Donut.Execute(filterContext),
+                                                   ContentType = cachedItem.ContentType
+                                               };
                         return;
                     }
                 }
@@ -182,7 +172,7 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
 
             if(!wasRenderedNotReturnedFromCache.HasValue || !wasRenderedNotReturnedFromCache.Value)
             {
-                return;//We rendered from cache and can stop right here.
+                return; //We rendered from cache and can stop right here.
             }
 
 
@@ -193,7 +183,7 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
                                 ContentType = filterContext.HttpContext.Response.ContentType
                             };
 
-            if (CacheSettings.IsServerCachingEnabled && filterContext.HttpContext.Response.StatusCode == 200)
+            if(CacheSettings.IsServerCachingEnabled && filterContext.HttpContext.Response.StatusCode == 200)
             {
                 OutputCacheManager.AddItem(cacheKey, cacheItem, DateTime.UtcNow.AddSeconds(CacheSettings.Duration));
             }
