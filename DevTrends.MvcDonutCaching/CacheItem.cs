@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.Serialization;
+using DevTrends.MvcDonutCaching.Mlidbom;
 
 namespace DevTrends.MvcDonutCaching
 {
@@ -23,5 +24,8 @@ namespace DevTrends.MvcDonutCaching
         /// </value>
         [DataMember(Order = 2)]
         public string Content { get; set; }
+
+        //Todo: move or get along with serialization etc....
+        public Donut Donut { get; set; }
     }
 }

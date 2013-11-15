@@ -45,17 +45,9 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
         /// Writes the stored output to the response stream and recurses down to <see cref="Children"/> to fill in the holes.
         /// </summary>
         /// <param name="context">Execute </param>
-        public void Execute(ActionExecutingContext context)
+        public string Execute(ActionExecutingContext context)
         {            
-            Contract.Parameter.NotNull(context);
-            for(int currentOutputSegment = 0; currentOutputSegment < OutputSegments.Count; currentOutputSegment++)
-            {
-                context.HttpContext.Response.Write(OutputSegments[currentOutputSegment]);
-                if(Children.Count > currentOutputSegment)
-                {
-                    Children[currentOutputSegment].Execute(context);
-                }
-            }
+            throw new NotImplementedException("Need to figure out how to combine cache and real calls here....");
         }
 
         public void ResultExecuted()

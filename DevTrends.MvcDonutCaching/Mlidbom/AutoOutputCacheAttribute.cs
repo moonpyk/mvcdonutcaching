@@ -163,7 +163,7 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
                         // The MVC action won't execute as we injected the previous cached result.
                         filterContext.Result = new ContentResult
                         {
-                            Content = DonutHoleFiller.ReplaceDonutHoleContent(cachedItem.Content, filterContext, CacheSettings.Options),
+                            Content = cachedItem.Donut.Execute(filterContext),
                             ContentType = cachedItem.ContentType
                         };
                         return;
@@ -178,6 +178,16 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
         {
             var cacheKey = KeyGenerator.GenerateKey(filterContext, CacheSettings);
             var donut = DonutOutputManager.ResultExecuted(filterContext);
+            var cacheItem = new CacheItem
+                       {
+                           Donut = donut,
+                           ContentType = filterContext.HttpContext.Response.ContentType
+                       };
+            
+            if (CacheSettings.IsServerCachingEnabled && filterContext.HttpContext.Response.StatusCode == 200)
+            {
+                OutputCacheManager.AddItem(cacheKey, cacheItem, DateTime.UtcNow.AddSeconds(CacheSettings.Duration));
+            }
         }
     }
 }
