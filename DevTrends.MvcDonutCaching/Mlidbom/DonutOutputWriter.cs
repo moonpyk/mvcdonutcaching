@@ -3,7 +3,7 @@ using System.Globalization;
 using System.IO;
 using System.Web.Mvc;
 
-namespace DevTrends.MvcDonutCaching
+namespace DevTrends.MvcDonutCaching.Mlidbom
 {
     /// <summary>
     /// Minor convenience class that gives the advantage of easily telling if some other code has replaced our output by inspecting the type...

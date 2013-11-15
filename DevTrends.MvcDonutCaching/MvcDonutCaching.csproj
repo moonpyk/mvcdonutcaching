@@ -76,7 +76,7 @@
     <Compile Include="Mlidbom\DonutOutputWriter.cs" />
     <Compile Include="EncryptingActionSettingsSerialiser.cs" />
     <Compile Include="Encryptor.cs" />
-    <Compile Include="IControllerAction.cs" />
+    <Compile Include="Mlidbom\IControllerAction.cs" />
     <Compile Include="Interfaces\ICacheHeadersHelper.cs" />
     <Compile Include="Interfaces\IEncryptingActionSettingsSerialiser.cs" />
     <Compile Include="Interfaces\IEncryptor.cs" />
