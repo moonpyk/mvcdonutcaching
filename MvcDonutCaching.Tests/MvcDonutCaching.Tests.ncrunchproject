@@ -19,22 +19,5 @@
   <UseCPUArchitecture>AutoDetect</UseCPUArchitecture>
   <MSTestThreadApartmentState>STA</MSTestThreadApartmentState>
   <BuildProcessArchitecture>x86</BuildProcessArchitecture>
-  <IgnoredTests>
-    <RegexTestSelector>
-      <RegularExpression>MvcDonutCaching\.Tests\.FiveLevelsNestedDonutsExcludeFromParentCacheAttributeManagedLevel2and4AreMissingExcludeFromParentCacheAttributeControllerTests\..*</RegularExpression>
-    </RegexTestSelector>
-    <RegexTestSelector>
-      <RegularExpression>MvcDonutCaching\.Tests\.FiveLevelsNestedDonutsExcludeFromParentCacheAttributeManagedControllerTests\..*</RegularExpression>
-    </RegexTestSelector>
-    <RegexTestSelector>
-      <RegularExpression>MvcDonutCaching\.Tests\.FiveLevelsNestedDonutsControllerTests\..*</RegularExpression>
-    </RegexTestSelector>
-    <RegexTestSelector>
-      <RegularExpression>MvcDonutCaching\.Tests\.Caching100MillisecondsControllerWithNoChildActionsTests\..*</RegularExpression>
-    </RegexTestSelector>
-    <RegexTestSelector>
-      <RegularExpression>MvcDonutCaching\.Tests\.DonutOutputManagerTests\..*</RegularExpression>
-    </RegexTestSelector>
-  </IgnoredTests>
   <HiddenWarnings>LongTestTimesWithoutParallelExecution</HiddenWarnings>
 </ProjectConfiguration>

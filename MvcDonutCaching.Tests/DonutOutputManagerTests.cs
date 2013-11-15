@@ -13,7 +13,7 @@ using NUnit.Framework;
 
 namespace MvcDonutCaching.Tests
 {
-    [TestFixture]
+    [TestFixture,Ignore("This was written for a different branch where I had misunderstood how exactly an action was invoked by mvc. Not sure if it can be used at all")]
     public class DonutOutputManagerTests
     {
         [Test]
