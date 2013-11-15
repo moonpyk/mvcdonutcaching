@@ -77,5 +77,45 @@ namespace MvcDonutCaching.Tests.Mlidbom
             Assert.That(level1Donut.OutputSegments[0], Is.EqualTo("<L1>"));
             Assert.That(level1Donut.OutputSegments[1], Is.EqualTo("</L1>"));
         }
+
+        [Test]
+        public void GathersCorrectDataForInitialRequestForDepth3WithDualChildrenForEachChildLevelAndAdjacentChildren()
+        {
+            var actionContext = TestUtil.CreateMockActionExecutingControllerContext();
+
+            const string l1Template = "<L1>{0}{1}</L1>", l2Template = "<L2>{0}Between{1}</L2>", l3Output = "<L3></L3>";
+
+            Donut level1Donut = null, level2Donut1 = null, level2Donut2 = null, level3Donut1 = null, level3Donut2 = null, level3Donut3 = null, level3Donut4 = null;
+
+            using (actionContext.InvokeAction(output: l1Template, afterResultExecuted: donut => level1Donut = donut))
+            {
+                using (actionContext.InvokeAction(output: l2Template, afterResultExecuted: donut => level2Donut1 = donut))
+                {
+                    using (actionContext.InvokeAction(output: l3Output, afterResultExecuted: donut => level3Donut1 = donut)) { }
+                    using (actionContext.InvokeAction(output: l3Output, afterResultExecuted: donut => level3Donut2 = donut)) { }
+                }
+                using (actionContext.InvokeAction(output: l2Template, afterResultExecuted: donut => level2Donut2 = donut))
+                {
+                    using (actionContext.InvokeAction(output: l3Output, afterResultExecuted: donut => level3Donut3 = donut)) { }
+                    using (actionContext.InvokeAction(output: l3Output, afterResultExecuted: donut => level3Donut4 = donut)) { }
+                }
+            }
+
+            Assert.That(level3Donut1.Children.Count, Is.EqualTo(0));
+            Assert.That(level3Donut1.OutputSegments.Count, Is.EqualTo(1));
+            Assert.That(level3Donut1.OutputSegments[0], Is.EqualTo(l3Output));
+
+            Assert.That(level2Donut1.Children.Count, Is.EqualTo(2));
+            Assert.That(level2Donut1.OutputSegments.Count, Is.EqualTo(3));
+            Assert.That(level2Donut1.OutputSegments[0], Is.EqualTo("<L2>"));
+            Assert.That(level2Donut1.OutputSegments[1], Is.EqualTo("Between"));
+            Assert.That(level2Donut1.OutputSegments[2], Is.EqualTo("</L2>"));
+
+            Assert.That(level1Donut.Children.Count, Is.EqualTo(2));
+            Assert.That(level1Donut.OutputSegments.Count, Is.EqualTo(3));
+            Assert.That(level1Donut.OutputSegments[0], Is.EqualTo("<L1>"));
+            Assert.That(level1Donut.OutputSegments[1], Is.EqualTo(""));
+            Assert.That(level1Donut.OutputSegments[2], Is.EqualTo("</L1>"));
+        }
     }
 }
