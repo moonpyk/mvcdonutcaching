@@ -143,12 +143,12 @@ namespace MvcDonutCaching.Tests
             Console.WriteLine("Time is:            {0}", now.ToString("o"));
             Console.WriteLine();
 
-            Console.WriteLine("Level0Duration5 is: {0}", levelTimes.Level0Duration5.ToString("o"));
-            Console.WriteLine("Level1Duration4 is: {0}", levelTimes.Level1Duration4.ToString("o"));
-            Console.WriteLine("Level2Duration3 is: {0}", levelTimes.Level2Duration3.ToString("o"));
-            Console.WriteLine("Level3Duration2 is: {0}", levelTimes.Level3Duration2.ToString("o"));
-            Console.WriteLine("Level4Duration1 is: {0}", levelTimes.Level4Duration1.ToString("o"));
-            Console.WriteLine("Level5Duration0 is: {0}", levelTimes.Level5Duration0.ToString("o"));
+            Console.WriteLine("Level0 is: {0}", levelTimes.Level0Duration5.ToString("o"));
+            Console.WriteLine("Level1 is: {0}", levelTimes.Level1Duration4.ToString("o"));
+            Console.WriteLine("Level2 is: {0}", levelTimes.Level2Duration3.ToString("o"));
+            Console.WriteLine("Level3 is: {0}", levelTimes.Level3Duration2.ToString("o"));
+            Console.WriteLine("Level4 is: {0}", levelTimes.Level4Duration1.ToString("o"));
+            Console.WriteLine("Level5 is: {0}", levelTimes.Level5Duration0.ToString("o"));
             Console.WriteLine();
 
             Console.WriteLine("Level0Duration5Age is: {0}", (int)(now - levelTimes.Level0Duration5).TotalMilliseconds);

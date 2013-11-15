@@ -44,12 +44,12 @@ namespace MvcDonutCaching.Tests
                         }
                     };
 
-                assertRenderTimeIsWithin50MillisecondsOfCachePolicyDuration("Level0", lastLevelTimes.Level0Duration5, currentLevelTimes.Level0Duration5, 500);
-                assertRenderTimeIsWithin50MillisecondsOfCachePolicyDuration("Level1", lastLevelTimes.Level1Duration4, currentLevelTimes.Level1Duration4, 400);
-                assertRenderTimeIsWithin50MillisecondsOfCachePolicyDuration("Level2", lastLevelTimes.Level2Duration3, currentLevelTimes.Level2Duration3, 300);
-                assertRenderTimeIsWithin50MillisecondsOfCachePolicyDuration("Level3", lastLevelTimes.Level3Duration2, currentLevelTimes.Level3Duration2, 200);
-                assertRenderTimeIsWithin50MillisecondsOfCachePolicyDuration("Level4", lastLevelTimes.Level4Duration1, currentLevelTimes.Level4Duration1, 100);
-                assertRenderTimeIsWithin50MillisecondsOfCachePolicyDuration("Level5", lastLevelTimes.Level5Duration0, currentLevelTimes.Level5Duration0, 0);
+                assertRenderTimeIsWithin50MillisecondsOfCachePolicyDuration("Level0", lastLevelTimes.Level0, currentLevelTimes.Level0, 0);
+                assertRenderTimeIsWithin50MillisecondsOfCachePolicyDuration("Level1", lastLevelTimes.Level1, currentLevelTimes.Level1, 100);
+                assertRenderTimeIsWithin50MillisecondsOfCachePolicyDuration("Level2", lastLevelTimes.Level2, currentLevelTimes.Level2, 200);
+                assertRenderTimeIsWithin50MillisecondsOfCachePolicyDuration("Level3", lastLevelTimes.Level3, currentLevelTimes.Level3, 300);
+                assertRenderTimeIsWithin50MillisecondsOfCachePolicyDuration("Level4", lastLevelTimes.Level4, currentLevelTimes.Level4, 400);
+                assertRenderTimeIsWithin50MillisecondsOfCachePolicyDuration("Level5", lastLevelTimes.Level5, currentLevelTimes.Level5, 500);
 
                 lastLevelTimes = currentLevelTimes;
             }
@@ -81,115 +81,115 @@ namespace MvcDonutCaching.Tests
                     var levelTimes = new LevelRenderTimes(GetUrlContent(ControllerUrl));
 
                     AssertRenderedDuringSameRequest(
-                        levelTimes.Level0Duration5,
-                        levelTimes.Level1Duration4,
-                        levelTimes.Level2Duration3,
-                        levelTimes.Level3Duration2,
-                        levelTimes.Level4Duration1,
-                        levelTimes.Level5Duration0);
+                        levelTimes.Level0,
+                        levelTimes.Level1,
+                        levelTimes.Level2,
+                        levelTimes.Level3,
+                        levelTimes.Level4,
+                        levelTimes.Level5);
                 });
         }
 
 
         [Test]
-        public void OnlyLevel5HasUpdatedContentAfter10Milliseconds()
+        public void OnlyLevel0HasUpdatedContentAfter10Milliseconds()
         {
             RetryThreeTimesOnFailureSinceTimingIssuesWithTheWebServerAndStartUpMayCauseIntermittentFailures(
                 () =>
                 {
-                    var originalRenderTime = RenderAndFetchLevelTimes().Level5Duration0;
+                    var originalRenderTime = RenderAndFetchLevelTimes().Level5;
 
                     Thread.Sleep(TimeSpan.FromMilliseconds(10));
                     var levelTimes = FetchAndPrintLevelTimes();
                     AssertRenderedDuringSameRequest(originalRenderTime,
-                        levelTimes.Level0Duration5,
-                        levelTimes.Level1Duration4,
-                        levelTimes.Level2Duration3,
-                        levelTimes.Level3Duration2,
-                        levelTimes.Level4Duration1);
+                        levelTimes.Level1,
+                        levelTimes.Level2,
+                        levelTimes.Level3,
+                        levelTimes.Level4,
+                        levelTimes.Level5);
 
-                    AssertRenderedDuringLastRequest(levelTimes.Level5Duration0);
+                    AssertRenderedDuringLastRequest(levelTimes.Level0);
                 });
         }
 
         [Test]
-        public void OnlyLevel5And4ShouldHaveCurrentValuesAfter110Milliseconds()
+        public void OnlyLevel0_and1ShouldHaveCurrentValuesAfter110Milliseconds()
         {
             RetryThreeTimesOnFailureSinceTimingIssuesWithTheWebServerAndStartUpMayCauseIntermittentFailures(
                 () =>
                 {
-                    var originalRenderTime = RenderAndFetchLevelTimes().Level5Duration0;
+                    var originalRenderTime = RenderAndFetchLevelTimes().Level5;
 
                     Thread.Sleep(TimeSpan.FromMilliseconds(110));
                     var levelTimes = FetchAndPrintLevelTimes();
                     AssertRenderedDuringSameRequest(originalRenderTime,
-                        levelTimes.Level0Duration5,
-                        levelTimes.Level1Duration4,
-                        levelTimes.Level2Duration3,
-                        levelTimes.Level3Duration2);
+                        levelTimes.Level2,
+                        levelTimes.Level3,
+                        levelTimes.Level4,
+                        levelTimes.Level5);
 
-                    AssertRenderedDuringLastRequest(levelTimes.Level4Duration1);
-                    AssertRenderedDuringLastRequest(levelTimes.Level5Duration0);
+                    AssertRenderedDuringLastRequest(levelTimes.Level0);
+                    AssertRenderedDuringLastRequest(levelTimes.Level1);
                 });
         }
 
         [Test]
-        public void Level5_4_and_3ShouldHaveCurrentValuesAfter210Milliseconds()
+        public void Level0_1_and2ShouldHaveCurrentValuesAfter210Milliseconds()
         {
             RetryThreeTimesOnFailureSinceTimingIssuesWithTheWebServerAndStartUpMayCauseIntermittentFailures(
                 () =>
                 {
-                    var originalRenderTime = RenderAndFetchLevelTimes().Level5Duration0;
+                    var originalRenderTime = RenderAndFetchLevelTimes().Level5;
 
                     Thread.Sleep(TimeSpan.FromMilliseconds(210));
                     var levelTimes = FetchAndPrintLevelTimes();
 
-                    AssertRenderedDuringSameRequest(originalRenderTime, levelTimes.Level0Duration5, levelTimes.Level1Duration4, levelTimes.Level2Duration3);
+                    AssertRenderedDuringSameRequest(originalRenderTime, levelTimes.Level5, levelTimes.Level4, levelTimes.Level3);
 
-                    AssertRenderedDuringLastRequest(levelTimes.Level3Duration2);
-                    AssertRenderedDuringLastRequest(levelTimes.Level4Duration1);
-                    AssertRenderedDuringLastRequest(levelTimes.Level5Duration0);
+                    AssertRenderedDuringLastRequest(levelTimes.Level0);
+                    AssertRenderedDuringLastRequest(levelTimes.Level1);
+                    AssertRenderedDuringLastRequest(levelTimes.Level2);
                 });
         }
 
         [Test]
-        public void Level5_4_3_and2ShouldHaveCurrentValuesAfter310Milliseconds()
+        public void Level0_1_2_and3ShouldHaveCurrentValuesAfter310Milliseconds()
         {
             RetryThreeTimesOnFailureSinceTimingIssuesWithTheWebServerAndStartUpMayCauseIntermittentFailures(
                 () =>
                 {
-                    var originalRenderTime = RenderAndFetchLevelTimes().Level5Duration0;
+                    var originalRenderTime = RenderAndFetchLevelTimes().Level5;
 
                     Thread.Sleep(TimeSpan.FromMilliseconds(310));
                     var levelTimes = FetchAndPrintLevelTimes();
 
-                    AssertRenderedDuringSameRequest(originalRenderTime, levelTimes.Level0Duration5, levelTimes.Level1Duration4);
+                    AssertRenderedDuringSameRequest(originalRenderTime, levelTimes.Level5, levelTimes.Level4);
 
-                    AssertRenderedDuringLastRequest(levelTimes.Level2Duration3);
-                    AssertRenderedDuringLastRequest(levelTimes.Level3Duration2);
-                    AssertRenderedDuringLastRequest(levelTimes.Level4Duration1);
-                    AssertRenderedDuringLastRequest(levelTimes.Level5Duration0);
+                    AssertRenderedDuringLastRequest(levelTimes.Level0);
+                    AssertRenderedDuringLastRequest(levelTimes.Level1);
+                    AssertRenderedDuringLastRequest(levelTimes.Level2);
+                    AssertRenderedDuringLastRequest(levelTimes.Level3);
                 });
         }
 
 
         [Test]
-        public void AllButRootShouldHaveCurrentValuesAfter410Milliseconds()
+        public void AllButLevel5ShouldHaveCurrentValuesAfter410Milliseconds()
         {
             RetryThreeTimesOnFailureSinceTimingIssuesWithTheWebServerAndStartUpMayCauseIntermittentFailures(
                 () =>
                 {
-                    var originalRenderTime = RenderAndFetchLevelTimes().Level5Duration0;
+                    var originalRenderTime = RenderAndFetchLevelTimes().Level5;
 
                     Thread.Sleep(TimeSpan.FromMilliseconds(410));
                     var levelTimes = FetchAndPrintLevelTimes();
-                    AssertRenderedDuringSameRequest(originalRenderTime, levelTimes.Level0Duration5);
+                    AssertRenderedDuringSameRequest(originalRenderTime, levelTimes.Level5);
 
-                    AssertRenderedDuringLastRequest(levelTimes.Level1Duration4);
-                    AssertRenderedDuringLastRequest(levelTimes.Level2Duration3);
-                    AssertRenderedDuringLastRequest(levelTimes.Level3Duration2);
-                    AssertRenderedDuringLastRequest(levelTimes.Level4Duration1);
-                    AssertRenderedDuringLastRequest(levelTimes.Level5Duration0);
+                    AssertRenderedDuringLastRequest(levelTimes.Level0);
+                    AssertRenderedDuringLastRequest(levelTimes.Level1);
+                    AssertRenderedDuringLastRequest(levelTimes.Level2);
+                    AssertRenderedDuringLastRequest(levelTimes.Level3);
+                    AssertRenderedDuringLastRequest(levelTimes.Level4);                    
                 });
         }
 
@@ -199,17 +199,17 @@ namespace MvcDonutCaching.Tests
             RetryThreeTimesOnFailureSinceTimingIssuesWithTheWebServerAndStartUpMayCauseIntermittentFailures(
                 () =>
                 {
-                    var originalRenderTime = RenderAndFetchLevelTimes().Level5Duration0;
+                    var originalRenderTime = RenderAndFetchLevelTimes().Level5;
 
                     Thread.Sleep(TimeSpan.FromMilliseconds(510));
                     var levelTimes = FetchAndPrintLevelTimes();
 
-                    AssertRenderedDuringLastRequest(levelTimes.Level0Duration5);
-                    AssertRenderedDuringLastRequest(levelTimes.Level1Duration4);
-                    AssertRenderedDuringLastRequest(levelTimes.Level2Duration3);
-                    AssertRenderedDuringLastRequest(levelTimes.Level3Duration2);
-                    AssertRenderedDuringLastRequest(levelTimes.Level4Duration1);
-                    AssertRenderedDuringLastRequest(levelTimes.Level5Duration0);
+                    AssertRenderedDuringLastRequest(levelTimes.Level0);
+                    AssertRenderedDuringLastRequest(levelTimes.Level1);
+                    AssertRenderedDuringLastRequest(levelTimes.Level2);
+                    AssertRenderedDuringLastRequest(levelTimes.Level3);
+                    AssertRenderedDuringLastRequest(levelTimes.Level4);
+                    AssertRenderedDuringLastRequest(levelTimes.Level5);
                 });
         }
 
@@ -236,12 +236,12 @@ namespace MvcDonutCaching.Tests
                         }
                     };
 
-                assertRenderTimeIsNotTooOld("Level0", currentLevelTimes.Level0Duration5, 500);
-                assertRenderTimeIsNotTooOld("Level1", currentLevelTimes.Level1Duration4, 400);
-                assertRenderTimeIsNotTooOld("Level2", currentLevelTimes.Level2Duration3, 300);
-                assertRenderTimeIsNotTooOld("Level3", currentLevelTimes.Level3Duration2, 200);
-                assertRenderTimeIsNotTooOld("Level4", currentLevelTimes.Level4Duration1, 100);
-                assertRenderTimeIsNotTooOld("Level5", currentLevelTimes.Level5Duration0, 0);
+                assertRenderTimeIsNotTooOld("Level0", currentLevelTimes.Level0, 0);
+                assertRenderTimeIsNotTooOld("Level1", currentLevelTimes.Level1, 100);
+                assertRenderTimeIsNotTooOld("Level2", currentLevelTimes.Level2, 200);
+                assertRenderTimeIsNotTooOld("Level3", currentLevelTimes.Level3, 300);
+                assertRenderTimeIsNotTooOld("Level4", currentLevelTimes.Level4, 400);
+                assertRenderTimeIsNotTooOld("Level5", currentLevelTimes.Level5, 500);
             }
 
             if (failures.ToString() != string.Empty)
@@ -269,42 +269,42 @@ namespace MvcDonutCaching.Tests
             Console.WriteLine("Time is:            {0}", now.ToString("o"));
             Console.WriteLine();
 
-            Console.WriteLine("Level0Duration5 is: {0}", levelTimes.Level0Duration5.ToString("o"));
-            Console.WriteLine("Level1Duration4 is: {0}", levelTimes.Level1Duration4.ToString("o"));
-            Console.WriteLine("Level2Duration3 is: {0}", levelTimes.Level2Duration3.ToString("o"));
-            Console.WriteLine("Level3Duration2 is: {0}", levelTimes.Level3Duration2.ToString("o"));
-            Console.WriteLine("Level4Duration1 is: {0}", levelTimes.Level4Duration1.ToString("o"));
-            Console.WriteLine("Level5Duration0 is: {0}", levelTimes.Level5Duration0.ToString("o"));
+            Console.WriteLine("Level0 is: {0}", levelTimes.Level0.ToString("o"));
+            Console.WriteLine("Level1 is: {0}", levelTimes.Level1.ToString("o"));
+            Console.WriteLine("Level2 is: {0}", levelTimes.Level2.ToString("o"));
+            Console.WriteLine("Level3 is: {0}", levelTimes.Level3.ToString("o"));
+            Console.WriteLine("Level4 is: {0}", levelTimes.Level4.ToString("o"));
+            Console.WriteLine("Level5 is: {0}", levelTimes.Level5.ToString("o"));
             Console.WriteLine();
 
-            Console.WriteLine("Level0Duration5Age is: {0}", (int)(now - levelTimes.Level0Duration5).TotalMilliseconds);
-            Console.WriteLine("Level1Duration4Age is: {0}", (int)(now - levelTimes.Level1Duration4).TotalMilliseconds);
-            Console.WriteLine("Level2Duration3Age is: {0}", (int)(now - levelTimes.Level2Duration3).TotalMilliseconds);
-            Console.WriteLine("Level3Duration2Age is: {0}", (int)(now - levelTimes.Level3Duration2).TotalMilliseconds);
-            Console.WriteLine("Level4Duration1Age is: {0}", (int)(now - levelTimes.Level4Duration1).TotalMilliseconds);
-            Console.WriteLine("Level5Duration0Age is: {0}", (int)(now - levelTimes.Level5Duration0).TotalMilliseconds);
+            Console.WriteLine("Level0Duration5Age is: {0}", (int)(now - levelTimes.Level0).TotalMilliseconds);
+            Console.WriteLine("Level1Duration4Age is: {0}", (int)(now - levelTimes.Level1).TotalMilliseconds);
+            Console.WriteLine("Level2Duration3Age is: {0}", (int)(now - levelTimes.Level2).TotalMilliseconds);
+            Console.WriteLine("Level3Duration2Age is: {0}", (int)(now - levelTimes.Level3).TotalMilliseconds);
+            Console.WriteLine("Level4Duration1Age is: {0}", (int)(now - levelTimes.Level4).TotalMilliseconds);
+            Console.WriteLine("Level5Duration0Age is: {0}", (int)(now - levelTimes.Level5).TotalMilliseconds);
             Console.WriteLine();
         }
 
         protected class LevelRenderTimes
         {
-            public readonly DateTime Level0Duration5;
-            public readonly DateTime Level1Duration4;
-            public readonly DateTime Level2Duration3;
-            public readonly DateTime Level3Duration2;
-            public readonly DateTime Level4Duration1;
-            public readonly DateTime Level5Duration0;
+            public readonly DateTime Level0;
+            public readonly DateTime Level1;
+            public readonly DateTime Level2;
+            public readonly DateTime Level3;
+            public readonly DateTime Level4;
+            public readonly DateTime Level5;
 
             public LevelRenderTimes(string viewOutPut)
             {
                 var levels = viewOutPut.Replace("<br/>", "").Split(new[] { Environment.NewLine }, StringSplitOptions.None);
 
-                Level0Duration5 = DateTime.Parse(levels[0].Split('#')[1]);
-                Level1Duration4 = DateTime.Parse(levels[1].Split('#')[1]);
-                Level2Duration3 = DateTime.Parse(levels[2].Split('#')[1]);
-                Level3Duration2 = DateTime.Parse(levels[3].Split('#')[1]);
-                Level4Duration1 = DateTime.Parse(levels[4].Split('#')[1]);
-                Level5Duration0 = DateTime.Parse(levels[5].Split('#')[1]);
+                Level0 = DateTime.Parse(levels[0].Split('#')[1]);
+                Level1 = DateTime.Parse(levels[1].Split('#')[1]);
+                Level2 = DateTime.Parse(levels[2].Split('#')[1]);
+                Level3 = DateTime.Parse(levels[3].Split('#')[1]);
+                Level4 = DateTime.Parse(levels[4].Split('#')[1]);
+                Level5 = DateTime.Parse(levels[5].Split('#')[1]);
             }
         }
     }}
