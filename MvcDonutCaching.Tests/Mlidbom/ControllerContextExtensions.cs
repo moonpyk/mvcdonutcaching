@@ -97,6 +97,8 @@ namespace MvcDonutCaching.Tests.Mlidbom
             Context.HttpContext.Response.Output.Write(Output);//Simulate an action actually having executed and delivered output.
 
             var donut = DonutOutputManager.ResultExecuted(Context);
+            Output = Context.HttpContext.Response.Output.ToString();//We want the result after the donut has played, not before...
+
             if(_afterResultExecuted != null)
             {
                 _afterResultExecuted(donut);

@@ -8,7 +8,7 @@ namespace MvcDonutCaching.Tests.Mlidbom
     public class WhenNothingIsCachedDonutsGatherRequiredDataForCaching
     {
         [Test]
-        public void RendersInitialRequestCorrectlyForDepth1()
+        public void GathersCorrectDataForInitialRequestForDepth1()
         {
             var actionContext = TestUtil.CreateMockActionExecutingControllerContext();
 
@@ -23,7 +23,7 @@ namespace MvcDonutCaching.Tests.Mlidbom
         }
 
         [Test]
-        public void RendersInitialRequestCorrectlyForDepth2()
+        public void GathersCorrectDataForInitialRequestForDepth2()
         {
             var actionContext = TestUtil.CreateMockActionExecutingControllerContext();
 
@@ -47,7 +47,7 @@ namespace MvcDonutCaching.Tests.Mlidbom
         }
 
         [Test]
-        public void RendersInitialRequestCorrectlyForDepth3()
+        public void GathersCorrectDataForInitialRequestForDepth3()
         {
             var actionContext = TestUtil.CreateMockActionExecutingControllerContext();
 

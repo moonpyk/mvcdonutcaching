@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Web.Mvc;
 
 namespace DevTrends.MvcDonutCaching.Mlidbom
@@ -20,11 +21,13 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
         public ControllerAction ControllerAction { get; set; }
         public readonly List<string> OutputSegments = new List<string>();
         public readonly List<Donut> Children = new List<Donut>();
+        public readonly Guid Id;
 
         internal DonutOutputWriter Output { get; private set; }
 
         public Donut(ActionExecutingContext context, Donut parent)
         {
+            Id = Guid.NewGuid();
             Contract.Parameter.NotNull(context);
             ControllerAction = new ControllerAction(context);
             _context = context;
@@ -63,12 +66,11 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
             {
                 throw new Exception("Hey! Someone replaced HttpContext.Response.Output and did not restore it correctly. Output will be corrupt.");
             }
-            string totalOutput = Output.ToString();
-            ParseAndStoreOutput(totalOutput);
+            string totalOutput = ParseAndStoreOutput(Output.ToString());
             if(Parent != null)
             {
                 Parent.AddDonut(this);
-                _originalOutput.Write(totalOutput);
+                _originalOutput.Write(WrapInDonut(totalOutput));
             }
             else
             {
@@ -80,9 +82,48 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
             Output = null;            
         }
 
-        private void ParseAndStoreOutput(string totalOutput)
+        private string WrapInDonut(string totalOutput)
         {
-            OutputSegments.Add(totalOutput);
+            string wrapInDonut = string.Format(DonutCreationPattern, Id, totalOutput);
+            return wrapInDonut;
+        }
+
+        private const string DonutHoleStart = "#StartDonut#18C1E8F8-B296-44BF-A768-89D4F41D14A6#ID:";
+        private const string DonutHoleSeparator = "#18C1E8F8-B296-44BF-A768-89D4F41D14A6#Value:";
+        private const string DonutHoleEnd = "#18C1E8F8-B296-44BF-A768-89D4F41D14A6#EndDonut#";
+
+        //todo:Remove. I used these to make it easier to see the structure during initial development/debugging.
+        //private const string DonutHoleStart = "<Donut>";
+        //private const string DonutHoleSeparator = "#Value:";
+        //private const string DonutHoleEnd = "</Donut>";
+
+        private static readonly string DonutCreationPattern = string.Format("{0}{{0}}{1}{{1}}{2}", DonutHoleStart, DonutHoleSeparator, DonutHoleEnd);
+        private static readonly string DonutHolesPattern = string.Format("{0}(.*?){1}(.*?){2}", DonutHoleStart, DonutHoleSeparator, DonutHoleEnd);
+
+        private static readonly Regex DonutHolesRegexp = new Regex(DonutHolesPattern, RegexOptions.Compiled | RegexOptions.Singleline);
+        private string ParseAndStoreOutput(string totalOutput)
+        {            
+            var matches = DonutHolesRegexp.Matches(totalOutput);
+
+            var currentIndex = 0;            
+            var output = new StringWriter();
+            foreach(Match match in matches)
+            {
+                var segment =  totalOutput.Substring(currentIndex, match.Index - currentIndex);
+                currentIndex = match.Index + match.Length;
+                OutputSegments.Add(segment);
+                output.Write(segment);
+                output.Write(match.Groups[2].Value);
+            }
+
+            if(currentIndex < totalOutput.Length)
+            {
+                var segment = totalOutput.Substring(currentIndex);
+                OutputSegments.Add(segment);
+                output.Write(segment);
+            }
+
+            return output.ToString();
         }
     }
 }
