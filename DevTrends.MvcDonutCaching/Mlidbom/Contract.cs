@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DevTrends.MvcDonutCaching
+namespace DevTrends.MvcDonutCaching.Mlidbom
 {
     public static class Contract
     {

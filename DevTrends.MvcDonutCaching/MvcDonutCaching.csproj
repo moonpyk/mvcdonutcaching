@@ -69,8 +69,8 @@
     <Compile Include="CacheItem.cs" />
     <Compile Include="CacheSettings.cs" />
     <Compile Include="CacheSettingsManager.cs" />
-    <Compile Include="Contract.cs" />
-    <Compile Include="ControllerAction.cs" />
+    <Compile Include="Mlidbom\Contract.cs" />
+    <Compile Include="Mlidbom\ControllerAction.cs" />
     <Compile Include="Mlidbom\Donut.cs" />
     <Compile Include="Mlidbom\DonutOutputManager.cs" />
     <Compile Include="Mlidbom\DonutOutputWriter.cs" />

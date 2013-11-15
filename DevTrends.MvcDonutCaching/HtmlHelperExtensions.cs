@@ -194,7 +194,7 @@ namespace DevTrends.MvcDonutCaching
             return htmlHelper.Action(actionName, controllerName, routeValues);
         }
 
-        internal static string GetSerialisedActionSettings(string actionName, string controllerName, RouteValueDictionary routeValues)
+        private static string GetSerialisedActionSettings(string actionName, string controllerName, RouteValueDictionary routeValues)
         {
             var actionSettings = new ActionSettings
             {

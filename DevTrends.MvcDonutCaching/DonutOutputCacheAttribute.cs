@@ -127,8 +127,6 @@ namespace DevTrends.MvcDonutCaching
             }
         }
 
-        public bool ExcludeFromParentCache { get; set; }
-
         public void OnException(ExceptionContext filterContext)
         {
             if (CacheSettings != null)
@@ -211,7 +209,7 @@ namespace DevTrends.MvcDonutCaching
                 };
 
                 filterContext.HttpContext.Response.Write(
-                  WrapInDonutIfNeeded(filterContext,  DonutHoleFiller.RemoveDonutHoleWrappers(cacheItem.Content, filterContext, CacheSettings.Options))
+                    DonutHoleFiller.RemoveDonutHoleWrappers(cacheItem.Content, filterContext, CacheSettings.Options)
                 );
 
                 if (CacheSettings.IsServerCachingEnabled && filterContext.HttpContext.Response.StatusCode == 200)
@@ -219,23 +217,6 @@ namespace DevTrends.MvcDonutCaching
                     OutputCacheManager.AddItem(cacheKey, cacheItem, DateTime.UtcNow.AddSeconds(CacheSettings.Duration));
                 }
             });
-        }
-
-        protected virtual string WrapInDonutIfNeeded(ActionExecutingContext filterContext, string content)
-        {
-            if(!ExcludeFromParentCache)
-            {
-                return content;
-            }
-
-            var routeValues = new RouteValueDictionary(filterContext.ActionParameters);
-
-            var serializedActionSettings = HtmlHelperExtensions.GetSerialisedActionSettings(
-                filterContext.ActionDescriptor.ActionName,
-                filterContext.ActionDescriptor.ControllerDescriptor.ControllerName,
-                routeValues);
-
-            return string.Format("<!--Donut#{0}#-->{1}<!--EndDonut-->", serializedActionSettings, content);
         }
 
         /// <summary>

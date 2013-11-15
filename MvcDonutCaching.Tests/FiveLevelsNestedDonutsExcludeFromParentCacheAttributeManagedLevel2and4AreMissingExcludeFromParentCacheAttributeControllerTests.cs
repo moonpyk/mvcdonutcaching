@@ -171,11 +171,6 @@ namespace MvcDonutCaching.Tests
 
             public LevelRenderTimes(string viewOutPut)
             {
-                for (int i = 0; i < 6; i++)
-                {
-                    viewOutPut = DonutHoleFiller.RemoveDonutHoleWrappers(viewOutPut);
-                }
-
                 var levels = viewOutPut.Replace("<br/>", "").Split(new[] { Environment.NewLine }, StringSplitOptions.None);
 
                 Level0Duration5 = DateTime.Parse(levels[0].Split('#')[1]);

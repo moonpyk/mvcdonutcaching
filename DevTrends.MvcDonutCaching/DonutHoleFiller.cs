@@ -32,11 +32,6 @@ namespace DevTrends.MvcDonutCaching
                 return content;
             }
 
-            return RemoveDonutHoleWrappers(content);
-        }
-
-        public static string RemoveDonutHoleWrappers(string content)
-        {
             return DonutHoles.Replace(content, match => match.Groups[2].Value);
         }
 

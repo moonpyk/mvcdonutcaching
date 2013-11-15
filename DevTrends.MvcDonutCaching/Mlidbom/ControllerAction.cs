@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Web.Mvc;
 using System.Web.Routing;
 
-namespace DevTrends.MvcDonutCaching
+namespace DevTrends.MvcDonutCaching.Mlidbom
 {
     public class ControllerAction : IControllerAction
     {
