@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Web.Mvc;
+using System.Web.Mvc.Html;
+using System.Web.Routing;
 
 namespace DevTrends.MvcDonutCaching.Mlidbom
 {
@@ -46,8 +48,38 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
         /// </summary>
         /// <param name="context">Execute </param>
         public string Execute(ActionExecutingContext context)
-        {            
-            throw new NotImplementedException("Need to figure out how to combine cache and real calls here....");
+        {
+            var output = new StringWriter();
+
+            for(int currentSegment = 0; currentSegment < OutputSegments.Count; currentSegment++)
+            {
+                output.Write(OutputSegments[currentSegment]);
+                if(Children.Count > currentSegment)
+                {
+                    output.Write(InvokeChildAction(Children[currentSegment], context));
+                }
+            }
+
+            return output.ToString();
+        }
+
+        private string InvokeChildAction(Donut donut, ActionExecutingContext context)
+        {
+            ControllerBase controller = context.Controller;
+            var viewContext = new ViewContext(
+                controller.ControllerContext,
+                new WebFormView(controller.ControllerContext, "tmp"),
+                controller.ViewData,
+                controller.TempData,
+                TextWriter.Null
+                );
+
+            var htmlHelper = new HtmlHelper(viewContext, new ViewPage());
+
+            return htmlHelper.Action(
+                donut.ControllerAction.ActionDescriptor.ActionName,
+                donut.ControllerAction.ActionDescriptor.ControllerDescriptor.ControllerName,
+                new RouteValueDictionary( donut.ControllerAction.ActionParameters)).ToString();
         }
 
         public void ResultExecuted()

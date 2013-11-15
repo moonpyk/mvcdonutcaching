@@ -172,18 +172,27 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
             }
 
             DonutOutputManager.ActionExecuting(filterContext);
+            filterContext.HttpContext.Items[cacheKey] = true;
         }
 
         override public void OnResultExecuted(ResultExecutedContext filterContext)
         {
             var cacheKey = KeyGenerator.GenerateKey(filterContext, CacheSettings);
+            var wasRenderedNotReturnedFromCache = filterContext.HttpContext.Items[cacheKey] as bool?;
+
+            if(!wasRenderedNotReturnedFromCache.HasValue || !wasRenderedNotReturnedFromCache.Value)
+            {
+                return;//We rendered from cache and can stop right here.
+            }
+
+
             var donut = DonutOutputManager.ResultExecuted(filterContext);
             var cacheItem = new CacheItem
-                       {
-                           Donut = donut,
-                           ContentType = filterContext.HttpContext.Response.ContentType
-                       };
-            
+                            {
+                                Donut = donut,
+                                ContentType = filterContext.HttpContext.Response.ContentType
+                            };
+
             if (CacheSettings.IsServerCachingEnabled && filterContext.HttpContext.Response.StatusCode == 200)
             {
                 OutputCacheManager.AddItem(cacheKey, cacheItem, DateTime.UtcNow.AddSeconds(CacheSettings.Duration));
