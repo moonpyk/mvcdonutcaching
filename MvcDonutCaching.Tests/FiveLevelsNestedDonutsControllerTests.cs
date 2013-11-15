@@ -163,6 +163,43 @@ namespace MvcDonutCaching.Tests
                 });
         }
 
+        [Test]
+        public void EachLevelIsRenderedNoLessOftenThanItsCachePolicyDuration()
+        {
+            var runStartTime = DateTime.Now;
+            var runUntil = runStartTime + TimeSpan.FromMilliseconds(2000);
+
+            var failures = new StringWriter();
+            while (DateTime.Now < runUntil)
+            {
+                Thread.Sleep(TimeSpan.FromMilliseconds(10));
+                var currentLevelTimes = RenderAndFetchLevelTimes();
+
+                Action<String, DateTime,  int> assertRenderTimeIsNotTooOld =
+                    (levelName, currentTime, cachePolicyDurationMilliseconds) =>
+                    {
+                        const int toleranceMilliseconds = 50;
+                        var millisecondsSinceLastRender = (int)(DateTime.Now - currentTime).TotalMilliseconds;
+                        if ((millisecondsSinceLastRender - cachePolicyDurationMilliseconds) > toleranceMilliseconds)
+                        {
+                            failures.WriteLine("{0} was rendered {1} milliseconds ago even though policy is: {2}", levelName, millisecondsSinceLastRender, cachePolicyDurationMilliseconds);
+                        }
+                    };
+
+                assertRenderTimeIsNotTooOld("Level0", currentLevelTimes.Level0Duration5, 500);
+                assertRenderTimeIsNotTooOld("Level1", currentLevelTimes.Level1Duration4, 400);
+                assertRenderTimeIsNotTooOld("Level2", currentLevelTimes.Level2Duration3, 300);
+                assertRenderTimeIsNotTooOld("Level3", currentLevelTimes.Level3Duration2, 200);
+                assertRenderTimeIsNotTooOld("Level4", currentLevelTimes.Level4Duration1, 100);
+                assertRenderTimeIsNotTooOld("Level5", currentLevelTimes.Level5Duration0, 0);
+            }
+
+            if (failures.ToString() != string.Empty)
+            {
+                Assert.Fail(failures.ToString());
+            }
+        }
+
         private LevelRenderTimes FetchAndPrintLevelTimes()
         {
             var levelTimes = RenderAndFetchLevelTimes();
