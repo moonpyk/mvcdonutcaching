@@ -118,7 +118,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controllers\AutoOutputCacheAttribute.cs" />
     <Compile Include="Controllers\Caching1SecondControllerWithNoChildActionsController.cs" />
     <Compile Include="Controllers\FiveLevelsNestedDonutsController.cs" />
     <Compile Include="Controllers\FiveLevelsNestedDonutsExcludeFromParentCacheAttributeManagedController.cs" />

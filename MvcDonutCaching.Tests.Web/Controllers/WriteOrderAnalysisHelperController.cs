@@ -1,8 +1,9 @@
 ﻿using System.Web.Mvc;
+using DevTrends.MvcDonutCaching.Mlidbom;
 
 namespace MvcDonutCaching.Tests.Web.Controllers
 {
-    [AutoOutputCache]
+    [AutoOutputCache(Duration = 5)]
     public class WriteOrderAnalysisHelperController : Controller
     {
         public ActionResult Index()

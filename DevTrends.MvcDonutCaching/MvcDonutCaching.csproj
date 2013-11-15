@@ -93,6 +93,7 @@
     <Compile Include="Interfaces\IKeyBuilder.cs" />
     <Compile Include="KeyBuilder.cs" />
     <Compile Include="MemoryCacheProvider.cs" />
+    <Compile Include="Mlidbom\EnumExtensions.cs" />
     <Compile Include="OutputCache.cs" />
     <Compile Include="OutputCacheManager.cs" />
     <Compile Include="OutputCacheOptions.cs" />
