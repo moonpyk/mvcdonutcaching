@@ -24,7 +24,7 @@ namespace MvcDonutCaching.Tests.Web.Controllers
             return View(new TitleAndTime { Time = DateTime.Now.ToString("o"), Title = title });
         }
 
-        //[ChildActionOnly, AutoOutputCache(Duration = .3)]
+        [ChildActionOnly, AutoOutputCache(Duration = .3)]
         public ActionResult Level2(DateTime time, string title)
         {
             return View(new TitleAndTime { Time = DateTime.Now.ToString("o"), Title = title });
@@ -36,7 +36,7 @@ namespace MvcDonutCaching.Tests.Web.Controllers
             return View(new TitleAndTime { Time = DateTime.Now.ToString("o"), Title = title });
         }
 
-        //[ChildActionOnly, AutoOutputCache(Duration = .1)]
+        [ChildActionOnly, AutoOutputCache(Duration = .1)]
         public ActionResult Level4(DateTime time, string title)
         {
             return View(new TitleAndTime { Time = DateTime.Now.ToString("o"), Title = title });
