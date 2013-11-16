@@ -23,7 +23,8 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
         private TextWriter _originalOutput;
         public ControllerAction ControllerAction { get; set; }
         public readonly List<string> OutputSegments = new List<string>();
-        public List<Donut> Children = new List<Donut>();
+        public Dictionary<Guid, Donut> Children = new Dictionary<Guid, Donut>();
+        public List<Donut> SortedChildren { get; set; }
         public bool Executed { get; set; }
         public readonly Guid Id = Guid.NewGuid();
 
@@ -44,7 +45,7 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
         internal void AddDonut(Donut child)
         {
             Contract.Parameter.NotNull(child);
-            Children.Add(child);
+            Children[child.Id] = child;
         }
 
         /// <summary>
@@ -60,7 +61,7 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
                 output.Write(OutputSegments[currentSegment]);
                 if(Children.Count > currentSegment)
                 {
-                    output.Write(InvokeChildAction(Children[currentSegment], context));
+                    output.Write(InvokeChildAction(SortedChildren[currentSegment], context));
                 }
             }
 
@@ -145,7 +146,7 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
                 throw new InvalidOperationException("ParseAndStoreOutput should only ever be called once for a donut.");
             }
             var matches = DonutHolesRegexp.Matches(totalOutput);
-            var sortedChildren = new List<Donut>();
+            SortedChildren = new List<Donut>();
 
             var currentIndex = 0;            
             var output = new StringWriter();
@@ -154,7 +155,7 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
                 var segment =  totalOutput.Substring(currentIndex, match.Index - currentIndex);
                 currentIndex = match.Index + match.Length;
                 var donutId = Guid.Parse(match.Groups[1].Value);
-                sortedChildren.Add(Children.Single(child => child.Id == donutId));
+                SortedChildren.Add(Children[donutId]);
                 OutputSegments.Add(segment);
                 output.Write(segment);
                 output.Write(match.Groups[2].Value);
@@ -166,19 +167,14 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
                 OutputSegments.Add(segment);
                 output.Write(segment);
             }
-            if(sortedChildren.Count != Children.Count)
-            {
-                throw new Exception("Oh the horror my child is lost!");
-            }
 
-            Children = sortedChildren;
             return output.ToString();
-        }
+        }        
 
         override public string ToString()
         {
             return string.Format("{0}.{1}(..) -> {2}",
-                ControllerAction.ActionDescriptor.ControllerDescriptor,
+                ControllerAction.ActionDescriptor.ControllerDescriptor.ControllerName,
                 ControllerAction.ActionDescriptor.ActionName,
                 OutputSegments.FirstOrDefault());
         }
