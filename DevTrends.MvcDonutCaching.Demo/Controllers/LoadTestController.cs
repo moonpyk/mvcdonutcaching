@@ -12,6 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using DevTrends.MvcDonutCaching.Mlidbom;
 
 namespace DevTrends.MvcDonutCaching.Demo.Controllers
 {
@@ -67,31 +68,19 @@ namespace DevTrends.MvcDonutCaching.Demo.Controllers
             return View(requestsMade);
         }
 
-#if PROFILE_DONUTS_CHILDACTION
-        [DonutOutputCache(Duration = 3600, Options = OutputCacheOptions.ReplaceDonutsInChildActions)]
-#else
-        [DonutOutputCache(Duration = 3600)]
-#endif
+        [AutoOutputCache(Duration = 3600)]
         public ActionResult LargeOutPutRootAction()
         {
             return View(DateTime.Now);
         }
 
-#if PROFILE_DONUTS_CHILDACTION
-        [DonutOutputCache(Duration = 3600, Options = OutputCacheOptions.ReplaceDonutsInChildActions)]
-#else
-        [DonutOutputCache(Duration = 3600)]
-#endif
+        [AutoOutputCache(Duration = 3600)]
         public ActionResult MediumOutPutChildAction()
         {
             return PartialView(DateTime.Now);
         }
 
-#if PROFILE_DONUTS_CHILDACTION
-        [DonutOutputCache(Duration = 3600, Options = OutputCacheOptions.ReplaceDonutsInChildActions)]
-#else
-        [DonutOutputCache(Duration = 3600)]
-#endif
+        [AutoOutputCache(Duration = 3600)]
         public ActionResult SmallOutPutGrandChildAction()
         {
             return PartialView(DateTime.Now);
