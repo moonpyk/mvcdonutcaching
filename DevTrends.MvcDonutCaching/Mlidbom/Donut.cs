@@ -25,6 +25,7 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
         public readonly List<string> OutputSegments = new List<string>();
         public readonly List<Donut> Children = new List<Donut>();
         public bool Executed { get; set; }
+        public readonly Guid Id = Guid.NewGuid();
 
         internal DonutOutputWriter Output { get; private set; }
         public bool Cached { get; set; }
@@ -125,15 +126,16 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
 
         private string WrapInDonut(string totalOutput)
         {
-            string wrapInDonut = string.Format(DonutCreationPattern, totalOutput);
+            string wrapInDonut = string.Format(DonutCreationPattern, Id, totalOutput);
             return wrapInDonut;
         }
 
         private const string DonutHoleStart = "#StartDonut#18C1E8F8-B296-44BF-A768-89D4F41D14A6#ID:";
+        private const string DonutHoleMiddle = "#18C1E8F8-B296-44BF-A768-89D4F41D14A6#";
         private const string DonutHoleEnd = "#18C1E8F8-B296-44BF-A768-89D4F41D14A6#EndDonut#";
 
-        private static readonly string DonutCreationPattern = string.Format("{0}{{0}}{1}", DonutHoleStart,  DonutHoleEnd);
-        private static readonly string DonutHolesPattern = string.Format("{0}(.*?){1}", DonutHoleStart,  DonutHoleEnd);
+        private static readonly string DonutCreationPattern = string.Format("{0}{{0}}{1}{{1}}{2}", DonutHoleStart, DonutHoleMiddle, DonutHoleEnd);
+        private static readonly string DonutHolesPattern = string.Format("{0}(.*?){1}(.*?){2}", DonutHoleStart, DonutHoleMiddle,  DonutHoleEnd);
 
         private static readonly Regex DonutHolesRegexp = new Regex(DonutHolesPattern, RegexOptions.Compiled | RegexOptions.Singleline);
         private string ParseAndStoreOutput(string totalOutput)
@@ -152,7 +154,7 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
                 currentIndex = match.Index + match.Length;
                 OutputSegments.Add(segment);
                 output.Write(segment);
-                output.Write(match.Groups[1].Value);
+                output.Write(match.Groups[2].Value);
             }
 
             if(currentIndex < totalOutput.Length)
