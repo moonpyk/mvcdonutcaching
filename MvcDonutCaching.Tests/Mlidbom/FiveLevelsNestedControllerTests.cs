@@ -212,7 +212,7 @@ namespace MvcDonutCaching.Tests.Mlidbom
                 });
         }
 
-        [Test]
+        [Test]//Todo:This newer test variant probably makes most of the other tests in this class redundant. Remove them if test run time gets too long.
         public void EachLevelIsRenderedNoLessOftenThanItsCachePolicyDuration()
         {
             var runStartTime = DateTime.Now;
