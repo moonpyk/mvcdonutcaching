@@ -175,6 +175,14 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
             return output.ToString();
         }
 
+        override public string ToString()
+        {
+            return string.Format("{0}.{1}(..) -> {2}",
+                ControllerAction.ActionDescriptor.ControllerDescriptor,
+                ControllerAction.ActionDescriptor.ActionName,
+                OutputSegments.FirstOrDefault());
+        }
+
         public void PushedFromCache(Donut parent)
         {
             Parent = parent;
