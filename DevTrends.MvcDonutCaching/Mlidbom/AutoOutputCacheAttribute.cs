@@ -174,6 +174,10 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
             {
                 return; //We rendered from cache and can stop right here.
             }
+            if(filterContext.Exception != null)
+            {
+                return;//We don't cache the result of crashes.
+            }
             
             var cacheItem = new AutoCacheItem
                             {

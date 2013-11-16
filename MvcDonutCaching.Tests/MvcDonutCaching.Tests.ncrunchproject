@@ -19,16 +19,5 @@
   <UseCPUArchitecture>AutoDetect</UseCPUArchitecture>
   <MSTestThreadApartmentState>STA</MSTestThreadApartmentState>
   <BuildProcessArchitecture>x86</BuildProcessArchitecture>
-  <IgnoredTests>
-    <RegexTestSelector>
-      <RegularExpression>MvcDonutCaching\.Tests\.Mlidbom\.ExceptionThrownInNestedChildAction\..*</RegularExpression>
-    </RegexTestSelector>
-    <RegexTestSelector>
-      <RegularExpression>MvcDonutCaching\.Tests\.Mlidbom\.ExceptionThrownInRootAction\..*</RegularExpression>
-    </RegexTestSelector>
-    <RegexTestSelector>
-      <RegularExpression>MvcDonutCaching\.Tests\.Mlidbom\.ExceptionThrownInFirstChildAction\..*</RegularExpression>
-    </RegexTestSelector>
-  </IgnoredTests>
   <HiddenWarnings>LongTestTimesWithoutParallelExecution</HiddenWarnings>
 </ProjectConfiguration>
