@@ -77,16 +77,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Mlidbom\ControllerContextExtensions.cs" />
-    <Compile Include="DonutOutputManagerTests.cs" />
-    <Compile Include="FiveLevelsNestedDonutsExcludeFromParentCacheAttributeManagedLevel2and4AreMissingExcludeFromParentCacheAttributeControllerTests.cs" />
-    <Compile Include="FiveLevelsNestedDonutsControllerTests.cs" />
-    <Compile Include="FiveLevelsNestedDonutsExcludeFromParentCacheAttributeManagedControllerTests.cs" />
+    <Compile Include="Mlidbom\DonutOutputManagerTests.cs" />
+    <Compile Include="Mlidbom\FiveLevelsNestedDonutsLevel2and4HaveNoAttributeTests.cs" />
+    <Compile Include="OldStyle_FiveLevelsNestedDonutsControllerTests.cs" />
+    <Compile Include="Mlidbom\FiveLevelsNestedControllerTests.cs" />
     <Compile Include="Mlidbom\MultipleIdenticalChildActionCalls.cs" />
     <Compile Include="Mlidbom\WhenNothingIsCachedDonutsGatherRequiredDataForCaching.cs" />
     <Compile Include="Mlidbom\WhenNothingIsCachedOutputIsNotMangled.cs" />
-    <Compile Include="PageWithNestedLayoutsAndSectionsTests.cs" />
+    <Compile Include="Mlidbom\PageWithNestedLayoutsAndSectionsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Caching1SecondControllerWithNoChildActionsTests.cs" />
+    <Compile Include="Mlidbom\Caching1SecondControllerWithNoChildActionsTests.cs" />
     <Compile Include="TestsBase.cs" />
     <Compile Include="Mlidbom\TestUtil.cs" />
   </ItemGroup>

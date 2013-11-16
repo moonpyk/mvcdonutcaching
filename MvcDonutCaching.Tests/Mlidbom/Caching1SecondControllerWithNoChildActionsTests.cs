@@ -10,7 +10,7 @@ namespace MvcDonutCaching.Tests
     [TestFixture]
     public class Caching100MillisecondsControllerWithNoChildActionsTests : TestsBase
     {
-        private const string ControllerUrl = "/Caching1SecondControllerWithNoChildActions";
+        private const string ControllerUrl = "/Caching1SecondWithNoChildActions";
 
         [Test]
         public void CanExecuteAtAll()

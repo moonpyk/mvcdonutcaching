@@ -1,17 +1,16 @@
 ﻿using System;
 using System.IO;
 using System.Threading;
-using DevTrends.MvcDonutCaching;
 using NUnit.Framework;
 
-namespace MvcDonutCaching.Tests
+namespace MvcDonutCaching.Tests.Mlidbom
 {
     [TestFixture]
-    public class FiveLevelsNestedDonutsExcludeFromParentCacheAttributeManagedControllerTests : TestsBase
+    public class FiveLevelsNestedControllerTests : TestsBase
     {
         private string ControllerUrl
         {
-            get { return "/FiveLevelsNestedDonutsExcludeFromParentCacheAttributeManaged"; }
+            get { return "/FiveLevelsNestedDonuts"; }
         }
 
         [Test, Ignore("Uhm, this should only be a performance issues and I have no clue why it appears to clear the cache each second when running the tests but not when running for real...")]

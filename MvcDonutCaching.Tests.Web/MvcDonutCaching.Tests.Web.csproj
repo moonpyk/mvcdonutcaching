@@ -118,12 +118,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controllers\Caching1SecondControllerWithNoChildActionsController.cs" />
+    <Compile Include="Controllers\Caching1SecondWithNoChildActionsController.cs" />
     <Compile Include="Controllers\MultipleIdenticalChildActionCallsController.cs" />
     <Compile Include="Controllers\PageWithNestedLayoutsAndSectionsController.cs" />
+    <Compile Include="Controllers\OldStyle_FiveLevelsNestedDonutsController.cs" />
     <Compile Include="Controllers\FiveLevelsNestedDonutsController.cs" />
-    <Compile Include="Controllers\FiveLevelsNestedDonutsExcludeFromParentCacheAttributeManagedController.cs" />
-    <Compile Include="Controllers\FiveLevelsNestedDonutsExcludeFromParentCacheAttributeManagedLevel2and4AreMissingExcludeFromParentCacheAttribute.cs" />
+    <Compile Include="Controllers\FiveLevelsNestedDonutsLevel2And4HaveNoAttributeController.cs" />
     <Compile Include="Controllers\TestControlController.cs" />
     <Compile Include="Controllers\WriteOrderAnalysisHelperController.cs" />
     <Compile Include="Global.asax.cs">
@@ -153,7 +153,7 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Caching1SecondControllerWithNoChildActions\Index.cshtml" />
+    <Content Include="Views\Caching1SecondWithNoChildActions\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DevTrends.MvcDonutCaching\MvcDonutCaching.csproj">
@@ -162,40 +162,40 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\FiveLevelsNestedDonuts\Index.cshtml" />
+    <Content Include="Views\OldStyle_FiveLevelsNestedDonuts\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\OldStyle_FiveLevelsNestedDonuts\Level1.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\OldStyle_FiveLevelsNestedDonuts\Level2.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\OldStyle_FiveLevelsNestedDonuts\Level5.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\OldStyle_FiveLevelsNestedDonuts\Level4.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\OldStyle_FiveLevelsNestedDonuts\Level3.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\FiveLevelsNestedDonuts\Level1.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Views\FiveLevelsNestedDonuts\Level2.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
+    <Content Include="Views\FiveLevelsNestedDonuts\Level3.cshtml" />
+    <Content Include="Views\FiveLevelsNestedDonuts\Level4.cshtml" />
     <Content Include="Views\FiveLevelsNestedDonuts\Level5.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\FiveLevelsNestedDonuts\Level4.cshtml" />
+    <Content Include="Views\FiveLevelsNestedDonuts\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\FiveLevelsNestedDonuts\Level3.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\FiveLevelsNestedDonutsExcludeFromParentCacheAttributeManaged\Level1.cshtml" />
-    <Content Include="Views\FiveLevelsNestedDonutsExcludeFromParentCacheAttributeManaged\Level2.cshtml" />
-    <Content Include="Views\FiveLevelsNestedDonutsExcludeFromParentCacheAttributeManaged\Level3.cshtml" />
-    <Content Include="Views\FiveLevelsNestedDonutsExcludeFromParentCacheAttributeManaged\Level4.cshtml" />
-    <Content Include="Views\FiveLevelsNestedDonutsExcludeFromParentCacheAttributeManaged\Level5.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\FiveLevelsNestedDonutsExcludeFromParentCacheAttributeManaged\Index.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\FiveLevelsNestedDonutsExcludeFromParentCacheAttributeManagedLevel2and4AreMissingExcludeFromParentCacheAttribute\Index.cshtml" />
-    <Content Include="Views\FiveLevelsNestedDonutsExcludeFromParentCacheAttributeManagedLevel2and4AreMissingExcludeFromParentCacheAttribute\Level1.cshtml" />
-    <Content Include="Views\FiveLevelsNestedDonutsExcludeFromParentCacheAttributeManagedLevel2and4AreMissingExcludeFromParentCacheAttribute\Level2.cshtml" />
-    <Content Include="Views\FiveLevelsNestedDonutsExcludeFromParentCacheAttributeManagedLevel2and4AreMissingExcludeFromParentCacheAttribute\Level3.cshtml" />
-    <Content Include="Views\FiveLevelsNestedDonutsExcludeFromParentCacheAttributeManagedLevel2and4AreMissingExcludeFromParentCacheAttribute\Level4.cshtml" />
-    <Content Include="Views\FiveLevelsNestedDonutsExcludeFromParentCacheAttributeManagedLevel2and4AreMissingExcludeFromParentCacheAttribute\Level5.cshtml" />
+    <Content Include="Views\FiveLevelsNestedDonutsLevel2And4HaveNoAttribute\Index.cshtml" />
+    <Content Include="Views\FiveLevelsNestedDonutsLevel2And4HaveNoAttribute\Level1.cshtml" />
+    <Content Include="Views\FiveLevelsNestedDonutsLevel2And4HaveNoAttribute\Level2.cshtml" />
+    <Content Include="Views\FiveLevelsNestedDonutsLevel2And4HaveNoAttribute\Level3.cshtml" />
+    <Content Include="Views\FiveLevelsNestedDonutsLevel2And4HaveNoAttribute\Level4.cshtml" />
+    <Content Include="Views\FiveLevelsNestedDonutsLevel2And4HaveNoAttribute\Level5.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\WriteOrderAnalysisHelper\Level1.cshtml" />

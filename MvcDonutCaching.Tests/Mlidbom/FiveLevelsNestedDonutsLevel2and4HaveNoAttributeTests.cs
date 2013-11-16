@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Threading;
-using DevTrends.MvcDonutCaching;
 using NUnit.Framework;
 
-namespace MvcDonutCaching.Tests
+namespace MvcDonutCaching.Tests.Mlidbom
 {
     [TestFixture]
-    public class FiveLevelsNestedDonutsExcludeFromParentCacheAttributeManagedLevel2and4AreMissingExcludeFromParentCacheAttributeControllerTests : TestsBase
+    public class FiveLevelsNestedDonutsLevel2And4HaveNoAttributeTests : TestsBase
     {
         private string ControllerUrl
         {
-            get { return "/FiveLevelsNestedDonutsExcludeFromParentCacheAttributeManagedLevel2and4AreMissingExcludeFromParentCacheAttribute"; }
+            get { return "/FiveLevelsNestedDonutsLevel2And4HaveNoAttribute"; }
         }
 
         [SetUp]

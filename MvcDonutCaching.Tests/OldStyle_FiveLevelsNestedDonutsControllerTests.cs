@@ -1,16 +1,14 @@
 ﻿using System;
 using System.IO;
 using System.Threading;
-using DevTrends.MvcDonutCaching;
-using Moq;
 using NUnit.Framework;
 
 namespace MvcDonutCaching.Tests
 {
     [TestFixture]
-    public class FiveLevelsNestedDonutsControllerTests : TestsBase
+    public class OldStyleFiveLevelsNestedDonutsControllerTests : TestsBase
     {
-        protected virtual string ControllerUrl { get { return "/FiveLevelsNestedDonuts"; } }
+        protected virtual string ControllerUrl { get { return "/OldStyle_FiveLevelsNestedDonuts"; } }
 
         [SetUp]
         public void SetupTask()
