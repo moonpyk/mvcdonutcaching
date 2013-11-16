@@ -23,7 +23,7 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
         private TextWriter _originalOutput;
         public ControllerAction ControllerAction { get; set; }
         public readonly List<string> OutputSegments = new List<string>();
-        public readonly List<Donut> Children = new List<Donut>();
+        public List<Donut> Children = new List<Donut>();
         public bool Executed { get; set; }
         public readonly Guid Id = Guid.NewGuid();
 
@@ -145,6 +145,7 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
                 throw new InvalidOperationException("ParseAndStoreOutput should only ever be called once for a donut.");
             }
             var matches = DonutHolesRegexp.Matches(totalOutput);
+            var sortedChildren = new List<Donut>();
 
             var currentIndex = 0;            
             var output = new StringWriter();
@@ -152,6 +153,8 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
             {
                 var segment =  totalOutput.Substring(currentIndex, match.Index - currentIndex);
                 currentIndex = match.Index + match.Length;
+                var donutId = Guid.Parse(match.Groups[1].Value);
+                sortedChildren.Add(Children.Single(child => child.Id == donutId));
                 OutputSegments.Add(segment);
                 output.Write(segment);
                 output.Write(match.Groups[2].Value);
@@ -163,7 +166,12 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
                 OutputSegments.Add(segment);
                 output.Write(segment);
             }
+            if(sortedChildren.Count != Children.Count)
+            {
+                throw new Exception("Oh the horror my child is lost!");
+            }
 
+            Children = sortedChildren;
             return output.ToString();
         }
 
