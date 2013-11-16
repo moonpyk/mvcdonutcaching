@@ -119,6 +119,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\Caching1SecondControllerWithNoChildActionsController.cs" />
+    <Compile Include="Controllers\MultipleIdenticalChildActionCallsController.cs" />
     <Compile Include="Controllers\PageWithNestedLayoutsAndSectionsController.cs" />
     <Compile Include="Controllers\FiveLevelsNestedDonutsController.cs" />
     <Compile Include="Controllers\FiveLevelsNestedDonutsExcludeFromParentCacheAttributeManagedController.cs" />
@@ -224,6 +225,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\PageWithNestedLayoutsAndSections\_TopLayout.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\MultipleIdenticalChildActionCalls\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\MultipleIdenticalChildActionCalls\Child.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

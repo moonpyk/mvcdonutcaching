@@ -81,6 +81,7 @@
     <Compile Include="FiveLevelsNestedDonutsExcludeFromParentCacheAttributeManagedLevel2and4AreMissingExcludeFromParentCacheAttributeControllerTests.cs" />
     <Compile Include="FiveLevelsNestedDonutsControllerTests.cs" />
     <Compile Include="FiveLevelsNestedDonutsExcludeFromParentCacheAttributeManagedControllerTests.cs" />
+    <Compile Include="Mlidbom\MultipleIdenticalChildActionCalls.cs" />
     <Compile Include="Mlidbom\WhenNothingIsCachedDonutsGatherRequiredDataForCaching.cs" />
     <Compile Include="Mlidbom\WhenNothingIsCachedOutputIsNotMangled.cs" />
     <Compile Include="PageWithNestedLayoutsAndSectionsTests.cs" />

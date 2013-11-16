@@ -59,7 +59,7 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
             for(int currentSegment = 0; currentSegment < OutputSegments.Count; currentSegment++)
             {
                 output.Write(OutputSegments[currentSegment]);
-                if(Children.Count > currentSegment)
+                if(SortedChildren.Count > currentSegment)
                 {
                     output.Write(InvokeChildAction(SortedChildren[currentSegment], context));
                 }
