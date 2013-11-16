@@ -119,6 +119,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\Caching1SecondControllerWithNoChildActionsController.cs" />
+    <Compile Include="Controllers\PageWithNestedLayoutsAndSectionsController.cs" />
     <Compile Include="Controllers\FiveLevelsNestedDonutsController.cs" />
     <Compile Include="Controllers\FiveLevelsNestedDonutsExcludeFromParentCacheAttributeManagedController.cs" />
     <Compile Include="Controllers\FiveLevelsNestedDonutsExcludeFromParentCacheAttributeManagedLevel2and4AreMissingExcludeFromParentCacheAttribute.cs" />
@@ -199,6 +200,30 @@
     <Content Include="Views\WriteOrderAnalysisHelper\Level1.cshtml" />
     <Content Include="Views\WriteOrderAnalysisHelper\Level2.cshtml" />
     <Content Include="Views\WriteOrderAnalysisHelper\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\PageWithNestedLayoutsAndSections\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\PageWithNestedLayoutsAndSections\TopLayoutHeader.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\PageWithNestedLayoutsAndSections\TopLayoutFooter.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\PageWithNestedLayoutsAndSections\NestedLayoutHeader.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\PageWithNestedLayoutsAndSections\NestedLayoutFooter.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\PageWithNestedLayoutsAndSections\PageBody.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\PageWithNestedLayoutsAndSections\_NestedLayout.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\PageWithNestedLayoutsAndSections\_TopLayout.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
