@@ -4,16 +4,16 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Cache;
-using System.Web.Mvc;
 using NUnit.Framework;
 
 namespace MvcDonutCaching.Tests
 {
 
-    public class TestsBase 
+    public abstract class ControllerTestBase 
     {
         private static readonly string TestSiteBaseUrl = ConfigurationManager.AppSettings["TestSiteBaseUrl"];
 
+        protected abstract string ControllerName { get; }
         [SetUp]
         public virtual void RunBeforeEachTest()
         {
@@ -52,6 +52,16 @@ namespace MvcDonutCaching.Tests
             }
         }
 
+        protected string ExecuteDefaultAction()
+        {
+            return GetUrlContent("/{0}", ControllerName);
+        }
+
+        protected string ExecuteAction(string action)
+        {
+            return GetUrlContent("/{0}/{1}", ControllerName, action);
+        }
+
         protected void AssertRenderedDuringSameRequest(
             params DateTime[] times)
         {
@@ -73,26 +83,44 @@ namespace MvcDonutCaching.Tests
             }
         }
 
-        private static void ClearCache()
+        protected void CleanAllCache()
         {
             var result = GetUrlContent("/TestControl/ClearCache");
-            Assert.That((object)result, Is.EqualTo("Done"), "Failed to clear cache");
+            Assert.That(result, Is.EqualTo("Done"), "Failed to clear cache");
+        }
+
+        protected void ClearControllerCache(string controllerName)
+        {
+            var result = GetUrlContent("/TestControl/ClearCache?controllerName={0}", controllerName);
+            Assert.That(result, Is.EqualTo("Done"), "Failed to clear cache");
+        }
+
+        protected void ClearActionCache(string controllerName, string actionName)
+        {
+            var result = GetUrlContent("/TestControl/ClearCache?controllerName={0}&actionName={1}", controllerName, actionName);
+            Assert.That(result, Is.EqualTo("Done"), "Failed to clear cache");
+        }
+
+        protected virtual void ClearCache()
+        {
+            ClearControllerCache(ControllerName);
         }
 
         protected static void EnableReplaceDonutsInChildActionsGlobally()
         {
             var result = GetUrlContent("/TestControl/EnableReplaceDonutsInChildActionsGlobally");
-            Assert.That((object)result, Is.EqualTo("Done"), "Failed:EnableReplaceDonutsInChildActionsGlobally");
+            Assert.That(result, Is.EqualTo("Done"), "Failed:EnableReplaceDonutsInChildActionsGlobally");
         }
 
         private static void UseDefaultSettingsGlobally()
         {
             var result = GetUrlContent("/TestControl/UseDefaultSettingsGlobally");
-            Assert.That((object)result, Is.EqualTo("Done"), "Failed:UseDefaultSettingsGlobally");
+            Assert.That(result, Is.EqualTo("Done"), "Failed:UseDefaultSettingsGlobally");
         }
 
-        public static string GetUrlContent(string relativeUrl)
+        public static string GetUrlContent(string relativeUrl, params object[] formatValues)
         {
+            relativeUrl = string.Format(relativeUrl, formatValues);
             var uri = string.Format("{0}{1}", TestSiteBaseUrl, relativeUrl);
             var webRequest = WebRequest.Create(uri);
             webRequest.CachePolicy = new HttpRequestCachePolicy(HttpRequestCacheLevel.NoCacheNoStore);

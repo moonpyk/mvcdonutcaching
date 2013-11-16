@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Net;
-using System.Runtime.InteropServices;
-using System.Web;
+using NCrunch.Framework;
 using NUnit.Framework;
 
 namespace MvcDonutCaching.Tests.Mlidbom
 {
-    [TestFixture]
-    public abstract class ActionExceptionTests : TestsBase
+    [TestFixture, ExclusivelyUses(Controller)]
+    public abstract class ActionExceptionTests : ControllerTestBase
     {
         private const string ThrownExceptionText = "ExceptionTextToFindInOutput";
-        private const string Controller = "ThrowException";
+        public const string Controller = "ThrowException";
         protected abstract string ThrowingAction { get; }
+
+        override protected string ControllerName { get { return Controller; } }
 
         [Test]
         public void ControllerReturns500ErrorOnEveryCall()
@@ -40,7 +41,7 @@ namespace MvcDonutCaching.Tests.Mlidbom
 
         private string ExecuteAction()
         {
-            return GetUrlContent(string.Format("/{0}/{1}", Controller, ThrowingAction));
+            return ExecuteAction(ThrowingAction);
         }
     }
 

@@ -1,21 +1,20 @@
 ﻿using System;
-using System.IO;
-using System.Net;
-using System.Net.Cache;
 using System.Threading;
+using NCrunch.Framework;
 using NUnit.Framework;
 
-namespace MvcDonutCaching.Tests
+namespace MvcDonutCaching.Tests.Mlidbom
 {
-    [TestFixture]
-    public class Caching100MillisecondsControllerWithNoChildActionsTests : TestsBase
+    [TestFixture, ExclusivelyUses(Controller)]
+    public class Caching100MillisecondsControllerWithNoChildActionsTests : ControllerTestBase
     {
-        private const string ControllerUrl = "/Caching1SecondWithNoChildActions";
+        private const string Controller = "Caching1SecondWithNoChildActions";
+        override protected string ControllerName { get { return Controller; } }
 
         [Test]
         public void CanExecuteAtAll()
         {
-            var result = GetUrlContent(ControllerUrl);
+            var result = ExecuteDefaultAction();
             Console.WriteLine(result);
         }
 
@@ -25,9 +24,9 @@ namespace MvcDonutCaching.Tests
             RetryThreeTimesOnFailureSinceTimingIssuesWithTheWebServerAndStartUpMayCauseIntermittentFailures(
                 () =>
                 {
-                    var result1 = GetUrlContent(ControllerUrl);
+                    var result1 = ExecuteDefaultAction();
                     Thread.Sleep(TimeSpan.FromMilliseconds(50));
-                    var result100MillisecondsLater = GetUrlContent(ControllerUrl);
+                    var result100MillisecondsLater = ExecuteDefaultAction();
                     Assert.That(result1, Is.EqualTo(result100MillisecondsLater));
                 });
         }
@@ -38,11 +37,11 @@ namespace MvcDonutCaching.Tests
             RetryThreeTimesOnFailureSinceTimingIssuesWithTheWebServerAndStartUpMayCauseIntermittentFailures(
                 () =>
                 {
-                    var result1 = GetUrlContent(ControllerUrl);
+                    var result1 = ExecuteDefaultAction();
                     Thread.Sleep(TimeSpan.FromMilliseconds(200));
-                    var result2SecondsLater = GetUrlContent(ControllerUrl);
+                    var result2SecondsLater = ExecuteDefaultAction();
                     Assert.That(result1, Is.Not.EqualTo(result2SecondsLater));
                 });
-        }
+        }        
     }
 }

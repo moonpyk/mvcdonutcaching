@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using DevTrends.MvcDonutCaching;
 using DevTrends.MvcDonutCaching.Annotations;
 
@@ -17,9 +13,9 @@ namespace MvcDonutCaching.Tests.Web.Controllers
             set;
         }
 
-        public ActionResult ClearCache()
+        public ActionResult ClearCache(string controllerName = null, string actionName = null)
         {
-            OutputCacheManager.RemoveItems();
+            OutputCacheManager.RemoveItems(controllerName, actionName);
             return Content("Done");
         }
 

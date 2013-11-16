@@ -1,17 +1,16 @@
 ﻿using System;
 using System.IO;
 using System.Threading;
+using NCrunch.Framework;
 using NUnit.Framework;
 
 namespace MvcDonutCaching.Tests.Mlidbom
 {
-    [TestFixture]
-    public class FiveLevelsNestedControllerTests : TestsBase
+    [TestFixture, ExclusivelyUses(Controller)]
+    public class FiveLevelsNestedControllerTests : ControllerTestBase
     {
-        private string ControllerUrl
-        {
-            get { return "/FiveLevelsNestedDonuts"; }
-        }
+        private const string Controller = "FiveLevelsNestedDonuts";
+        override protected string ControllerName { get { return Controller; } }
 
         [Test, Ignore("Uhm, this should only be a performance issues and I have no clue why it appears to clear the cache each second when running the tests but not when running for real...")]
         public void EachLevelIsRenderedNoMoreOftenThanItsCachePolicyDuration()
@@ -68,7 +67,7 @@ namespace MvcDonutCaching.Tests.Mlidbom
         [Test]
         public void CanExecuteAtAll()
         {
-            GetUrlContent(ControllerUrl);
+            ExecuteDefaultAction();
         }
 
         [Test]
@@ -77,7 +76,7 @@ namespace MvcDonutCaching.Tests.Mlidbom
             RetryThreeTimesOnFailureSinceTimingIssuesWithTheWebServerAndStartUpMayCauseIntermittentFailures(
                 () =>
                 {
-                    var levelTimes = new LevelRenderTimes(GetUrlContent(ControllerUrl));
+                    var levelTimes = new LevelRenderTimes(ExecuteDefaultAction());
 
                     AssertRenderedDuringSameRequest(
                         levelTimes.Level0,
@@ -258,7 +257,7 @@ namespace MvcDonutCaching.Tests.Mlidbom
 
         protected LevelRenderTimes RenderAndFetchLevelTimes()
         {
-            return new LevelRenderTimes(GetUrlContent(ControllerUrl));
+            return new LevelRenderTimes(ExecuteDefaultAction());
         }
 
         private void PrintDurationsAndCurrentTime(LevelRenderTimes levelTimes)

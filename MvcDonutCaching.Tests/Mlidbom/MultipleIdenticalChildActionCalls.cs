@@ -1,10 +1,13 @@
-﻿using NUnit.Framework;
+﻿using NCrunch.Framework;
+using NUnit.Framework;
 
 namespace MvcDonutCaching.Tests.Mlidbom
 {
-    public class MultipleIdenticalChildActionCalls : TestsBase
-    {
-        private const string ControllerActionPath = "/MultipleIdenticalChildActionCalls";
+    [TestFixture, ExclusivelyUses(Controller)]
+    public class MultipleIdenticalChildActionCalls : ControllerTestBase
+    {        
+        private const string Controller = "MultipleIdenticalChildActionCalls";
+        override protected string ControllerName { get { return Controller; } }
 
         private const string CorrectOutput = 
 @"Root
@@ -16,15 +19,15 @@ namespace MvcDonutCaching.Tests.Mlidbom
         [Test]
         public void CanRenderAtAll()
         {
-            var result = GetUrlContent(ControllerActionPath);
+            var result = ExecuteDefaultAction();
             Assert.That(result, Is.EqualTo(CorrectOutput));
         }
 
         [Test]
         public void CachedResultIsIdenticalToOriginalResult()
         {
-            var originalResult = GetUrlContent(ControllerActionPath);
-            var cachedResult = GetUrlContent(ControllerActionPath);
+            var originalResult = ExecuteDefaultAction();
+            var cachedResult = ExecuteDefaultAction();
             Assert.That(cachedResult, Is.EqualTo(originalResult));
         }
     }

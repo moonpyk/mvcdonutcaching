@@ -1,17 +1,11 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using DevTrends.MvcDonutCaching;
 using DevTrends.MvcDonutCaching.Mlidbom;
-using Moq;
-using MvcDonutCaching.Tests.Mlidbom;
 using NUnit.Framework;
 
-namespace MvcDonutCaching.Tests
+namespace MvcDonutCaching.Tests.Mlidbom
 {
     [TestFixture,Ignore("This was written for a different branch where I had misunderstood how exactly an action was invoked by mvc. Not sure if it can be used at all")]
     public class DonutOutputManagerTests
