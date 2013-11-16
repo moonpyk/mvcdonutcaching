@@ -46,38 +46,45 @@ namespace MvcDonutCaching.Tests.Mlidbom
         [Test]//Todo:This newer test variant probably makes most of the other tests in this class redundant. Remove them if test run time gets too long.
         public void EachLevelIsRenderedNoLessOftenThanItsCachePolicyDuration_ChildActionsWithNoAttributeAreCachedWithTheirParentsPolicy()
         {
-            var runStartTime = DateTime.Now;
-            var runUntil = runStartTime + TimeSpan.FromMilliseconds(2000);
+            RetryThreeTimesOnFailureSinceTimingIssuesWithTheWebServerAndStartUpMayCauseIntermittentFailures(
+                () =>
+                {
+                    var runStartTime = DateTime.Now;
+                    var runUntil = runStartTime + TimeSpan.FromMilliseconds(2000);
 
-            var failures = new StringWriter();
-            while (DateTime.Now < runUntil)
-            {
-                Thread.Sleep(TimeSpan.FromMilliseconds(10));
-                var currentLevelTimes = RenderAndFetchLevelTimes();
-
-                Action<String, DateTime, int> assertRenderTimeIsNotTooOld =
-                    (levelName, currentTime, cachePolicyDurationMilliseconds) =>
+                    var failures = new StringWriter();
+                    while(DateTime.Now < runUntil)
                     {
-                        const int toleranceMilliseconds = 50;
-                        var millisecondsSinceLastRender = (int)(DateTime.Now - currentTime).TotalMilliseconds;
-                        if ((millisecondsSinceLastRender - cachePolicyDurationMilliseconds) > toleranceMilliseconds)
-                        {
-                            failures.WriteLine("{0} was rendered {1} milliseconds ago even though policy is: {2}", levelName, millisecondsSinceLastRender, cachePolicyDurationMilliseconds);
-                        }
-                    };
+                        Thread.Sleep(TimeSpan.FromMilliseconds(10));
+                        var currentLevelTimes = RenderAndFetchLevelTimes();
 
-                assertRenderTimeIsNotTooOld("Level0", currentLevelTimes.Level0Duration5, 500);
-                assertRenderTimeIsNotTooOld("Level1", currentLevelTimes.Level1Duration4, 400);
-                assertRenderTimeIsNotTooOld("Level2", currentLevelTimes.Level2NoAttribute, 400);//No attribute means it is cached with its parent.
-                assertRenderTimeIsNotTooOld("Level3", currentLevelTimes.Level3Duration2, 200);
-                assertRenderTimeIsNotTooOld("Level4", currentLevelTimes.Level4NoAttribute, 200);//No attributte means it is cached with its parent.
-                assertRenderTimeIsNotTooOld("Level5", currentLevelTimes.Level5Duration0, 0);
-            }
+                        Action<String, DateTime, int> assertRenderTimeIsNotTooOld =
+                            (levelName, currentTime, cachePolicyDurationMilliseconds) =>
+                            {
+                                const int toleranceMilliseconds = 50;
+                                var millisecondsSinceLastRender = (int)(DateTime.Now - currentTime).TotalMilliseconds;
+                                if((millisecondsSinceLastRender - cachePolicyDurationMilliseconds) > toleranceMilliseconds)
+                                {
+                                    failures.WriteLine("{0} was rendered {1} milliseconds ago even though policy is: {2}",
+                                        levelName,
+                                        millisecondsSinceLastRender,
+                                        cachePolicyDurationMilliseconds);
+                                }
+                            };
 
-            if (failures.ToString() != string.Empty)
-            {
-                Assert.Fail(failures.ToString());
-            }
+                        assertRenderTimeIsNotTooOld("Level0", currentLevelTimes.Level0Duration5, 500);
+                        assertRenderTimeIsNotTooOld("Level1", currentLevelTimes.Level1Duration4, 400);
+                        assertRenderTimeIsNotTooOld("Level2", currentLevelTimes.Level2NoAttribute, 400); //No attribute means it is cached with its parent.
+                        assertRenderTimeIsNotTooOld("Level3", currentLevelTimes.Level3Duration2, 200);
+                        assertRenderTimeIsNotTooOld("Level4", currentLevelTimes.Level4NoAttribute, 200); //No attributte means it is cached with its parent.
+                        assertRenderTimeIsNotTooOld("Level5", currentLevelTimes.Level5Duration0, 0);
+                    }
+
+                    if(failures.ToString() != string.Empty)
+                    {
+                        Assert.Fail(failures.ToString());
+                    }
+                });
         }
 
 
