@@ -76,6 +76,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Mlidbom\ActionExceptionTests.cs" />
     <Compile Include="Mlidbom\ControllerContextExtensions.cs" />
     <Compile Include="Mlidbom\DonutOutputManagerTests.cs" />
     <Compile Include="Mlidbom\FiveLevelsNestedDonutsLevel2and4HaveNoAttributeTests.cs" />

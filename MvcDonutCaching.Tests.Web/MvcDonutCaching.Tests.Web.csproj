@@ -119,6 +119,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\Caching1SecondWithNoChildActionsController.cs" />
+    <Compile Include="Controllers\ThrowExceptionController.cs" />
     <Compile Include="Controllers\MultipleIdenticalChildActionCallsController.cs" />
     <Compile Include="Controllers\PageWithNestedLayoutsAndSectionsController.cs" />
     <Compile Include="Controllers\OldStyle_FiveLevelsNestedDonutsController.cs" />
@@ -231,6 +232,15 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\MultipleIdenticalChildActionCalls\Child.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\ThrowException\ThrowNow.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\ThrowException\ThrowInNextLevel.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\ThrowException\ThrowTwoLevelsDown.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
