@@ -145,7 +145,7 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
                 // We are fetching the stored value only if the option has not been set and the request is not a POST
                 if(!CacheSettings.Options.HasFlag(OutputCacheOptions.NoCacheLookupForPosts) || filterContext.HttpContext.Request.HttpMethod != "POST")
                 {
-                    var cachedItem = OutputCacheManager.GetItem(cacheKey);                    
+                    var cachedItem = (AutoCacheItem)OutputCacheManager.GetItem(cacheKey);                    
                     // We have a cached version on the server side
                     if(cachedItem != null)
                     {
@@ -175,7 +175,7 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
                 return; //We rendered from cache and can stop right here.
             }
             
-            var cacheItem = new CacheItem
+            var cacheItem = new AutoCacheItem
                             {
                                 Donut = donut,
                                 ContentType = filterContext.HttpContext.Response.ContentType

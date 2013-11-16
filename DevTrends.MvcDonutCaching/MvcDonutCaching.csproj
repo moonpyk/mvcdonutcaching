@@ -64,6 +64,7 @@
   <ItemGroup>
     <Compile Include="ActionSettings.cs" />
     <Compile Include="ActionSettingsSerialiser.cs" />
+    <Compile Include="Mlidbom\AutoCacheItem.cs" />
     <Compile Include="Mlidbom\AutoOutputCacheAttribute.cs" />
     <Compile Include="CacheHeadersHelper.cs" />
     <Compile Include="CacheItem.cs" />
