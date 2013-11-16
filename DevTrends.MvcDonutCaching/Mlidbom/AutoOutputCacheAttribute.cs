@@ -78,8 +78,6 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
         /// </summary>
         public OutputCacheOptions Options { get { return _options ?? OutputCacheOptions.None; } set { _options = value; } }
 
-        public bool ExcludeFromParentCache { get; set; }
-
         /// <summary>
         /// Builds the cache settings.
         /// </summary>
