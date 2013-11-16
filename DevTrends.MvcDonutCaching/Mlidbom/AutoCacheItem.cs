@@ -3,6 +3,6 @@
     public class AutoCacheItem : CacheItem
     {
         //Todo: move or get along with serialization etc....
-        public Donut Donut { get; set; }
+        public IDonut Donut { get; set; }
     }
 }

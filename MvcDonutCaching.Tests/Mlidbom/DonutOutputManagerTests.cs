@@ -122,7 +122,7 @@ namespace MvcDonutCaching.Tests.Mlidbom
             var rootOutput = new StringWriter();
             context.HttpContext.Response.Output = rootOutput;
 
-            Donut level1Donut, level2Donut1, level2Donut2, level3Donut1, level3Donut2 = null;
+            IDonut level1Donut, level2Donut1, level2Donut2, level3Donut1, level3Donut2 = null;
             const string level1StartOutput = "_1",
                 level1EndOutput = "1_",
                 level2StartOutput = "_2",
@@ -167,26 +167,26 @@ namespace MvcDonutCaching.Tests.Mlidbom
             level1Donut = DonutOutputManager.ResultExecuted(context); //Done
 
             Assert.That(level3Donut1.OutputSegments, Is.EqualTo(new[] {level3Output}));
-            Assert.That(level3Donut1.Children.Count, Is.EqualTo(0));
+            Assert.That(level3Donut1.SortedChildren.Count, Is.EqualTo(0));
 
             Assert.That(level3Donut2.OutputSegments, Is.EqualTo(new[] {level3Output}));
-            Assert.That(level3Donut2.Children.Count, Is.EqualTo(0));
+            Assert.That(level3Donut2.SortedChildren.Count, Is.EqualTo(0));
 
             Assert.That(level2Donut1.OutputSegments, Is.EqualTo(new[] {level2StartOutput, level2EndOutput}));
-            Assert.That(level2Donut1.Children.Count, Is.EqualTo(1));
+            Assert.That(level2Donut1.SortedChildren.Count, Is.EqualTo(1));
 
             Assert.That(level2Donut2.OutputSegments, Is.EqualTo(new[] {level2StartOutput, level2EndOutput}));
-            Assert.That(level2Donut2.Children.Count, Is.EqualTo(1));
+            Assert.That(level2Donut2.SortedChildren.Count, Is.EqualTo(1));
 
             Assert.That(level1Donut.OutputSegments, Is.EqualTo(new[] {level1StartOutput, "", level1EndOutput}));
-            Assert.That(level1Donut.Children.Count, Is.EqualTo(2));
+            Assert.That(level1Donut.SortedChildren.Count, Is.EqualTo(2));
         }       
 
         public class ThreeLevelNestedOutputActionScenario
         {
-            private Donut _level1Donut;
-            private Donut _level2Donut;
-            private Donut _level3Donut;
+            private IDonut _level1Donut;
+            private IDonut _level2Donut;
+            private IDonut _level3Donut;
 
 
             private StaticActionDescriptor Level1DonutActionDescriptor{ get { return (StaticActionDescriptor)_level1Donut.ControllerAction.ActionDescriptor; }}
@@ -324,13 +324,11 @@ namespace MvcDonutCaching.Tests.Mlidbom
     {
         private readonly string _actionName;
         public Action<ActionExecutingContext> ExcecuteDelegate;
-        public Donut DonutToDelegateTo;
         private ControllerDescriptor _controllerDescriptor;
 
-        public StaticActionDescriptor(string controllerName, string actionName, Action<ControllerContext> excecuteDelegate = null, Donut executeDonutDelegate = null)
+        public StaticActionDescriptor(string controllerName, string actionName, Action<ControllerContext> excecuteDelegate = null)
         {
             _actionName = actionName;
-            DonutToDelegateTo = executeDonutDelegate;
             ExcecuteDelegate = excecuteDelegate;
             _controllerDescriptor = new StaticControllerDescriptor(controllerName);
         }
@@ -341,13 +339,7 @@ namespace MvcDonutCaching.Tests.Mlidbom
             {
                 ExcecuteDelegate((ActionExecutingContext)controllerContext);
                 return null;
-            } 
-
-            if (DonutToDelegateTo != null)
-            {
-                DonutToDelegateTo.Execute((ActionExecutingContext)controllerContext);
-                return null;
-            }           
+            }        
 
             throw new NotImplementedException();
         }

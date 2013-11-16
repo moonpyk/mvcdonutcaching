@@ -16,7 +16,7 @@ namespace MvcDonutCaching.Tests.Mlidbom
             string action = "action",
             string output = null,
             IDictionary<string, object> parameters = null,
-            Action<Donut> afterResultExecuted = null 
+            Action<IDonut> afterResultExecuted = null 
             )
         {
             var popper = new ActionInvocationSimulator(
@@ -33,7 +33,7 @@ namespace MvcDonutCaching.Tests.Mlidbom
     public class ActionInvocationSimulator : IDisposable
     {
         private readonly Func<ActionExecutingContext, string> _render;
-        private readonly Action<Donut> _afterResultExecuted;
+        private readonly Action<IDonut> _afterResultExecuted;
         private readonly TextWriter _originalOutput;
         private ActionDescriptor ActionDescriptor { get; set; }
         private IDictionary<string, object> ActionParameters { get; set; }
@@ -58,7 +58,7 @@ namespace MvcDonutCaching.Tests.Mlidbom
             IDictionary<string, object> parameters,
             string controller, 
             string action,
-            Action<Donut> afterResultExecuted = null)
+            Action<IDonut> afterResultExecuted = null)
         {
             ActionParameters = context.ActionParameters = parameters ?? new Dictionary<string, object>();
             ActionDescriptor = context.ActionDescriptor = new StaticActionDescriptor(controllerName: controller, actionName: action);

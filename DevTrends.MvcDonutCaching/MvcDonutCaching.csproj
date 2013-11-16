@@ -70,9 +70,11 @@
     <Compile Include="CacheItem.cs" />
     <Compile Include="CacheSettings.cs" />
     <Compile Include="CacheSettingsManager.cs" />
+    <Compile Include="Mlidbom\DonutHole.cs" />
+    <Compile Include="Mlidbom\Donut.cs" />
     <Compile Include="Mlidbom\Contract.cs" />
     <Compile Include="Mlidbom\ControllerAction.cs" />
-    <Compile Include="Mlidbom\Donut.cs" />
+    <Compile Include="Mlidbom\DonutBuilder.cs" />
     <Compile Include="Mlidbom\DonutOutputManager.cs" />
     <Compile Include="Mlidbom\DonutOutputWriter.cs" />
     <Compile Include="EncryptingActionSettingsSerialiser.cs" />
@@ -95,6 +97,8 @@
     <Compile Include="KeyBuilder.cs" />
     <Compile Include="MemoryCacheProvider.cs" />
     <Compile Include="Mlidbom\EnumExtensions.cs" />
+    <Compile Include="Mlidbom\IDonut.cs" />
+    <Compile Include="Mlidbom\IDonutBuilder.cs" />
     <Compile Include="OutputCache.cs" />
     <Compile Include="OutputCacheManager.cs" />
     <Compile Include="OutputCacheOptions.cs" />
