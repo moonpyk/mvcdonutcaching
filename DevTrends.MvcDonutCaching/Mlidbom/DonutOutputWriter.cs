@@ -14,7 +14,9 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
     {
         public DonutOutputWriter(ActionDescriptor actionDescriptor):base(CultureInfo.InvariantCulture)
         {
-            Description = string.Format("{0}.{1}", actionDescriptor.ActionName, actionDescriptor.ControllerDescriptor.ControllerName);
+            Description = string.Format("{0}.{1}(..)", 
+                actionDescriptor.ControllerDescriptor.ControllerName,
+                actionDescriptor.ActionName);
         }
 
         private string Description { get; set; }
