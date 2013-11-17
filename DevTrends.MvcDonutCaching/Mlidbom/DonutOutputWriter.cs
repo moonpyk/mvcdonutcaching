@@ -6,9 +6,10 @@ using System.Web.Mvc;
 namespace DevTrends.MvcDonutCaching.Mlidbom
 {
     /// <summary>
-    /// Minor convenience class that gives the advantage of easily telling if some other code has replaced our output by inspecting the type...
+    /// <para>>Minor convenience class that gives the advantage of easily telling if some other code has replaced our output by inspecting the type.</para>
+    /// <para>It also gives us a debuggerDisplay that lets us figure out where this output is supposed to belong.</para>
     /// </summary>
-    [DebuggerDisplay("{Description}: {ToString()}")]
+    [DebuggerDisplay("{Description}")]
     public class DonutOutputWriter : StringWriter
     {
         public DonutOutputWriter(ActionDescriptor actionDescriptor):base(CultureInfo.InvariantCulture)
