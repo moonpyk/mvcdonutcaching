@@ -12,7 +12,7 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
         List<string> OutputSegments { get; }
         bool Cached { get; }
 
-        IDonut CloneWithNewParent(IDonutBuilder parent);
+        IDonut CloneWithNewParent(IDonutBuilder parent, ActionExecutingContext context);
 
         string Execute(ActionExecutingContext context);
     }

@@ -15,6 +15,9 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
         private readonly IDonutBuilder _parent;
         private readonly bool _cached;
         public bool Cached { get { return _cached; } }
+        private DonutOutputWriter _output;
+        private TextWriter _originalOutput;
+        private ActionExecutingContext _context;
 
         public Donut(Guid id, List<IDonut> sortedChildren, List<string> outputSegments, ControllerAction controllerAction)
         {
@@ -25,23 +28,38 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
             ControllerAction = controllerAction;
         }
 
-        public IDonut CloneWithNewParent(IDonutBuilder parent)
+        public IDonut CloneWithNewParent(IDonutBuilder parent, ActionExecutingContext context)
         {
-            return new Donut(this, parent);
+            return new Donut(this, parent, context);
         }
 
-        private Donut(IDonut source, IDonutBuilder parent):this(Guid.NewGuid(), source.SortedChildren, source.OutputSegments, source.ControllerAction)
+        private Donut(IDonut source, IDonutBuilder parent, ActionExecutingContext context):this(Guid.NewGuid(), source.SortedChildren, source.OutputSegments, source.ControllerAction)
         {
+            _context = context;
+            _output = new DonutOutputWriter(context.ActionDescriptor);
+            _originalOutput = context.HttpContext.Response.Output;
+            context.HttpContext.Response.Output = _output;
             _parent = parent;
             _cached = true;
         }
 
         public void ResultExecuted()
         {
+            if (!ReferenceEquals(_context.HttpContext.Response.Output, _output))
+            {
+                throw new Exception("Hey! Someone replaced HttpContext.Response.Output and did not restore it correctly. Output will be corrupt.");
+            }
+
             if(_parent != null)
             {
                 _parent.AddChild(this);
+                _originalOutput.Write(_parent.PrepareChildOutput(Id, _output.ToString()));
             }
+            else
+            {
+                _originalOutput.Write(_output.ToString());
+            }
+            _context.HttpContext.Response.Output = _originalOutput;
         }
 
         public IDonut CacheAbleValue()

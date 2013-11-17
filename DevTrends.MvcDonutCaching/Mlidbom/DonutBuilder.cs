@@ -93,6 +93,11 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
                 output.Write(segment);
             }
 
+            if(_children.Count != sortedChildren.Count)
+            {
+                throw new Exception("Children have gone missing.");
+            }
+
             ExecutedVersion = new Donut(_id, sortedChildren, outputSegments, new ControllerAction(_context));
 
             return output.ToString();
