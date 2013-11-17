@@ -43,7 +43,7 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
             _children[child.Id] = child;
         }
 
-        public void ResultExecuted()
+        public void ResultExecuted(bool wasException)
         {
             if(ExecutedVersion != null)
             {
@@ -53,15 +53,23 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
             {
                 throw new Exception("Hey! Someone replaced HttpContext.Response.Output and did not restore it correctly. Output will be corrupt.");
             }
-            string totalOutput = ParseAndStoreOutput(_output.ToString());
-            if(_parent != null)
+
+            if(wasException)//We don't mess with the output if an exception was thrown. Nothing will be cached and we do not want to break things worse.
             {
-                _parent.AddChild(CacheAbleValue());
-                _originalOutput.Write(_parent.PrepareChildOutput(_id, totalOutput));
+                _originalOutput.Write(_output.ToString());
             }
             else
             {
-                _originalOutput.Write(totalOutput);
+                var totalOutput = ParseAndStoreOutput(_output.ToString());
+                if(_parent != null)
+                {
+                    _parent.AddChild(CacheAbleValue());
+                    _originalOutput.Write(_parent.PrepareChildOutput(_id, totalOutput));
+                }
+                else
+                {
+                    _originalOutput.Write(totalOutput);
+                }
             }
 
             _context.HttpContext.Response.Output = _originalOutput;

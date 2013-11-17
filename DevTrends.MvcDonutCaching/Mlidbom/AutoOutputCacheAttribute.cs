@@ -167,16 +167,18 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
         {
             var cacheKey = KeyGenerator.GenerateKey(filterContext, CacheSettings);
 
-            var donut = DonutOutputManager.ResultExecuted(filterContext);
+            bool wasException = filterContext.Exception  != null;
+            var donut = DonutOutputManager.ResultExecuted(filterContext, wasException);
+            if (wasException)
+            {
+                return; //We don't cache the result of crashes.
+            }
+
             if(donut.Cached)
             {
                 return; //We rendered from cache and can stop right here.
             }
-            if(filterContext.Exception != null)
-            {
-                return;//We don't cache the result of crashes.
-            }
-            
+
             var cacheItem = new AutoCacheItem
                             {
                                 Donut = donut,

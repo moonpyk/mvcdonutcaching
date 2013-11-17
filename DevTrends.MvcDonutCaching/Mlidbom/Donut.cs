@@ -43,7 +43,7 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
             _cached = true;
         }
 
-        public void ResultExecuted()
+        public void ResultExecuted(bool wasException)
         {
             if (!ReferenceEquals(_context.HttpContext.Response.Output, _output))
             {

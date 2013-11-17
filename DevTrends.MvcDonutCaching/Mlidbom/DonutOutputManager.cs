@@ -34,10 +34,10 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
             donutStack.Push(pushed);
         }
 
-        public static IDonut ResultExecuted(ControllerContext context)
+        public static IDonut ResultExecuted(ControllerContext context, bool wasException = false)
         {            
             var executed = DonutStack(context).Pop();;
-            executed.ResultExecuted();
+            executed.ResultExecuted(wasException);
             return executed.CacheAbleValue();
         }
     }
