@@ -6,4 +6,4 @@ $OutputDirectory = "$scriptRoot\nuget\"
 
 Set-Alias Build-Pkg-Internal $scriptRoot\.nuget\NuGet.exe
 
-Build-Pkg-Internal pack "$($scriptRoot)\DevTrends.MvcDonutCaching\MvcDonutCaching.csproj" -OutputDirectory $OutputDirectory  -Prop Version=$Version -Symbols -Verbose
+Build-Pkg-Internal pack "$($scriptRoot)\DevTrends.MvcDonutCaching\MvcDonutCaching.csproj" -OutputDirectory $OutputDirectory  -Version $Version -Symbols -Verbose
