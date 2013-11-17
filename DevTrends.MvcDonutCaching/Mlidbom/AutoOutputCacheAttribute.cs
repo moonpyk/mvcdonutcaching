@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.UI;
@@ -143,9 +144,8 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
                 // We are fetching the stored value only if the option has not been set and the request is not a POST
                 if(!CacheSettings.Options.HasFlag(OutputCacheOptions.NoCacheLookupForPosts) || filterContext.HttpContext.Request.HttpMethod != "POST")
                 {
-                    var cachedItem = (AutoCacheItem)OutputCacheManager.GetItem(cacheKey);                    
-                    // We have a cached version on the server side
-                    if(cachedItem != null)
+                    var cachedItem = (AutoCacheItem)OutputCacheManager.GetItem(cacheKey);
+                    if (cachedItem != null)// We have a cached version on the server side
                     {
                         DonutOutputManager.ActionExecutingCached(filterContext, cachedItem.Donut);
                         // We inject the previous result into the MVC pipeline
@@ -164,31 +164,28 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
         }
 
         override public void OnResultExecuted(ResultExecutedContext filterContext)
-        {
-            var cacheKey = KeyGenerator.GenerateKey(filterContext, CacheSettings);
-
-            bool wasException = filterContext.Exception  != null;
+        {           
+            var wasException = filterContext.Exception  != null;
+            
+            
             var donut = DonutOutputManager.ResultExecuted(filterContext, wasException);
-            if (wasException)
-            {
-                return; //We don't cache the result of crashes.
-            }
 
-            if(donut.Cached)
+            if (wasException //We don't cache the result of pages that throw exceptions.
+                || donut.Cached //Item is already cached and we do not want to extend its lifetime by inserting it with a new expiration
+                || !CacheSettings.IsServerCachingEnabled //Caching is disabled
+                || filterContext.HttpContext.Response.StatusCode != (int)HttpStatusCode.OK)//Page is not returning content.
             {
-                return; //We rendered from cache and can stop right here.
+                return; 
             }
 
             var cacheItem = new AutoCacheItem
-                            {
-                                Donut = donut,
-                                ContentType = filterContext.HttpContext.Response.ContentType
-                            };
-
-            if(CacheSettings.IsServerCachingEnabled && filterContext.HttpContext.Response.StatusCode == 200)
             {
-                OutputCacheManager.AddItem(cacheKey, cacheItem, DateTime.UtcNow.AddSeconds(CacheSettings.Duration));
-            }
+                Donut = donut,
+                ContentType = filterContext.HttpContext.Response.ContentType
+            };
+
+            var cacheKey = KeyGenerator.GenerateKey(filterContext, CacheSettings);
+            OutputCacheManager.AddItem(cacheKey, cacheItem, DateTime.UtcNow.AddSeconds(CacheSettings.Duration));
         }
     }
 }
