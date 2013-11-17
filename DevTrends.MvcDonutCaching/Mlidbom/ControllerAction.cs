@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Web.Mvc;
+using System.Web.Mvc.Html;
 using System.Web.Routing;
 
 namespace DevTrends.MvcDonutCaching.Mlidbom
@@ -34,10 +36,31 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
                    };
         }
 
-        public void Execute(ControllerContext context)
+        public MvcHtmlString Execute(ControllerContext context)
         {
             Contract.Parameter.NotNull(context);
-            ActionDescriptor.Execute(context, ActionParameters);
+            var controller = context.Controller;
+            var viewContext = new ViewContext(
+                controller.ControllerContext,
+                new WebFormView(controller.ControllerContext, "tmp"),
+                controller.ViewData,
+                controller.TempData,
+                TextWriter.Null
+                );
+
+            var htmlHelper = new HtmlHelper(viewContext, new ViewPage());
+
+            return htmlHelper.Action(
+                ActionDescriptor.ActionName,
+                ActionDescriptor.ControllerDescriptor.ControllerName,
+                new RouteValueDictionary(ActionParameters));
+        }
+
+        override public string ToString()
+        {
+            return string.Format("{0}.{1}(..)",
+                ActionDescriptor.ControllerDescriptor.ControllerName,
+                ActionDescriptor.ActionName);
         }
     }
 }

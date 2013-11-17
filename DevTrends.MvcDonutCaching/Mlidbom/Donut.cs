@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Web.Mvc;
-using System.Web.Mvc.Html;
-using System.Web.Routing;
 
 namespace DevTrends.MvcDonutCaching.Mlidbom
 {
@@ -51,10 +49,7 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
 
         override public string ToString()
         {
-            return string.Format("{0}.{1}(..) -> {2}",
-                ControllerAction.ActionDescriptor.ControllerDescriptor.ControllerName,
-                ControllerAction.ActionDescriptor.ActionName,
-                OutputSegments.FirstOrDefault());
+            return string.Format("{0} -> {1}", ControllerAction, OutputSegments.FirstOrDefault());
         }
 
         public string Execute(ActionExecutingContext context)
@@ -66,7 +61,7 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
                 output.Write(OutputSegments[currentSegment]);
                 if(SortedChildren.Count > currentSegment)
                 {
-                    output.Write(InvokeChildAction(SortedChildren[currentSegment], context));
+                    output.Write(SortedChildren[currentSegment].ControllerAction.Execute(context));
                 }
             }
 
@@ -75,27 +70,6 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
                 return _parent.PrepareChildOutput(Id, output.ToString());
             }
             return output.ToString();
-        }
-
-
-        private static string InvokeChildAction(IDonut donut, ActionExecutingContext context)
-        {
-            ControllerBase controller = context.Controller;
-            var viewContext = new ViewContext(
-                controller.ControllerContext,
-                new WebFormView(controller.ControllerContext, "tmp"),
-                controller.ViewData,
-                controller.TempData,
-                TextWriter.Null
-                );
-
-            var htmlHelper = new HtmlHelper(viewContext, new ViewPage());
-
-            return htmlHelper.Action(
-                donut.ControllerAction.ActionDescriptor.ActionName,
-                donut.ControllerAction.ActionDescriptor.ControllerDescriptor.ControllerName,
-                new RouteValueDictionary(donut.ControllerAction.ActionParameters))
-                .ToString();
         }
 
         public void AddChild(IDonut child)
