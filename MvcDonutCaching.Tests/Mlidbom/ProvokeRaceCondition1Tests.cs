@@ -1,17 +1,11 @@
 ﻿using System;
-using System.Collections.Concurrent;
-using System.IO;
-using System.Linq;
 using System.Net;
-using System.Net.Cache;
-using System.Threading;
-using System.Threading.Tasks;
 using NCrunch.Framework;
 using NUnit.Framework;
 
 namespace MvcDonutCaching.Tests.Mlidbom
 {
-    [TestFixture, ExclusivelyUses(Controller)]
+    [TestFixture, ExclusivelyUses(Controller), Isolated]//Applies so much load that it will screw up the timing for other tests.
     public class ProvokeRaceCondition1Tests : ControllerTestBase
     {
         private const string Controller = "ProvokeRaceCondition1";

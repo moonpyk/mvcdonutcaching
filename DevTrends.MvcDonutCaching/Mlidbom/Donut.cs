@@ -12,21 +12,28 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
         public List<IDonut> SortedChildren { get; private set; }
         public ControllerAction ControllerAction { get; private set; }
         public Guid Id { get; private set; }
-        private IDonutBuilder _parent;
-        public bool Cached { get; private set; }//todo: this is ugly. Try and get rid of the need this to be mutable
+        private readonly IDonutBuilder _parent;
+        private readonly bool _cached;
+        public bool Cached { get { return _cached; } }
 
         public Donut(Guid id, List<IDonut> sortedChildren, List<string> outputSegments, ControllerAction controllerAction)
         {
+            _cached = false;
             Id = id;
             SortedChildren = sortedChildren;
             OutputSegments = outputSegments;
             ControllerAction = controllerAction;
         }
 
-        public void PushedFromCache(IDonutBuilder parent)
+        public IDonut CloneWithNewParent(IDonutBuilder parent)
+        {
+            return new Donut(this, parent);
+        }
+
+        private Donut(IDonut source, IDonutBuilder parent):this(Guid.NewGuid(), source.SortedChildren, source.OutputSegments, source.ControllerAction)
         {
             _parent = parent;
-            Cached = true;
+            _cached = true;
         }
 
         public void ResultExecuted()

@@ -23,8 +23,7 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
         {
             var donutStack = DonutStack(context);
             var parent = donutStack.Count > 0 ? donutStack.Peek() : null;
-            cached.PushedFromCache(parent);
-            donutStack.Push(cached);
+            donutStack.Push(cached.CloneWithNewParent(parent));
         } 
 
         public static void ActionExecuting(ActionExecutingContext context)
