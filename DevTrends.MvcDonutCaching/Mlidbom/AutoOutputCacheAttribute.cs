@@ -34,8 +34,8 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
         //The point of the whole exercise is to make sure that developers get a correct error page instead of a blank white page when they screw up.
         //It's no fun trying to debug MVC with just a white page in front of you.
         //If you remove this logic or try to do it with a lookup by cacheKey tests will fail. You have been warned :)
-        private bool _hackishDangerousHandlingCompleted;
-        private bool HandlingCompleted { get { return _hackishDangerousHandlingCompleted; } set { _hackishDangerousHandlingCompleted = value; } }
+        private bool _hackishDangerousHasHandledException;
+        private bool HasHandledException { get { return _hackishDangerousHasHandledException; } set { _hackishDangerousHasHandledException = value; } }
 
         // Private
         private bool? _noStore;
@@ -176,7 +176,7 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
 
         override public void OnResultExecuted(ResultExecutedContext filterContext)
         {
-            if (HandlingCompleted)
+            if (HasHandledException)
             {
                 return;
             }
@@ -184,13 +184,16 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
             var wasException = filterContext.Exception  != null;
 
             var donut = DonutOutputManager.ResultExecuted(filterContext, wasException);
+            if(wasException) //We don't cache the result of pages that throw exceptions.
+            {
+                HasHandledException = true;//Calling resultExecuted again will not work out well....
+                return;
+            }
 
-            if (wasException //We don't cache the result of pages that throw exceptions.
-                || donut.Cached //Item is already cached and we do not want to extend its lifetime by inserting it with a new expiration
+            if (donut.Cached //Item is already cached and we do not want to extend its lifetime by inserting it with a new expiration
                 || !CacheSettings.IsServerCachingEnabled //Caching is disabled
                 || filterContext.HttpContext.Response.StatusCode != (int)HttpStatusCode.OK)//Page is not returning content.
             {
-                HandlingCompleted = true;
                 return; 
             }
 
@@ -202,17 +205,16 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
 
             var cacheKey = KeyGenerator.GenerateKey(filterContext, CacheSettings);
             OutputCacheManager.AddItem(cacheKey, cacheItem, DateTime.UtcNow.AddSeconds(CacheSettings.Duration));
-            HandlingCompleted = true;
         }
 
         public void OnException(ExceptionContext filterContext)
         {
-            if (HandlingCompleted)
+            if (HasHandledException)
             {
                 return;
             }
             DonutOutputManager.ResultExecuted(filterContext, wasException: true);
-            HandlingCompleted = true;
+            HasHandledException = true;//Calling resultExecuted again would not work out well....
         }
     }
 }
