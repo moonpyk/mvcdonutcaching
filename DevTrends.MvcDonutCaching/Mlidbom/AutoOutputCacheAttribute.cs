@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Runtime.Remoting.Contexts;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.UI;
@@ -7,7 +8,7 @@ using System.Web.UI;
 namespace DevTrends.MvcDonutCaching.Mlidbom
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = true, AllowMultiple = false)]
-    public class AutoOutputCacheAttribute : ActionFilterAttribute
+    public class AutoOutputCacheAttribute : ActionFilterAttribute, IExceptionFilter
     {
         // Protected
         protected readonly ICacheSettingsManager CacheSettingsManager;
@@ -25,6 +26,16 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
                 return _cacheSettings;
             }
         }
+
+        //todo:this depends on implementation details in mvc. Namely creating new instances of the attribute for each action call.
+        //However it was the only reasonably clean and reliable way I could find of keeping track of whether an exception has already been handled. 
+        //You might think that using the cache key would work but that will fail if you have multiple identical calls in a page...
+        //Fortunately this code should only ever be relevant if the page is failing anyway so it is probably not that big of a deal. 
+        //The point of the whole exercise is to make sure that developers get a correct error page instead of a blank white page when they screw up.
+        //It's no fun trying to debug MVC with just a white page in front of you.
+        //If you remove this logic or try to do it with a lookup by cacheKey tests will fail. You have been warned :)
+        private bool _hackishDangerousHandlingCompleted;
+        private bool HandlingCompleted { get { return _hackishDangerousHandlingCompleted; } set { _hackishDangerousHandlingCompleted = value; } }
 
         // Private
         private bool? _noStore;
@@ -77,7 +88,7 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
         /// Get or sets the <see cref="OutputCacheOptions"/> for this attributes. Specifying a value here will
         /// make the <see cref="OutputCache.DefaultOptions"/> value ignored.
         /// </summary>
-        public OutputCacheOptions Options { get { return _options ?? OutputCacheOptions.None; } set { _options = value; } }
+        public OutputCacheOptions Options { get { return _options ?? OutputCacheOptions.None; } set { _options = value; } }        
 
         /// <summary>
         /// Builds the cache settings.
@@ -164,10 +175,14 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
         }
 
         override public void OnResultExecuted(ResultExecutedContext filterContext)
-        {           
+        {
+            if (HandlingCompleted)
+            {
+                return;
+            }
+            
             var wasException = filterContext.Exception  != null;
-            
-            
+
             var donut = DonutOutputManager.ResultExecuted(filterContext, wasException);
 
             if (wasException //We don't cache the result of pages that throw exceptions.
@@ -175,6 +190,7 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
                 || !CacheSettings.IsServerCachingEnabled //Caching is disabled
                 || filterContext.HttpContext.Response.StatusCode != (int)HttpStatusCode.OK)//Page is not returning content.
             {
+                HandlingCompleted = true;
                 return; 
             }
 
@@ -186,6 +202,17 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
 
             var cacheKey = KeyGenerator.GenerateKey(filterContext, CacheSettings);
             OutputCacheManager.AddItem(cacheKey, cacheItem, DateTime.UtcNow.AddSeconds(CacheSettings.Duration));
+            HandlingCompleted = true;
+        }
+
+        public void OnException(ExceptionContext filterContext)
+        {
+            if (HandlingCompleted)
+            {
+                return;
+            }
+            DonutOutputManager.ResultExecuted(filterContext, wasException: true);
+            HandlingCompleted = true;
         }
     }
 }
