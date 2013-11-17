@@ -1,0 +1,10 @@
+﻿<html id="O::1">
+    @Html.Action("TopLayoutHeader")
+    @RenderSection("Section1")
+    <body id="O::4">
+        <div>TopLevelLayout: @DateTime.Now.ToLongTimeString()</div>
+        @RenderBody()
+        @Html.Action("TopLayoutFooter")
+    </body>
+    @RenderSection("Section4")
+</html>

@@ -84,8 +84,10 @@
   <ItemGroup>
     <Compile Include="Mlidbom\ActionExceptionTests.cs" />
     <Compile Include="Mlidbom\ControllerContextExtensions.cs" />
+    <Compile Include="Mlidbom\ProvokeRaceCondition1Tests.cs" />
     <Compile Include="Mlidbom\DonutOutputManagerTests.cs" />
     <Compile Include="Mlidbom\FiveLevelsNestedDonutsLevel2and4HaveNoAttributeTests.cs" />
+    <Compile Include="Mlidbom\ThreadingHelper.cs" />
     <Compile Include="OldStyle_FiveLevelsNestedDonutsControllerTests.cs" />
     <Compile Include="Mlidbom\FiveLevelsNestedControllerTests.cs" />
     <Compile Include="Mlidbom\MultipleIdenticalChildActionCalls.cs" />

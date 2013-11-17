@@ -121,6 +121,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\Caching1SecondWithNoChildActionsController.cs" />
+    <Compile Include="Controllers\ProvokeRaceCondition1Controller.cs" />
     <Compile Include="Controllers\ThrowExceptionController.cs" />
     <Compile Include="Controllers\MultipleIdenticalChildActionCallsController.cs" />
     <Compile Include="Controllers\PageWithNestedLayoutsAndSectionsController.cs" />
@@ -243,6 +244,16 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\ThrowException\ThrowTwoLevelsDown.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\ProvokeRaceCondition1\Index.cshtml" />
+    <Content Include="Views\ProvokeRaceCondition1\NestedLayoutFooter.cshtml" />
+    <Content Include="Views\ProvokeRaceCondition1\NestedLayoutHeader.cshtml" />
+    <Content Include="Views\ProvokeRaceCondition1\PageBody.cshtml" />
+    <Content Include="Views\ProvokeRaceCondition1\TopLayoutFooter.cshtml" />
+    <Content Include="Views\ProvokeRaceCondition1\TopLayoutHeader.cshtml" />
+    <Content Include="Views\ProvokeRaceCondition1\_NestedLayout.cshtml" />
+    <Content Include="Views\ProvokeRaceCondition1\_TopLayout.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
