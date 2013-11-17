@@ -15,47 +15,56 @@ namespace MvcDonutCaching.Tests.Mlidbom
         [Test]
         public void EachLevelIsRenderedNoMoreOftenThanItsCachePolicyDuration()
         {
-            DateTime runStartTime = DateTime.Now;
-            var runUntil = runStartTime + TimeSpan.FromMilliseconds(2000);
+            RetryThreeTimesOnFailureSinceTimingIssuesWithTheWebServerAndStartUpMayCauseIntermittentFailures(
+                () =>
+                {
+                    var runStartTime = DateTime.Now;
+                    var runUntil = runStartTime + TimeSpan.FromMilliseconds(2000);
 
-            var failures = new StringWriter();
-            var lastLevelTimes = RenderAndFetchLevelTimes();
-            while (DateTime.Now < runUntil)
-            {
-                Thread.Sleep(TimeSpan.FromMilliseconds(10));
-                var currentLevelTimes = RenderAndFetchLevelTimes();
-                var runTimeSpan = DateTime.Now - runStartTime;
-
-                Action<String, DateTime, DateTime, int> assertRenderTimeIsWithin50MillisecondsOfCachePolicyDuration =
-                    (levelName, lastTime, currentTime, cachePolicyDurationMilliseconds) =>
+                    var failures = new StringWriter();
+                    var lastLevelTimes = RenderAndFetchLevelTimes();
+                    while(DateTime.Now < runUntil)
                     {
-                        const int toleranceMilliseconds = 50;
-                        if (lastTime != currentTime)
-                        {
-                            var timeSinceLastRenderInMilliseconds = (int)(currentTime - lastTime).TotalMilliseconds;
-                            var devianceInMilliseconds = cachePolicyDurationMilliseconds - timeSinceLastRenderInMilliseconds;
-                            if (devianceInMilliseconds > toleranceMilliseconds)
+                        Thread.Sleep(TimeSpan.FromMilliseconds(10));
+                        var currentLevelTimes = RenderAndFetchLevelTimes();
+                        var runTimeSpan = DateTime.Now - runStartTime;
+
+                        Action<String, DateTime, DateTime, int> assertRenderTimeIsWithin50MillisecondsOfCachePolicyDuration =
+                            (levelName, lastTime, currentTime, cachePolicyDurationMilliseconds) =>
                             {
-                                failures.WriteLine("{0} re-rendered after {1} milliseconds. {2} milliseconds into the run. It should render no more often than every {3} +- {4} milliseconds",
-                                    levelName, timeSinceLastRenderInMilliseconds, (int)runTimeSpan.TotalMilliseconds, cachePolicyDurationMilliseconds, toleranceMilliseconds);
-                            }
-                        }
-                    };
+                                const int toleranceMilliseconds = 50;
+                                if(lastTime != currentTime)
+                                {
+                                    var timeSinceLastRenderInMilliseconds = (int)(currentTime - lastTime).TotalMilliseconds;
+                                    var devianceInMilliseconds = cachePolicyDurationMilliseconds - timeSinceLastRenderInMilliseconds;
+                                    if(devianceInMilliseconds > toleranceMilliseconds)
+                                    {
+                                        failures.WriteLine(
+                                            "{0} re-rendered after {1} milliseconds. {2} milliseconds into the run. It should render no more often than every {3} +- {4} milliseconds",
+                                            levelName,
+                                            timeSinceLastRenderInMilliseconds,
+                                            (int)runTimeSpan.TotalMilliseconds,
+                                            cachePolicyDurationMilliseconds,
+                                            toleranceMilliseconds);
+                                    }
+                                }
+                            };
 
-                assertRenderTimeIsWithin50MillisecondsOfCachePolicyDuration("Level0", lastLevelTimes.Level0, currentLevelTimes.Level0, 0);
-                assertRenderTimeIsWithin50MillisecondsOfCachePolicyDuration("Level1", lastLevelTimes.Level1, currentLevelTimes.Level1, 100);
-                assertRenderTimeIsWithin50MillisecondsOfCachePolicyDuration("Level2", lastLevelTimes.Level2, currentLevelTimes.Level2, 200);
-                assertRenderTimeIsWithin50MillisecondsOfCachePolicyDuration("Level3", lastLevelTimes.Level3, currentLevelTimes.Level3, 300);
-                assertRenderTimeIsWithin50MillisecondsOfCachePolicyDuration("Level4", lastLevelTimes.Level4, currentLevelTimes.Level4, 400);
-                assertRenderTimeIsWithin50MillisecondsOfCachePolicyDuration("Level5", lastLevelTimes.Level5, currentLevelTimes.Level5, 500);
+                        assertRenderTimeIsWithin50MillisecondsOfCachePolicyDuration("Level0", lastLevelTimes.Level0, currentLevelTimes.Level0, 0);
+                        assertRenderTimeIsWithin50MillisecondsOfCachePolicyDuration("Level1", lastLevelTimes.Level1, currentLevelTimes.Level1, 100);
+                        assertRenderTimeIsWithin50MillisecondsOfCachePolicyDuration("Level2", lastLevelTimes.Level2, currentLevelTimes.Level2, 200);
+                        assertRenderTimeIsWithin50MillisecondsOfCachePolicyDuration("Level3", lastLevelTimes.Level3, currentLevelTimes.Level3, 300);
+                        assertRenderTimeIsWithin50MillisecondsOfCachePolicyDuration("Level4", lastLevelTimes.Level4, currentLevelTimes.Level4, 400);
+                        assertRenderTimeIsWithin50MillisecondsOfCachePolicyDuration("Level5", lastLevelTimes.Level5, currentLevelTimes.Level5, 500);
 
-                lastLevelTimes = currentLevelTimes;
-            }
+                        lastLevelTimes = currentLevelTimes;
+                    }
 
-            if (failures.ToString() != string.Empty)
-            {
-                Assert.Fail(failures.ToString());
-            }
+                    if(failures.ToString() != string.Empty)
+                    {
+                        Assert.Fail(failures.ToString());
+                    }
+                });
         }
 
         [SetUp]
