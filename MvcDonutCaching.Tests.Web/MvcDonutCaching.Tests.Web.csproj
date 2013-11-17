@@ -121,6 +121,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\Caching1SecondWithNoChildActionsController.cs" />
+    <Compile Include="Controllers\IllegalArgumentsToChildActionController.cs" />
     <Compile Include="Controllers\ProvokeRaceCondition1Controller.cs" />
     <Compile Include="Controllers\ThrowExceptionController.cs" />
     <Compile Include="Controllers\MultipleIdenticalChildActionCallsController.cs" />
@@ -254,6 +255,18 @@
     <Content Include="Views\ProvokeRaceCondition1\TopLayoutHeader.cshtml" />
     <Content Include="Views\ProvokeRaceCondition1\_NestedLayout.cshtml" />
     <Content Include="Views\ProvokeRaceCondition1\_TopLayout.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\IllegalArgumentsToChildAction\IllegalArgumentsInRoot.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\IllegalArgumentsToChildAction\IllegalArgumentsInFirstChild.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\IllegalArgumentsToChildAction\IllegalArgumentsInNestedChild.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\IllegalArgumentsToChildAction\ChildActionRequiringParameter.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
