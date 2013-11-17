@@ -12,7 +12,7 @@ namespace MvcDonutCaching.Tests.Mlidbom
         private const string Controller = "FiveLevelsNestedDonuts";
         override protected string ControllerName { get { return Controller; } }
 
-        [Test, Ignore("Uhm, this should only be a performance issues and I have no clue why it appears to clear the cache each second when running the tests but not when running for real...")]
+        [Test]
         public void EachLevelIsRenderedNoMoreOftenThanItsCachePolicyDuration()
         {
             DateTime runStartTime = DateTime.Now;
