@@ -12,7 +12,7 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
        
         public DonutExecutor(IDonut source, IDonutBuilder parent)
         {
-            _donut = new Donut(Guid.NewGuid(), source.ControllerAction, source.SortedChildren, source.SortedOutputSegments, true);
+            _donut = new Donut(source.ControllerAction, source.SortedChildren, source.SortedOutputSegments, true);
             _parent = parent;
         }
 

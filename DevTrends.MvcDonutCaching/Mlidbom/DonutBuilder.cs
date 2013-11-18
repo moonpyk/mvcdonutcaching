@@ -13,7 +13,6 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
         private readonly Dictionary<Guid, IDonut> _children = new Dictionary<Guid, IDonut>();
         private readonly IDonutBuilder _parent;
         private readonly DonutOutputWriter _output;
-        private readonly Guid _id;  
 
         private IDonut Donut { get; set; }
         public IDonut GetDonut()
@@ -28,8 +27,7 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
 
         public DonutBuilder(ActionExecutingContext context, IDonutBuilder parent)
         {
-            Contract.Parameter.NotNull(context);
-            _id = Guid.NewGuid();            
+            Contract.Parameter.NotNull(context);            
             _context = context;
             _parent = parent;
             _originalOutput = _context.HttpContext.Response.Output;
@@ -64,7 +62,7 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
                 if(_parent != null)
                 {
                     _parent.AddChild(GetDonut());
-                    _originalOutput.Write(_parent.PrepareChildOutput(_id, totalOutput));
+                    _originalOutput.Write(_parent.PrepareChildOutput(GetDonut().Id, totalOutput));
                 }
                 else
                 {
@@ -106,7 +104,7 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
                 throw new Exception("Children have gone missing.");
             }
 
-            Donut = new Donut(_id, new ControllerAction(_context), sortedChildren, outputSegments, false);
+            Donut = new Donut(new ControllerAction(_context), sortedChildren, outputSegments, false);
 
             return output.ToString();
         }
