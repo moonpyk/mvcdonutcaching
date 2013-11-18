@@ -27,16 +27,6 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
             }
         }
 
-        //todo:this depends on implementation details in mvc. Namely creating new instances of the attribute for each action call.
-        //However it was the only reasonably clean and reliable way I could find of keeping track of whether an exception has already been handled. 
-        //You might think that using the cache key would work but that will fail if you have multiple identical calls in a page...
-        //Fortunately this code should only ever be relevant if the page is failing anyway so it is probably not that big of a deal. 
-        //The point of the whole exercise is to make sure that developers get a correct error page instead of a blank white page when they screw up.
-        //It's no fun trying to debug MVC with just a white page in front of you.
-        //If you remove this logic or try to do it with a lookup by cacheKey tests will fail. You have been warned :)
-        private bool _hackishDangerousHasHandledException;
-        private bool HasHandledException { get { return _hackishDangerousHasHandledException; } set { _hackishDangerousHasHandledException = value; } }
-
         // Private
         private bool? _noStore;
         private OutputCacheOptions? _options;
@@ -177,19 +167,12 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
 
         override public void OnResultExecuted(ResultExecutedContext filterContext)
         {
-            if (HasHandledException)
+            if (filterContext.Exception != null)//We handle exceptions in OnException trying to handle them more than once will end badly.
             {
                 return;
             }
-            
-            var wasException = filterContext.Exception  != null;
 
-            IDonut donut = DonutOutputManager.ResultExecuted(filterContext, wasException);
-            if(wasException) //We don't cache the result of pages that throw exceptions.
-            {
-                HasHandledException = true;//Calling resultExecuted again will not work out well....
-                return;
-            }
+            var donut = DonutOutputManager.ResultExecuted(filterContext, wasException: false);
 
             if (donut.Cached //Item is already cached and we do not want to extend its lifetime by inserting it with a new expiration
                 || !CacheSettings.IsServerCachingEnabled //Caching is disabled
@@ -210,12 +193,7 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
 
         public void OnException(ExceptionContext filterContext)
         {
-            if (HasHandledException)
-            {
-                return;
-            }
             DonutOutputManager.ResultExecuted(filterContext, wasException: true);
-            HasHandledException = true;//Calling resultExecuted again would not work out well....
         }
     }
 }
