@@ -1,5 +1,6 @@
 ﻿using System.Configuration;
 using System.Web.Configuration;
+using DevTrends.MvcDonutCaching.Mlidbom;
 
 namespace DevTrends.MvcDonutCaching
 {
@@ -25,5 +26,13 @@ namespace DevTrends.MvcDonutCaching
         /// <c>true</c> if caching is globally enabled; otherwise, <c>false</c>.
         /// </value>
         bool IsCachingEnabledGlobally { get; }
+
+
+        /// <summary>
+        /// Given an attribute with cache settings this method will return the effective policy for the attribute.
+        /// </summary>
+        /// <param name="attribute"></param>
+        /// <returns></returns>
+        CacheSettings BuildEffectiveSettingsCombinedWithGlobalConfiguration(IAttributeCacheConfiguration attribute);
     }
 }

@@ -1,42 +1,39 @@
 ﻿using System;
 using System.Net;
-using System.Runtime.Remoting.Contexts;
-using System.Web;
 using System.Web.Mvc;
 using System.Web.UI;
 
 namespace DevTrends.MvcDonutCaching.Mlidbom
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = true, AllowMultiple = false)]
-    public class AutoOutputCacheAttribute : ActionFilterAttribute, IExceptionFilter
+    public class AutoOutputCacheAttribute : ActionFilterAttribute, IExceptionFilter, IAttributeCacheConfiguration
     {
         // Protected
         protected readonly ICacheSettingsManager CacheSettingsManager;
         protected readonly IKeyGenerator KeyGenerator;
         protected readonly IReadWriteOutputCacheManager OutputCacheManager;
 
-        protected CacheSettings CacheSettings
+        protected CacheSettings EffectiveCacheSettings
         {
             get
             {
                 if(_cacheSettings == null)
                 {
-                    _cacheSettings = BuildCacheSettings();
+                     //This cannot be done in the constructor because the properties of the attribute are not yet set to the values specified by the programmer.
+                    _cacheSettings = CacheSettingsManager.BuildEffectiveSettingsCombinedWithGlobalConfiguration(this);
                 }
                 return _cacheSettings;
             }
         }
 
         // Private
-        private bool? _noStore;
         private OutputCacheOptions? _options;
         private CacheSettings _cacheSettings;
 
         public AutoOutputCacheAttribute() : this(new KeyBuilder()) {}
 
         public AutoOutputCacheAttribute(IKeyBuilder keyBuilder) :
-            this(
-            new KeyGenerator(keyBuilder),
+            this(new KeyGenerator(keyBuilder),
             new OutputCacheManager(OutputCache.Instance, keyBuilder),
             new CacheSettingsManager()
             ) {}
@@ -46,7 +43,7 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
             IReadWriteOutputCacheManager outputCacheManager,
             ICacheSettingsManager cacheSettingsManager
             )
-        {
+        {            
             KeyGenerator = keyGenerator;
             OutputCacheManager = outputCacheManager;
             CacheSettingsManager = cacheSettingsManager;
@@ -72,78 +69,24 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
         public OutputCacheLocation Location { get; set; }
 
         /// <summary>Gets or sets a value that indicates whether to store the cache.</summary>
-        public bool NoStore { get { return _noStore ?? false; } set { _noStore = value; } }
+        public bool? NoStore { get; set; }
 
         /// <summary>
         /// Get or sets the <see cref="OutputCacheOptions"/> for this attributes. Specifying a value here will
         /// make the <see cref="OutputCache.DefaultOptions"/> value ignored.
         /// </summary>
         public OutputCacheOptions Options { get { return _options ?? OutputCacheOptions.None; } set { _options = value; } }        
-
-        /// <summary>
-        /// Builds the cache settings.
-        /// </summary>
-        /// <returns></returns>
-        /// <exception cref="System.Web.HttpException">
-        /// The 'duration' attribute must have a value that is greater than or equal to zero.
-        /// </exception>
-        protected CacheSettings BuildCacheSettings()
-        {
-            CacheSettings cacheSettings;
-
-            if(string.IsNullOrEmpty(CacheProfile))
-            {
-                cacheSettings = new CacheSettings
-                                {
-                                    IsCachingEnabled = CacheSettingsManager.IsCachingEnabledGlobally,
-                                    Duration = Duration,
-                                    VaryByCustom = VaryByCustom,
-                                    VaryByParam = VaryByParam,
-                                    Location = (int)Location == -1 ? OutputCacheLocation.Server : Location,
-                                    NoStore = NoStore,
-                                    Options = Options,
-                                };
-            }
-            else
-            {
-                var cacheProfile = CacheSettingsManager.RetrieveOutputCacheProfile(CacheProfile);
-
-                cacheSettings = new CacheSettings
-                                {
-                                    IsCachingEnabled = CacheSettingsManager.IsCachingEnabledGlobally && cacheProfile.Enabled,
-                                    Duration = (int)Duration == -1 ? cacheProfile.Duration : Duration,
-                                    VaryByCustom = VaryByCustom ?? cacheProfile.VaryByCustom,
-                                    VaryByParam = VaryByParam ?? cacheProfile.VaryByParam,
-                                    Location = (int)Location == -1 ? ((int)cacheProfile.Location == -1 ? OutputCacheLocation.Server : cacheProfile.Location) : Location,
-                                    NoStore = _noStore.HasValue ? _noStore.Value : cacheProfile.NoStore,
-                                    Options = Options,
-                                };
-            }
-
-            if((int)cacheSettings.Duration == -1)
-            {
-                throw new HttpException("The directive or the configuration settings profile must specify the 'duration' attribute.");
-            }
-
-            if(cacheSettings.Duration < 0)
-            {
-                throw new HttpException("The 'duration' attribute must have a value that is greater than or equal to zero.");
-            }
-
-            return cacheSettings;
-        }
-
-
+        
         override public void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            var cacheKey = KeyGenerator.GenerateKey(filterContext, CacheSettings);
+            var cacheKey = KeyGenerator.GenerateKey(filterContext, EffectiveCacheSettings);
 
             // Are we actually storing data on the server side ?
-            if(CacheSettings.IsServerCachingEnabled)
+            if(EffectiveCacheSettings.IsServerCachingEnabled)
             {
                 // If the request is a POST, we lookup for NoCacheLookupForPosts option
                 // We are fetching the stored value only if the option has not been set and the request is not a POST
-                if(!CacheSettings.Options.HasFlag(OutputCacheOptions.NoCacheLookupForPosts) || filterContext.HttpContext.Request.HttpMethod != "POST")
+                if(!EffectiveCacheSettings.Options.HasFlag(OutputCacheOptions.NoCacheLookupForPosts) || filterContext.HttpContext.Request.HttpMethod != "POST")
                 {
                     var cachedItem = (AutoCacheItem)OutputCacheManager.GetItem(cacheKey);
                     if (cachedItem != null)// We have a cached version on the server side
@@ -175,7 +118,7 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
             var donut = DonutOutputManager.ResultExecutionSucceeded(filterContext);
 
             if (donut.Cached //Item is already cached and we do not want to extend its lifetime by inserting it with a new expiration
-                || !CacheSettings.IsServerCachingEnabled //Caching is disabled
+                || !EffectiveCacheSettings.IsServerCachingEnabled //Caching is disabled
                 || filterContext.HttpContext.Response.StatusCode != (int)HttpStatusCode.OK)//Page is not returning content.
             {
                 return; 
@@ -187,8 +130,8 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
                 ContentType = filterContext.HttpContext.Response.ContentType
             };
 
-            var cacheKey = KeyGenerator.GenerateKey(filterContext, CacheSettings);
-            OutputCacheManager.AddItem(cacheKey, cacheItem, DateTime.UtcNow.AddSeconds(CacheSettings.Duration));
+            var cacheKey = KeyGenerator.GenerateKey(filterContext, EffectiveCacheSettings);
+            OutputCacheManager.AddItem(cacheKey, cacheItem, DateTime.UtcNow.AddSeconds(EffectiveCacheSettings.Duration));
         }
 
         public void OnException(ExceptionContext filterContext)
