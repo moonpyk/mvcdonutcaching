@@ -22,7 +22,7 @@ namespace MvcDonutCaching.Tests.Mlidbom
             context.ActionParameters = new Dictionary<string, object>() { { "title", "level1" } };
             DonutOutputManager.ActionExecuting(context);
             Assert.That(context.HttpContext.Response.Output, Is.Not.SameAs(rootOutput), "output should have been replaced");
-            DonutOutputManager.ResultExecuted(context);
+            DonutOutputManager.ResultExecutionSucceeded(context);
             Assert.That(context.HttpContext.Response.Output, Is.SameAs(rootOutput), "output should have been restored");
         }
 

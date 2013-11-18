@@ -36,7 +36,17 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
             donutStack.Push(pushed);
         }
 
-        public static IDonut ResultExecuted(ControllerContext context, bool wasException = false)
+        public static void ResultExecutionFailed(ControllerContext context)
+        {
+            ResultExecuted(context, wasException: true);
+        }
+
+        public static IDonut ResultExecutionSucceeded(ControllerContext context)
+        {
+            return ResultExecuted(context, wasException: false);
+        }
+
+        private static IDonut ResultExecuted(ControllerContext context, bool wasException)
         {            
             var executed = DonutStack(context).Pop();;
             executed.ResultExecuted(wasException);

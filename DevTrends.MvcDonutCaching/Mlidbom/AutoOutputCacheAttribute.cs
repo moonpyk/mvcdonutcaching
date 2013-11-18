@@ -172,7 +172,7 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
                 return;
             }
 
-            var donut = DonutOutputManager.ResultExecuted(filterContext, wasException: false);
+            var donut = DonutOutputManager.ResultExecutionSucceeded(filterContext);
 
             if (donut.Cached //Item is already cached and we do not want to extend its lifetime by inserting it with a new expiration
                 || !CacheSettings.IsServerCachingEnabled //Caching is disabled
@@ -193,7 +193,7 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
 
         public void OnException(ExceptionContext filterContext)
         {
-            DonutOutputManager.ResultExecuted(filterContext, wasException: true);
+            DonutOutputManager.ResultExecutionFailed(filterContext);
         }
     }
 }
