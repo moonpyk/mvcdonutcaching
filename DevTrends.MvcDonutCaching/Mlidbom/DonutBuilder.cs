@@ -35,7 +35,7 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
             context.HttpContext.Response.Output = _output;
         }
 
-        public void AddChild(IDonut child)
+        public void ChildResultExecuted(IDonut child)
         {
             Contract.Parameter.NotNull(child);
             _children[child.Id] = child;
@@ -61,7 +61,7 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
                 var totalOutput = ParseAndStoreOutput(_output.ToString());
                 if(_parent != null)
                 {
-                    _parent.AddChild(GetDonut());
+                    _parent.ChildResultExecuted(Donut);
                     _originalOutput.Write(_parent.PrepareChildOutput(GetDonut().Id, totalOutput));
                 }
                 else

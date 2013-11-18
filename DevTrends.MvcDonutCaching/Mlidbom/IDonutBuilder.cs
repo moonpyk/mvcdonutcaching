@@ -7,6 +7,6 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
         IDonut GetDonut();
         void ResultExecuted(bool wasException);        
         string PrepareChildOutput(Guid childId, string childOutput);
-        void AddChild(IDonut child);
+        void ChildResultExecuted(IDonut child);
     }
 }

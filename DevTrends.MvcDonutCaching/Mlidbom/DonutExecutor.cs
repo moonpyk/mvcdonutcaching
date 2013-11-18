@@ -37,7 +37,7 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
 
             if(_parent != null)
             {
-                _parent.AddChild(_donut);
+                _parent.ChildResultExecuted(_donut);
                 return _parent.PrepareChildOutput(_donut.Id, output.ToString());
             }
             return output.ToString();
@@ -57,7 +57,7 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
             return childOutput;
         }
 
-        public void AddChild(IDonut child)
+        public void ChildResultExecuted(IDonut child)
         {
         }
     }
