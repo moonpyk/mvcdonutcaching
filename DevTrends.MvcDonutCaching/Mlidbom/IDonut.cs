@@ -1,19 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Web.Mvc;
 
 namespace DevTrends.MvcDonutCaching.Mlidbom
 {
-    public interface IDonut : IDonutBuilder
+    public interface IDonut
     {
         Guid Id { get; }
         ControllerAction ControllerAction { get; }
         List<IDonut> SortedChildren { get; }
         List<string> OutputSegments { get; }
-        bool Cached { get; }
-
-        IDonut CloneWithNewParent(IDonutBuilder parent, ActionExecutingContext context);
-
-        string Execute(ActionExecutingContext context);
+        bool Cached { get; } //todo: not happy about having this here. Try to get rid of it.
     }
 }

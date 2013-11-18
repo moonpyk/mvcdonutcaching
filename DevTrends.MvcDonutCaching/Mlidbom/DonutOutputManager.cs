@@ -19,11 +19,13 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
             return donutStack;
         }
 
-        public static void ActionExecutingCached(ActionExecutingContext context, IDonut cached)
+        public static IDonutExecutor ActionExecutingCached(ActionExecutingContext context, IDonut cached)
         {
             var donutStack = DonutStack(context);
             var parent = donutStack.Count > 0 ? donutStack.Peek() : null;
-            donutStack.Push(cached.CloneWithNewParent(parent, context));
+            var donutExecutor = new DonutExecutor(cached, parent, context);
+            donutStack.Push(donutExecutor);
+            return donutExecutor;
         } 
 
         public static void ActionExecuting(ActionExecutingContext context)
@@ -38,7 +40,7 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
         {            
             var executed = DonutStack(context).Pop();;
             executed.ResultExecuted(wasException);
-            return executed.CacheAbleValue();
+            return executed.GetDonut();
         }
     }
 }

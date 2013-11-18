@@ -158,12 +158,13 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
                     var cachedItem = (AutoCacheItem)OutputCacheManager.GetItem(cacheKey);
                     if (cachedItem != null)// We have a cached version on the server side
                     {
-                        DonutOutputManager.ActionExecutingCached(filterContext, cachedItem.Donut);
+                        var executor = DonutOutputManager.ActionExecutingCached(filterContext, cachedItem.Donut);
                         // We inject the previous result into the MVC pipeline
                         // The MVC action won't execute as we injected the previous cached result.
+
                         filterContext.Result = new ContentResult
                                                {
-                                                   Content = cachedItem.Donut.Execute(filterContext),
+                                                   Content = executor.Execute(filterContext),
                                                    ContentType = cachedItem.ContentType
                                                };
                         return;
@@ -183,7 +184,7 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
             
             var wasException = filterContext.Exception  != null;
 
-            var donut = DonutOutputManager.ResultExecuted(filterContext, wasException);
+            IDonut donut = DonutOutputManager.ResultExecuted(filterContext, wasException);
             if(wasException) //We don't cache the result of pages that throw exceptions.
             {
                 HasHandledException = true;//Calling resultExecuted again will not work out well....

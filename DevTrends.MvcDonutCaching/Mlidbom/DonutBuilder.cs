@@ -15,10 +15,10 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
         private readonly DonutOutputWriter _output;
         private readonly Guid _id;  
 
-        private Donut ExecutedVersion { get; set; }
-        public IDonut CacheAbleValue()
+        private IDonut Donut { get; set; }
+        public IDonut GetDonut()
         {
-            return ExecutedVersion;
+            return Donut;
         }
 
         public string PrepareChildOutput(Guid childId, string childOutput)
@@ -45,7 +45,7 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
 
         public void ResultExecuted(bool wasException)
         {
-            if(ExecutedVersion != null)
+            if(Donut != null)
             {
                 throw new InvalidOperationException("Already executed.");
             }
@@ -63,7 +63,7 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
                 var totalOutput = ParseAndStoreOutput(_output.ToString());
                 if(_parent != null)
                 {
-                    _parent.AddChild(CacheAbleValue());
+                    _parent.AddChild(GetDonut());
                     _originalOutput.Write(_parent.PrepareChildOutput(_id, totalOutput));
                 }
                 else
@@ -106,7 +106,7 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
                 throw new Exception("Children have gone missing.");
             }
 
-            ExecutedVersion = new Donut(_id, sortedChildren, outputSegments, new ControllerAction(_context));
+            Donut = new Donut(_id, new ControllerAction(_context), sortedChildren, outputSegments, false);
 
             return output.ToString();
         }

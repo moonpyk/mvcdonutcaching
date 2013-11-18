@@ -4,8 +4,8 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
 {
     public interface IDonutBuilder
     {
-        void ResultExecuted(bool wasException);
-        IDonut CacheAbleValue();
+        IDonut GetDonut();
+        void ResultExecuted(bool wasException);        
         string PrepareChildOutput(Guid childId, string childOutput);
         void AddChild(IDonut child);
     }
