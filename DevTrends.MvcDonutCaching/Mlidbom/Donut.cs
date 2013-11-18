@@ -19,5 +19,10 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
             OutputSegments = outputSegments;
             Cached = cached;
         }
+
+        public Donut(IDonut source):this(source.Id, source.ControllerAction, source.SortedChildren, source.OutputSegments, source.Cached)
+        {
+            
+        }
     }
 }

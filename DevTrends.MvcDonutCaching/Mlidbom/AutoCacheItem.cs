@@ -2,6 +2,6 @@
 {
     public class AutoCacheItem : CacheItem
     {
-        public IDonut Donut { get; set; }
+        public Donut Donut { get; set; }
     }
 }
