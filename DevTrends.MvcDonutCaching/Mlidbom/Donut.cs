@@ -7,20 +7,20 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
     {
         public Guid Id { get; private set; }
         public ControllerAction ControllerAction { get; private set; }
-        public List<IDonut> SortedChildren { get; private set; }
-        public List<string> OutputSegments { get; private set; }
+        public IEnumerable<IDonut> SortedChildren { get; private set; }
+        public IEnumerable<string> SortedOutputSegments { get; private set; }
         public bool Cached { get; private set; }
 
-        public Donut(Guid id, ControllerAction controllerAction, List<IDonut> sortedChildren, List<string> outputSegments, bool cached)
+        public Donut(Guid id, ControllerAction controllerAction, IEnumerable<IDonut> sortedChildren, IEnumerable<string> sortedOutputSegments, bool cached)
         {
             Id = id;
             ControllerAction = controllerAction;
             SortedChildren = sortedChildren;
-            OutputSegments = outputSegments;
+            SortedOutputSegments = sortedOutputSegments;
             Cached = cached;
         }
 
-        public Donut(IDonut source):this(source.Id, source.ControllerAction, source.SortedChildren, source.OutputSegments, source.Cached)
+        public Donut(IDonut source):this(source.Id, source.ControllerAction, source.SortedChildren, source.SortedOutputSegments, source.Cached)
         {
             
         }

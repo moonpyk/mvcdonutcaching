@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using DevTrends.MvcDonutCaching.Mlidbom;
 using NUnit.Framework;
 
@@ -17,9 +18,9 @@ namespace MvcDonutCaching.Tests.Mlidbom
             IDonut donut = null;
             using(actionContext.InvokeAction(output: l2Output, afterResultExecuted: d => donut = d)) {}
 
-            Assert.That(donut.SortedChildren.Count, Is.EqualTo(0));
-            Assert.That(donut.OutputSegments.Count, Is.EqualTo(1));
-            Assert.That(donut.OutputSegments[0], Is.EqualTo(l2Output));
+            Assert.That(donut.SortedChildren.Count(), Is.EqualTo(0));
+            Assert.That(donut.SortedOutputSegments.Count(), Is.EqualTo(1));
+            Assert.That(donut.SortedOutputSegments.ElementAt(0), Is.EqualTo(l2Output));
         }
 
         [Test]
@@ -36,14 +37,14 @@ namespace MvcDonutCaching.Tests.Mlidbom
                 using (actionContext.InvokeAction(output: l2Content, afterResultExecuted: donut => level2Donut = donut)) { }
             }
 
-            Assert.That(level2Donut.SortedChildren.Count, Is.EqualTo(0));
-            Assert.That(level2Donut.OutputSegments.Count, Is.EqualTo(1));
-            Assert.That(level2Donut.OutputSegments[0], Is.EqualTo(l2Content));
+            Assert.That(level2Donut.SortedChildren.Count(), Is.EqualTo(0));
+            Assert.That(level2Donut.SortedOutputSegments.Count(), Is.EqualTo(1));
+            Assert.That(level2Donut.SortedOutputSegments.ElementAt(0), Is.EqualTo(l2Content));
 
-            Assert.That(level1Donut.SortedChildren.Count, Is.EqualTo(1));
-            Assert.That(level1Donut.OutputSegments.Count, Is.EqualTo(2));
-            Assert.That(level1Donut.OutputSegments[0], Is.EqualTo("<L1>"));
-            Assert.That(level1Donut.OutputSegments[1],Is.EqualTo("</L1>"));
+            Assert.That(level1Donut.SortedChildren.Count(), Is.EqualTo(1));
+            Assert.That(level1Donut.SortedOutputSegments.Count(), Is.EqualTo(2));
+            Assert.That(level1Donut.SortedOutputSegments.ElementAt(0), Is.EqualTo("<L1>"));
+            Assert.That(level1Donut.SortedOutputSegments.ElementAt(1),Is.EqualTo("</L1>"));
         }
 
         [Test]
@@ -63,19 +64,19 @@ namespace MvcDonutCaching.Tests.Mlidbom
                 }
             }
 
-            Assert.That(level3Donut.SortedChildren.Count, Is.EqualTo(0));
-            Assert.That(level3Donut.OutputSegments.Count, Is.EqualTo(1));
-            Assert.That(level3Donut.OutputSegments[0], Is.EqualTo(l3Output));
+            Assert.That(level3Donut.SortedChildren.Count(), Is.EqualTo(0));
+            Assert.That(level3Donut.SortedOutputSegments.Count(), Is.EqualTo(1));
+            Assert.That(level3Donut.SortedOutputSegments.ElementAt(0), Is.EqualTo(l3Output));
 
-            Assert.That(level2Donut.SortedChildren.Count, Is.EqualTo(1));
-            Assert.That(level2Donut.OutputSegments.Count, Is.EqualTo(2));
-            Assert.That(level2Donut.OutputSegments[0], Is.EqualTo("<L2>"));
-            Assert.That(level2Donut.OutputSegments[1], Is.EqualTo("</L2>"));
+            Assert.That(level2Donut.SortedChildren.Count(), Is.EqualTo(1));
+            Assert.That(level2Donut.SortedOutputSegments.Count(), Is.EqualTo(2));
+            Assert.That(level2Donut.SortedOutputSegments.ElementAt(0), Is.EqualTo("<L2>"));
+            Assert.That(level2Donut.SortedOutputSegments.ElementAt(1), Is.EqualTo("</L2>"));
 
-            Assert.That(level1Donut.SortedChildren.Count, Is.EqualTo(1));
-            Assert.That(level1Donut.OutputSegments.Count, Is.EqualTo(2));
-            Assert.That(level1Donut.OutputSegments[0], Is.EqualTo("<L1>"));
-            Assert.That(level1Donut.OutputSegments[1], Is.EqualTo("</L1>"));
+            Assert.That(level1Donut.SortedChildren.Count(), Is.EqualTo(1));
+            Assert.That(level1Donut.SortedOutputSegments.Count(), Is.EqualTo(2));
+            Assert.That(level1Donut.SortedOutputSegments.ElementAt(0), Is.EqualTo("<L1>"));
+            Assert.That(level1Donut.SortedOutputSegments.ElementAt(1), Is.EqualTo("</L1>"));
         }
 
         [Test]
@@ -101,21 +102,21 @@ namespace MvcDonutCaching.Tests.Mlidbom
                 }
             }
 
-            Assert.That(level3Donut1.SortedChildren.Count, Is.EqualTo(0));
-            Assert.That(level3Donut1.OutputSegments.Count, Is.EqualTo(1));
-            Assert.That(level3Donut1.OutputSegments[0], Is.EqualTo(l3Output));
+            Assert.That(level3Donut1.SortedChildren.Count(), Is.EqualTo(0));
+            Assert.That(level3Donut1.SortedOutputSegments.Count(), Is.EqualTo(1));
+            Assert.That(level3Donut1.SortedOutputSegments.ElementAt(0), Is.EqualTo(l3Output));
 
-            Assert.That(level2Donut1.SortedChildren.Count, Is.EqualTo(2));
-            Assert.That(level2Donut1.OutputSegments.Count, Is.EqualTo(3));
-            Assert.That(level2Donut1.OutputSegments[0], Is.EqualTo("<L2>"));
-            Assert.That(level2Donut1.OutputSegments[1], Is.EqualTo("Between"));
-            Assert.That(level2Donut1.OutputSegments[2], Is.EqualTo("</L2>"));
+            Assert.That(level2Donut1.SortedChildren.Count(), Is.EqualTo(2));
+            Assert.That(level2Donut1.SortedOutputSegments.Count(), Is.EqualTo(3));
+            Assert.That(level2Donut1.SortedOutputSegments.ElementAt(0), Is.EqualTo("<L2>"));
+            Assert.That(level2Donut1.SortedOutputSegments.ElementAt(1), Is.EqualTo("Between"));
+            Assert.That(level2Donut1.SortedOutputSegments.ElementAt(2), Is.EqualTo("</L2>"));
 
-            Assert.That(level1Donut.SortedChildren.Count, Is.EqualTo(2));
-            Assert.That(level1Donut.OutputSegments.Count, Is.EqualTo(3));
-            Assert.That(level1Donut.OutputSegments[0], Is.EqualTo("<L1>"));
-            Assert.That(level1Donut.OutputSegments[1], Is.EqualTo(""));
-            Assert.That(level1Donut.OutputSegments[2], Is.EqualTo("</L1>"));
+            Assert.That(level1Donut.SortedChildren.Count(), Is.EqualTo(2));
+            Assert.That(level1Donut.SortedOutputSegments.Count(), Is.EqualTo(3));
+            Assert.That(level1Donut.SortedOutputSegments.ElementAt(0), Is.EqualTo("<L1>"));
+            Assert.That(level1Donut.SortedOutputSegments.ElementAt(1), Is.EqualTo(""));
+            Assert.That(level1Donut.SortedOutputSegments.ElementAt(2), Is.EqualTo("</L1>"));
         }
     }
 }

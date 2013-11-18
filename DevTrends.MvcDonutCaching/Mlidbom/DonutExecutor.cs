@@ -16,7 +16,7 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
        
         public DonutExecutor(IDonut source, IDonutBuilder parent, ActionExecutingContext context)
         {
-            _donut = new Donut(Guid.NewGuid(), source.ControllerAction, source.SortedChildren, source.OutputSegments, true);
+            _donut = new Donut(Guid.NewGuid(), source.ControllerAction, source.SortedChildren, source.SortedOutputSegments, true);
             _context = context;
             _output = new DonutOutputWriter(context.ActionDescriptor);
             _originalOutput = context.HttpContext.Response.Output;
@@ -55,19 +55,20 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
 
         override public string ToString()
         {
-            return string.Format("{0} -> {1}", _donut.ControllerAction, _donut.OutputSegments.FirstOrDefault());
+            return string.Format("{0} -> {1}", _donut.ControllerAction, _donut.SortedOutputSegments.FirstOrDefault());
         }
 
         public string Execute(ActionExecutingContext context)
         {
             var output = new StringWriter();
-
-            for (int currentSegment = 0; currentSegment < _donut.OutputSegments.Count; currentSegment++)
+            var sortedOutputSegments = _donut.SortedOutputSegments.ToArray();
+            var sortedChildren = _donut.SortedChildren.ToArray();
+            for (int currentSegment = 0; currentSegment < sortedOutputSegments.Length; currentSegment++)
             {
-                output.Write(_donut.OutputSegments[currentSegment]);
-                if (_donut.SortedChildren.Count > currentSegment)
+                output.Write(sortedOutputSegments[currentSegment]);
+                if (sortedChildren.Length > currentSegment)
                 {
-                    output.Write(_donut.SortedChildren[currentSegment].ControllerAction.Execute(context));
+                    output.Write(sortedChildren[currentSegment].ControllerAction.Execute(context));
                 }
             }
 

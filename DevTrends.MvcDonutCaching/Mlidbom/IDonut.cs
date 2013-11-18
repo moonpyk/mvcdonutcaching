@@ -7,8 +7,8 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
     {
         Guid Id { get; }
         ControllerAction ControllerAction { get; }
-        List<IDonut> SortedChildren { get; }
-        List<string> OutputSegments { get; }
+        IEnumerable<IDonut> SortedChildren { get; }
+        IEnumerable<string> SortedOutputSegments { get; }
         bool Cached { get; } //todo: not happy about having this here. Try to get rid of it.
     }
 }
