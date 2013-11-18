@@ -12,9 +12,11 @@ namespace MvcDonutCaching.Tests.Mlidbom
         override protected string ControllerName { get { return Controller; } }
 
         [Test]
-        public void KeepsRenderingIdenticalContentWhenMultipleThreadsHammerRequests()
-        {
+        public void NoServerSideErrorsWhenMultipleThreadsHammerRequests()
+        {            
             Console.WriteLine("Starting");
+
+            var expectedContent = ExecuteDefaultAction();
 
             long requestsMade = 0;
             try
