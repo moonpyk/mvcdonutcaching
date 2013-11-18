@@ -23,9 +23,8 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
         {
             var donutStack = DonutStack(context);
             var parent = donutStack.Count > 0 ? donutStack.Peek() : null;
-            var donutExecutor = new DonutExecutor(cached, parent);
-            donutStack.Push(donutExecutor);
-            return donutExecutor;
+            donutStack.Push(new CachedDonutNullOpDonutBuilder(cached));
+            return new DonutExecutor(cached, parent);
         } 
 
         public static void ActionExecuting(ActionExecutingContext context)

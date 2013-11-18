@@ -2,7 +2,7 @@
 
 namespace DevTrends.MvcDonutCaching.Mlidbom
 {
-    public interface IDonutExecutor : IDonutBuilder
+    public interface IDonutExecutor
     {       
         string Execute(ActionExecutingContext context);
     }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using System.Web.Mvc;
 
@@ -41,24 +40,6 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
                 return _parent.PrepareChildOutput(_donut.Id, output.ToString());
             }
             return output.ToString();
-        }
-
-        public void ResultExecuted(bool wasException)
-        {
-        }
-
-        public IDonut GetDonut()
-        {
-            return _donut;
-        }
-
-        public string PrepareChildOutput(Guid childId, string childOutput)
-        {
-            return childOutput;
-        }
-
-        public void ChildResultExecuted(IDonut child)
-        {
         }
     }
 }

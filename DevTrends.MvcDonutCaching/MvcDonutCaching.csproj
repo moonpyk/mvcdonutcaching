@@ -76,6 +76,7 @@
     <Compile Include="CacheSettings.cs" />
     <Compile Include="CacheSettingsManager.cs" />
     <Compile Include="Mlidbom\ControllerActionExecutor.cs" />
+    <Compile Include="Mlidbom\CachedDonutNullOpDonutBuilder.cs" />
     <Compile Include="Mlidbom\Donut.cs" />
     <Compile Include="Mlidbom\DonutHole.cs" />
     <Compile Include="Mlidbom\DonutExecutor.cs" />
