@@ -9,9 +9,10 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
         private readonly IDonutBuilder _parent;
         private readonly IDonut _donut;
        
-        public DonutExecutor(IDonut source, IDonutBuilder parent)
+        public DonutExecutor(IDonut donut, IDonutBuilder parent)
         {
-            _donut = new Donut(source.ControllerAction, source.SortedChildren, source.SortedOutputSegments, true);
+            //If we just reuse the input donut here the parent will fail in OnActionExecuted for some cases such as identical child action calls. Not clear on why :(
+            _donut = new Donut(donut, cached: true);
             _parent = parent;
         }
 

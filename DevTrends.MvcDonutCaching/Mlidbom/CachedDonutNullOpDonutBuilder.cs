@@ -14,7 +14,7 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
        
         public CachedDonutNullOpDonutBuilder(IDonut source)
         {
-            _donut = new Donut(source.ControllerAction, source.SortedChildren, source.SortedOutputSegments, true);
+            _donut = source;
         }
 
         override public string ToString()

@@ -126,7 +126,7 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
 
             var cacheItem = new AutoCacheItem
             {
-                Donut = new Donut(donut),
+                Donut = new Donut(donut, cached: true),
                 ContentType = filterContext.HttpContext.Response.ContentType
             };
 

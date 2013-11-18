@@ -20,7 +20,7 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
             Cached = cached;
         }
 
-        public Donut(IDonut source):this(source.ControllerAction, source.SortedChildren, source.SortedOutputSegments, source.Cached)
+        public Donut(IDonut source, bool cached):this(source.ControllerAction, source.SortedChildren, source.SortedOutputSegments, cached)
         {
             
         }
