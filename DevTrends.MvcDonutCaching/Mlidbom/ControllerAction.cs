@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Web.Mvc;
-using System.Web.Mvc.Html;
-using System.Web.Routing;
 
 namespace DevTrends.MvcDonutCaching.Mlidbom
 {
-    public class ControllerAction : IControllerAction
+    public class ControllerAction
     {
         public readonly string ActionName;        
         public readonly string ControllerName;
