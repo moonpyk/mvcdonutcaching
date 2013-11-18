@@ -11,8 +11,7 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
        
         public DonutExecutor(IDonut donut, IDonutBuilder parent)
         {
-            //If we just reuse the input donut here the parent will fail in OnActionExecuted for some cases such as identical child action calls. Not clear on why :(
-            _donut = new Donut(donut, cached: true);
+            _donut = donut;
             _parent = parent;
         }
 

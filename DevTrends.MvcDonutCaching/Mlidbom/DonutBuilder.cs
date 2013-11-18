@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web.Mvc;
 
@@ -99,7 +100,7 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
                 output.Write(segment);
             }
 
-            if(_children.Count != sortedChildren.Count)
+            if(_children.Count != sortedChildren.Distinct().Count())
             {
                 throw new Exception("Children have gone missing.");
             }
