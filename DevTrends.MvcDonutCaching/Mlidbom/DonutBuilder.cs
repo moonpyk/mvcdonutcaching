@@ -100,9 +100,10 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
                 output.Write(segment);
             }
 
-            if(_children.Count != sortedChildren.Distinct().Count())
+            var parsedChildrenCount = sortedChildren.Distinct().Count();
+            if(_children.Count != parsedChildrenCount)
             {
-                throw new Exception("Children have gone missing.");
+                throw new Exception(string.Format("Expected output to contain {0} children but found {1}.", _children.Count, parsedChildrenCount));
             }
 
             Donut = new Donut(new ControllerAction(_context), sortedChildren, outputSegments, false);
