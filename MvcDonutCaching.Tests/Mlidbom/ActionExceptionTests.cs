@@ -23,6 +23,7 @@ namespace MvcDonutCaching.Tests.Mlidbom
             Console.WriteLine(thrown.Status);
             //Cached
             thrown = (WebException)Assert.Throws<Exception>(() => ExecuteAction()).InnerException;
+            Assert.That(thrown, Is.Not.Null);
         }
 
         [Test]
