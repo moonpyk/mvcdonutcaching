@@ -1,4 +1,6 @@
+using System;
 using System.Collections;
+using System.Collections.Specialized;
 using System.IO;
 using System.Web;
 using System.Web.Mvc;
@@ -18,7 +20,17 @@ namespace MvcDonutCaching.Tests.Mlidbom
             var httpContextMock = new Mock<HttpContextBase>(MockBehavior.Strict);
             httpContextMock.Setup(http => http.Response).Returns(response.Object);
             IDictionary items = new Hashtable();
+            
             httpContextMock.Setup(http => http.Items).Returns(items);
+            
+            var requestMock = new Mock<HttpRequestBase>(MockBehavior.Strict);
+
+
+            requestMock.Setup(request => request.Form).Returns(new NameValueCollection());
+            requestMock.Setup(request => request.QueryString).Returns(new NameValueCollection());
+
+            httpContextMock.Setup(http => http.Request).Returns(requestMock.Object);
+
 
             var context = new ActionExecutingContext();
             context.HttpContext = httpContextMock.Object;
