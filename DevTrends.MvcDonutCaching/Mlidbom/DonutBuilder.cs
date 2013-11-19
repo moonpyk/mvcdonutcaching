@@ -106,7 +106,7 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
                 throw new Exception(string.Format("Expected output to contain {0} children but found {1}.", _children.Count, parsedChildrenCount));
             }
 
-            Donut = new Donut(new ControllerAction(_context), sortedChildren, outputSegments, false);
+            Donut = new Donut(new ControllerAction(_context), sortedChildren, outputSegments);
 
             return output.ToString();
         }

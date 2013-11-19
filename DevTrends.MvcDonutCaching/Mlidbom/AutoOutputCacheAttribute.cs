@@ -124,14 +124,10 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
                 return; 
             }
 
-            var cacheItem = new AutoCacheItem
-            {
-                Donut = new Donut(donut, cached: true),
-                ContentType = filterContext.HttpContext.Response.ContentType
-            };
-
-            var cacheKey = KeyGenerator.GenerateKey(filterContext, EffectiveCacheSettings);
-            OutputCacheManager.AddItem(cacheKey, cacheItem, DateTime.UtcNow.AddSeconds(EffectiveCacheSettings.Duration));
+            OutputCacheManager.AddItem(
+                key: KeyGenerator.GenerateKey(filterContext, EffectiveCacheSettings), 
+                cacheItem: new AutoCacheItem(donut, filterContext.HttpContext.Response.ContentType),
+                utcExpiry: DateTime.UtcNow.AddSeconds(EffectiveCacheSettings.Duration));
         }
 
         public void OnException(ExceptionContext filterContext)
