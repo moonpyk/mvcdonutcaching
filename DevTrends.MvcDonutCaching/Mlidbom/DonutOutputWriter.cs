@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.IO;
 using System.Web.Mvc;
+using DevTrends.MvcDonutCaching.Annotations;
 
 namespace DevTrends.MvcDonutCaching.Mlidbom
 {
@@ -19,6 +20,6 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
                 actionDescriptor.ActionName);
         }
 
-        private string Description { get; set; }
+        private string Description { [UsedImplicitly] get; set; }
     }
 }

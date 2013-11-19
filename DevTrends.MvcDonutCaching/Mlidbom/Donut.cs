@@ -13,10 +13,10 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
         
         public Donut CloneForCache()
         {
-            return new Donut(this, cached:true);
+            return new Donut(this);
         }        
 
-        private Donut(IDonut source, bool cached) : this(source.ControllerAction, source.SortedChildren, source.SortedOutputSegments)
+        private Donut(IDonut source) : this(source.ControllerAction, source.SortedChildren, source.SortedOutputSegments)
         {
             Id = source.Id;
             Cached = true;

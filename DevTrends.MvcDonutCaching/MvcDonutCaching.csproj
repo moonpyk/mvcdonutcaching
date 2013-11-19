@@ -103,7 +103,6 @@
     <Compile Include="Interfaces\IKeyBuilder.cs" />
     <Compile Include="KeyBuilder.cs" />
     <Compile Include="MemoryCacheProvider.cs" />
-    <Compile Include="Mlidbom\EnumExtensions.cs" />
     <Compile Include="Mlidbom\IAttributeCacheConfiguration.cs" />
     <Compile Include="Mlidbom\IDonutBuilder.cs" />
     <Compile Include="Mlidbom\IDonut.cs" />

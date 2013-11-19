@@ -1,6 +1,4 @@
-﻿using System.Net.Mime;
-
-namespace DevTrends.MvcDonutCaching.Mlidbom
+﻿namespace DevTrends.MvcDonutCaching.Mlidbom
 {
     public class AutoCacheItem : CacheItem
     {

@@ -29,6 +29,6 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
         /// Get or sets the <see cref="OutputCacheOptions"/> for this attributes. Specifying a value here will
         /// make the <see cref="OutputCache.DefaultOptions"/> value ignored.
         /// </summary>
-        OutputCacheOptions Options { get; set; }
+        OutputCacheOptions Options { get; }
     }
 }
