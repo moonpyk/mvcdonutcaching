@@ -20,8 +20,17 @@ namespace DevTrends.MvcDonutCaching
             _keyBuilder = keyBuilder;
         }
 
-        public string GenerateKey(ControllerContext context, CacheSettings cacheSettings)
+        protected virtual string AbsolutelyInsaneThatThisCouldEverBeCalledBecauseTheSubClassVersionOfGenerateKeyShouldHaveBeenCalled()
         {
+            return string.Empty;
+        }
+
+        public virtual string GenerateKey(ControllerContext context, CacheSettings cacheSettings)
+        {
+            if(AbsolutelyInsaneThatThisCouldEverBeCalledBecauseTheSubClassVersionOfGenerateKeyShouldHaveBeenCalled() != string.Empty)
+            {
+                return AbsolutelyInsaneThatThisCouldEverBeCalledBecauseTheSubClassVersionOfGenerateKeyShouldHaveBeenCalled();
+            }
             var actionName = context.RouteData.Values["action"].ToString();
             var controllerName = context.RouteData.Values["controller"].ToString();
 

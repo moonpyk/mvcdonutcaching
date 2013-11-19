@@ -85,6 +85,7 @@
     <Compile Include="Mlidbom\ActionExceptionTests.cs" />
     <Compile Include="Mlidbom\ControllerContextExtensions.cs" />
     <Compile Include="Mlidbom\IllegalArgumentsToChildActionTests.cs" />
+    <Compile Include="Mlidbom\WhenAttributeIsReusedAndExceptionIsThrownMultipleTimes.cs" />
     <Compile Include="Mlidbom\ProvokeRaceCondition1Tests.cs" />
     <Compile Include="Mlidbom\DonutOutputManagerTests.cs" />
     <Compile Include="Mlidbom\FiveLevelsNestedDonutsLevel2and4HaveNoAttributeTests.cs" />
