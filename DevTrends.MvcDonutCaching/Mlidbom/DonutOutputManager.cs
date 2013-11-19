@@ -19,13 +19,17 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
             return donutStack;
         }
 
-        public static IDonutExecutor ActionExecutingCached(ActionExecutingContext context, IDonut cached)
+        public static ContentResult ExecuteCachedResult(AutoCacheItem cacheItem, ActionExecutingContext context)
         {
             var donutStack = DonutStack(context);
             var parent = donutStack.Count > 0 ? donutStack.Peek() : null;
-            donutStack.Push(new CachedDonutNullOpDonutBuilder(cached));
-            return new DonutExecutor(cached, parent);
-        } 
+            donutStack.Push(new CachedDonutNullOpDonutBuilder(cacheItem.Donut));
+            return new ContentResult
+            {
+                Content = cacheItem.Donut.ExecuteResult(parent:parent, context:context),
+                ContentType = cacheItem.ContentType
+            };
+        }           
 
         public static void ActionExecuting(ActionExecutingContext context)
         {

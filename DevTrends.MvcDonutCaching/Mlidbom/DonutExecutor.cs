@@ -4,27 +4,13 @@ using System.Web.Mvc;
 
 namespace DevTrends.MvcDonutCaching.Mlidbom
 {
-    public class DonutExecutor : IDonutExecutor
+    public static class DonutExecutor
     {
-        private readonly IDonutBuilder _parent;
-        private readonly IDonut _donut;
-       
-        public DonutExecutor(IDonut donut, IDonutBuilder parent)
-        {
-            _donut = donut;
-            _parent = parent;
-        }
-
-        override public string ToString()
-        {
-            return string.Format("{0} -> {1}", _donut.ControllerAction, _donut.SortedOutputSegments.FirstOrDefault());
-        }
-
-        public string Execute(ActionExecutingContext context)
+        public static string ExecuteResult(this IDonut donut, IDonutBuilder parent, ActionExecutingContext context)
         {
             var output = new StringWriter();
-            var sortedOutputSegments = _donut.SortedOutputSegments.ToArray();
-            var sortedChildren = _donut.SortedChildren.ToArray();
+            var sortedOutputSegments = donut.SortedOutputSegments.ToArray();
+            var sortedChildren = donut.SortedChildren.ToArray();
             for (int currentSegment = 0; currentSegment < sortedOutputSegments.Length; currentSegment++)
             {
                 output.Write(sortedOutputSegments[currentSegment]);
@@ -34,10 +20,10 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
                 }
             }
 
-            if(_parent != null)
+            if (parent != null)
             {
-                _parent.ChildResultExecuted(_donut);
-                return _parent.PrepareChildOutput(_donut.Id, output.ToString());
+                parent.ChildResultExecuted(donut);
+                return parent.PrepareChildOutput(donut.Id, output.ToString());
             }
             return output.ToString();
         }

@@ -105,7 +105,6 @@
     <Compile Include="MemoryCacheProvider.cs" />
     <Compile Include="Mlidbom\EnumExtensions.cs" />
     <Compile Include="Mlidbom\IAttributeCacheConfiguration.cs" />
-    <Compile Include="Mlidbom\IDonutExecutor.cs" />
     <Compile Include="Mlidbom\IDonutBuilder.cs" />
     <Compile Include="Mlidbom\IDonut.cs" />
     <Compile Include="OutputCache.cs" />
