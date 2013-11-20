@@ -1,14 +1,6 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.IO;
-using System.Web;
-using System.Web.Mvc;
-using System.Web.Routing;
+﻿using System.Web.Mvc;
 using DevTrends.MvcDonutCaching;
 using DevTrends.MvcDonutCaching.Mlidbom;
-using Moq;
 using NUnit.Framework;
 
 namespace MvcDonutCaching.Tests.Mlidbom
@@ -25,7 +17,13 @@ namespace MvcDonutCaching.Tests.Mlidbom
                                 Duration = 3600
                             };
 
-            var filter = new AutoOutputCacheFilter(attribute);
+            var filter = new AutoOutputCacheFilter(
+                new KeyGenerator(new KeyBuilder()),
+                new OutputCacheManager(OutputCache.Instance, new KeyBuilder()),
+                new CacheSettingsManager())
+                         {
+                             Config = attribute
+                         };
 
             var correctOutput = context.HttpContext.Response.Output;
             correctOutput.Write("correct output");
@@ -44,10 +42,9 @@ namespace MvcDonutCaching.Tests.Mlidbom
             Assert.That(context.HttpContext.Response.Output, Is.SameAs(correctOutput));
 
             //simulate another failure
-            filter.OnActionExecuting(context);//Pop one action onto the stack                       
+            filter.OnActionExecuting(context); //Pop one action onto the stack                       
             filter.OnException(exceptionContext);
             Assert.That(context.HttpContext.Response.Output, Is.SameAs(correctOutput));
-
         }
     }
 }

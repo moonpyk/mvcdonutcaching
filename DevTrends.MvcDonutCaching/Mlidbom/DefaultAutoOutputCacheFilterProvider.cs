@@ -5,10 +5,9 @@
     /// </summary>
     public class DefaultAutoOutputCacheFilterProvider : AutoOutputCacheFilterProvider
     {
-        protected override AutoOutputCacheFilter CreateFilterInstance(AutoOutputCacheAttribute autoOutputCacheAttribute)
+        protected override AutoOutputCacheFilter CreateFilterInstance()
         {
             return new AutoOutputCacheFilter(
-                autoOutputCacheAttribute,
                 new KeyGenerator(new KeyBuilder()),
                 new OutputCacheManager(OutputCache.Instance, new KeyBuilder()),
                 new CacheSettingsManager());

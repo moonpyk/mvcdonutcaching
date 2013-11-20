@@ -5,34 +5,46 @@ using System.Web.Mvc;
 namespace DevTrends.MvcDonutCaching.Mlidbom
 {
     public class AutoOutputCacheFilter : IActionFilter, IResultFilter, IExceptionFilter
-    {
-        public AutoOutputCacheFilter(IAttributeCacheConfiguration config)
-            : this(
-                config,
-                new KeyGenerator(new KeyBuilder()),
-                new OutputCacheManager(OutputCache.Instance, new KeyBuilder()),
-                new CacheSettingsManager()) {}
-
+    {       
         public AutoOutputCacheFilter(
-            IAttributeCacheConfiguration config,
             IKeyGenerator keyGenerator,
             IReadWriteOutputCacheManager outputCacheManager,
             ICacheSettingsManager cacheSettingsManager
             )
         {
-            KeyGenerator = keyGenerator;
-            EffectiveCacheSettings = cacheSettingsManager.BuildEffectiveSettingsCombinedWithGlobalConfiguration(config);
-            OutputCacheManager = outputCacheManager;
+            Contract.Parameter.NotNull(keyGenerator, outputCacheManager, cacheSettingsManager);
+            _cacheSettingsManager = cacheSettingsManager;
+            _keyGenerator = keyGenerator;            
+            _outputCacheManager = outputCacheManager;
         }
 
-        private IKeyGenerator KeyGenerator { get; set; }
-        private IReadWriteOutputCacheManager OutputCacheManager { get; set; }
-        private CacheSettings EffectiveCacheSettings { get; set; }
+        public IAttributeCacheConfiguration Config { get; set; }
+
+        private readonly IKeyGenerator _keyGenerator;
+        private readonly IReadWriteOutputCacheManager _outputCacheManager;        
+        private readonly ICacheSettingsManager _cacheSettingsManager;
+
+        private CacheSettings _effectiveCacheSettings;
+        private CacheSettings EffectiveCacheSettings
+        {
+            get
+            {
+                if(_effectiveCacheSettings == null)
+                {
+                    if(Config == null)
+                    {
+                        throw new InvalidOperationException("Instance being used without Config having been assigned.");
+                    }
+                    _effectiveCacheSettings = _cacheSettingsManager.BuildEffectiveSettingsCombinedWithGlobalConfiguration(Config);
+                }
+                return _effectiveCacheSettings;
+            }
+        }
 
 
         public void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            var cacheKey = KeyGenerator.GenerateKey(filterContext, EffectiveCacheSettings);
+            var cacheKey = _keyGenerator.GenerateKey(filterContext, EffectiveCacheSettings);
 
             // Are we actually storing data on the server side ?
             if(EffectiveCacheSettings.IsServerCachingEnabled)
@@ -41,7 +53,7 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
                 // We are fetching the stored value only if the option has not been set and the request is not a POST
                 if(!EffectiveCacheSettings.Options.HasFlag(OutputCacheOptions.NoCacheLookupForPosts) || filterContext.HttpContext.Request.HttpMethod != "POST")
                 {
-                    var cachedItem = (AutoCacheItem)OutputCacheManager.GetItem(cacheKey);
+                    var cachedItem = (AutoCacheItem)_outputCacheManager.GetItem(cacheKey);
                     if(cachedItem != null) // We have a cached version on the server side
                     {
                         // We inject the previous result into the MVC pipeline
@@ -75,8 +87,8 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
                 return;
             }
 
-            OutputCacheManager.AddItem(
-                key: KeyGenerator.GenerateKey(filterContext, EffectiveCacheSettings),
+            _outputCacheManager.AddItem(
+                key: _keyGenerator.GenerateKey(filterContext, EffectiveCacheSettings),
                 cacheItem: new AutoCacheItem(donut, filterContext.HttpContext.Response.ContentType),
                 utcExpiry: DateTime.UtcNow.AddSeconds(EffectiveCacheSettings.Duration));
         }
