@@ -25,6 +25,8 @@ namespace MvcDonutCaching.Tests.Mlidbom
                                 Duration = 3600
                             };
 
+            var filter = new AutoOutputCacheFilter(attribute);
+
             var correctOutput = context.HttpContext.Response.Output;
             correctOutput.Write("correct output");
 
@@ -37,13 +39,13 @@ namespace MvcDonutCaching.Tests.Mlidbom
             exceptionContext.HttpContext = context.HttpContext;
 
             //simulate one failure
-            attribute.OnActionExecuting(context);
-            attribute.OnException(exceptionContext);
+            filter.OnActionExecuting(context);
+            filter.OnException(exceptionContext);
             Assert.That(context.HttpContext.Response.Output, Is.SameAs(correctOutput));
 
             //simulate another failure
-            attribute.OnActionExecuting(context);//Pop one action onto the stack                       
-            attribute.OnException(exceptionContext);
+            filter.OnActionExecuting(context);//Pop one action onto the stack                       
+            filter.OnException(exceptionContext);
             Assert.That(context.HttpContext.Response.Output, Is.SameAs(correctOutput));
 
         }

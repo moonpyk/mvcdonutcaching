@@ -75,6 +75,9 @@
     <Compile Include="CacheItem.cs" />
     <Compile Include="CacheSettings.cs" />
     <Compile Include="CacheSettingsManager.cs" />
+    <Compile Include="Mlidbom\AutoOutputCacheFilter.cs" />
+    <Compile Include="Mlidbom\AutoOutputCacheFilterProvider.cs" />
+    <Compile Include="Mlidbom\DefaultAutoOutputCacheFilterProvider.cs" />
     <Compile Include="Mlidbom\ControllerActionExecutor.cs" />
     <Compile Include="Mlidbom\CachedDonutNullOpDonutBuilder.cs" />
     <Compile Include="Mlidbom\Donut.cs" />
