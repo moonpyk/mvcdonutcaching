@@ -15,13 +15,13 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
 
             if(cacheAttributes.Count() == 1)
             {
-                var autoOutputCacheFilter = CreateFilterInstance();
-                autoOutputCacheFilter.Config = cacheAttributes.Single();
+                var attribute = cacheAttributes.Single();
+                var autoOutputCacheFilter = CreateFilterInstance(attribute);
 
                 yield return new Filter(
-                    autoOutputCacheFilter,
-                    FilterScope.Action,
-                    null);
+                    instance: autoOutputCacheFilter,
+                    scope: FilterScope.Action,
+                    order: null);
             }
 
             if(cacheAttributes.Count() > 1)
@@ -30,10 +30,11 @@ namespace DevTrends.MvcDonutCaching.Mlidbom
             }
         }
 
-        ///<summary>
-        /// <para>>Inheritors can override this method to provide the filter in any way they choose.</para>
-        /// <para>Presumably various forms of DI will be common.</para>
-        /// </summary>
-        protected abstract AutoOutputCacheFilter CreateFilterInstance();
+        /// <summary>
+        ///  <para>>Inheritors can override this method to provide the filter in any way they choose.</para>
+        ///  <para>Presumably various forms of DI will be common.</para>
+        ///  </summary>
+        /// <param name="attribute"></param>
+        protected abstract AutoOutputCacheFilter CreateFilterInstance(AutoOutputCacheAttribute attribute);
     }
 }
