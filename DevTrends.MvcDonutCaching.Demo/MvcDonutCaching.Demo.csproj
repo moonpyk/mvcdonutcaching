@@ -133,6 +133,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
+    <Compile Include="Areas\SubArea\Controllers\SubHomeController.cs" />
+    <Compile Include="Areas\SubArea\SubAreaAreaRegistration.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\ApplicationController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -150,6 +152,9 @@
     <Content Include="Content\main.css" />
     <Content Include="Content\normalize.css" />
     <Content Include="Global.asax" />
+    <Content Include="Areas\SubArea\Views\Web.config" />
+    <Content Include="Areas\SubArea\Views\SubHome\Index.cshtml" />
+    <Content Include="Areas\SubArea\Views\_ViewStart.cshtml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -207,6 +212,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Home\SimpleDonutTwo.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Areas\SubArea\Models\" />
+    <Folder Include="Areas\SubArea\Views\Shared\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
