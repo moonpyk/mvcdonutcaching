@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -22,15 +23,27 @@ namespace DevTrends.MvcDonutCaching
 
         public string GenerateKey(ControllerContext context, CacheSettings cacheSettings)
         {
-            var actionName = context.RouteData.Values["action"].ToString();
+            var actionName     = context.RouteData.Values["action"].ToString();
             var controllerName = context.RouteData.Values["controller"].ToString();
+            string areaName    = null;
+
+            if (context.RouteData.DataTokens.ContainsKey("area"))
+            {
+                areaName = context.RouteData.DataTokens["area"].ToString();
+            }
 
             // remove controller, action and DictionaryValueProvider which is added by the framework for child actions
             var filteredRouteData = context.RouteData.Values.Where(
                 x => x.Key.ToLowerInvariant() != "controller" && 
                      x.Key.ToLowerInvariant() != "action" &&   
+                     x.Key.ToLowerInvariant() != "area" &&
                      !(x.Value is DictionaryValueProvider<object>)
-            );
+            ).ToList();
+
+            if (!string.IsNullOrWhiteSpace(areaName))
+            {
+                filteredRouteData.Add(new KeyValuePair<string, object>("area", areaName));
+            }
 
             var routeValues = new RouteValueDictionary(filteredRouteData.ToDictionary(x => x.Key.ToLowerInvariant(), x => x.Value));
 
@@ -54,7 +67,7 @@ namespace DevTrends.MvcDonutCaching
                                 ? item.ToLowerInvariant() 
                                 : string.Empty
                         );
-                    } 
+                    }
                 }
 
                 if ((cacheSettings.Options & OutputCacheOptions.IgnoreQueryString) != OutputCacheOptions.IgnoreQueryString)
@@ -94,7 +107,7 @@ namespace DevTrends.MvcDonutCaching
             if (!string.IsNullOrEmpty(cacheSettings.VaryByCustom))
             {
                 routeValues.Add(
-                    cacheSettings.VaryByCustom.ToLowerInvariant(), 
+                    cacheSettings.VaryByCustom.ToLowerInvariant(),
                     context.HttpContext.ApplicationInstance.GetVaryByCustomString(HttpContext.Current, cacheSettings.VaryByCustom)
                 );
             }
