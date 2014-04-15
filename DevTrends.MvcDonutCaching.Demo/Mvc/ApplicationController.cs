@@ -2,7 +2,7 @@
 using Autofac;
 using DevTrends.MvcDonutCaching.Annotations;
 
-namespace DevTrends.MvcDonutCaching.Demo.Controllers
+namespace DevTrends.MvcDonutCaching.Demo.Mvc
 {
     public abstract class ApplicationController : Controller
     {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Web.Mvc;
+using DevTrends.MvcDonutCaching.Demo.Mvc;
 
 namespace DevTrends.MvcDonutCaching.Demo.Controllers
 {

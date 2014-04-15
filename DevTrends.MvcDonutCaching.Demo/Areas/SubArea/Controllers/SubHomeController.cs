@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using DevTrends.MvcDonutCaching.Demo.Controllers;
+using DevTrends.MvcDonutCaching.Demo.Mvc;
 
 namespace DevTrends.MvcDonutCaching.Demo.Areas.SubArea.Controllers
 {

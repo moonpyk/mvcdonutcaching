@@ -136,7 +136,7 @@
     <Compile Include="Areas\SubArea\Controllers\SubHomeController.cs" />
     <Compile Include="Areas\SubArea\SubAreaAreaRegistration.cs" />
     <Compile Include="Controllers\AccountController.cs" />
-    <Compile Include="Controllers\ApplicationController.cs" />
+    <Compile Include="Mvc\ApplicationController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoadTestController.cs" />
     <Compile Include="GlimpseSecurityPolicy.cs" />

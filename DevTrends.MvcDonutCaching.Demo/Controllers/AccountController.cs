@@ -2,6 +2,7 @@ using System;
 using System.Web.Mvc;
 using System.Web.Security;
 using DevTrends.MvcDonutCaching.Demo.Models;
+using DevTrends.MvcDonutCaching.Demo.Mvc;
 
 namespace DevTrends.MvcDonutCaching.Demo.Controllers
 {
