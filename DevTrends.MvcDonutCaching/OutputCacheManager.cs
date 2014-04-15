@@ -99,6 +99,17 @@ namespace DevTrends.MvcDonutCaching
         /// </summary>
         /// <param name="controllerName">The name of the controller that contains the action method.</param>
         /// <param name="actionName">The name of the controller action method.</param>
+        /// <param name="routeValues">An object that contains the parameters for a route.</param>
+        public void RemoveItems([AspMvcController] string controllerName, [AspMvcAction] string actionName, object routeValues)
+        {
+            RemoveItems(controllerName, actionName, new RouteValueDictionary(routeValues));
+        }
+
+        /// <summary>
+        /// Removes all output cache entries for the specified controller, action and parameters.
+        /// </summary>
+        /// <param name="controllerName">The name of the controller that contains the action method.</param>
+        /// <param name="actionName">The name of the controller action method.</param>
         /// <param name="routeValues">A dictionary that contains the parameters for a route.</param>
         public void RemoveItems([AspMvcController] string controllerName, [AspMvcAction] string actionName, RouteValueDictionary routeValues)
         {
