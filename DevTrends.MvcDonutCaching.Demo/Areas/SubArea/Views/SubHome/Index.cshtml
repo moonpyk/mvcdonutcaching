@@ -1,2 +1,48 @@
 ﻿@model DateTime
-<p>Test from Area : @Model</p>
+@{
+    ViewBag.Title = "Area donut holes demo";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<p>
+    This page has been rendered at @Model (expires in 24h)
+</p>
+
+<div>
+    @Html.Action("AreaDonutOne", true)
+</div>
+
+<p>
+    This is again the main page
+</p>
+
+<button id="btnExpireAreaDonuts">Expire whole area donuts</button>
+
+@section scripts
+{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#btnExpireAreaDonuts').click(function (e) {
+                var me = $(this);
+                e.preventDefault();
+
+                $.get('@Url.Action("ExpireAreaDonuts")', function (r) {
+                    console.log(r);
+                    me.prop('disabled', true);
+                });
+            });
+
+            $('#btnExpireAreaDonutOne').click(function (e) {
+                var me = $(this);
+
+                e.preventDefault();
+
+                $.get('@Url.Action("ExpireAreaDonutOne")', function (r) {
+                    console.log(r);
+                    me.prop('disabled', true);
+                });
+            });
+        });
+    </script>
+}

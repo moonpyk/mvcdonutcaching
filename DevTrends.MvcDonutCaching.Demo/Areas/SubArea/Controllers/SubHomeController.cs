@@ -18,5 +18,25 @@ namespace DevTrends.MvcDonutCaching.Demo.Areas.SubArea.Controllers
             return View(DateTime.Now);
         }
 
+        [ChildActionOnly, DonutOutputCache(Duration = 30, Options = OutputCacheOptions.ReplaceDonutsInChildActions)]
+        public ActionResult AreaDonutOne()
+        {
+            return PartialView(DateTime.Now);
+        }
+
+        public ActionResult ExpireAreaDonutOne()
+        {
+            OutputCacheManager.RemoveItem("SubHome", "AreaDonutOne", new { area="SubArea" });
+
+            return Content("OK", "text/plain");
+        }
+
+        public ActionResult ExpireAreaDonuts()
+        {
+            OutputCacheManager.RemoveItems(null, null, new { area="SubArea" });
+
+            return Content("OK", "text/plain");
+        }
+
     }
 }
