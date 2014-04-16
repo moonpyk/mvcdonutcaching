@@ -2,6 +2,8 @@
 
 ASP.NET MVC Extensible Donut Caching brings donut caching to ASP.NET MVC 3 and later. The code allows you to cache all of your page apart from one or more Html.Actions which can be executed every request. Perfect for user specific content.
 
+[![Build status](https://ci.appveyor.com/api/projects/status/snh8n1jjhea9fdot)](https://ci.appveyor.com/project/moonpyk/mvcdonutcaching)
+
 ## Download ##
 
 The best way to add donut caching to your MVC project is to use the NuGet package. From within Visual Studio, select *Tools | Library Package Manager* and then choose either Package Manager Console or Manage NuGet Packages. Via the console, just type **install-package MvcDonutCaching** and hit return. From the GUI, just search for **MvcDonutCaching** and click the install button.
