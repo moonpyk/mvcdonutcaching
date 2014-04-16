@@ -3,6 +3,7 @@ using System.Globalization;
 using System.IO;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Routing;
 using System.Web.UI;
 
 namespace DevTrends.MvcDonutCaching
@@ -53,7 +54,7 @@ namespace DevTrends.MvcDonutCaching
         /// <summary>
         /// Gets or sets the cache duration, in seconds.
         /// </summary>
-        public int Duration
+        public double Duration
         {
             get;
             set;

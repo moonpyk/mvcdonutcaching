@@ -1,4 +1,5 @@
 ﻿using System.Web.Mvc;
+using DevTrends.MvcDonutCaching.Mlidbom;
 
 namespace DevTrends.MvcDonutCaching.Demo
 {
@@ -7,6 +8,7 @@ namespace DevTrends.MvcDonutCaching.Demo
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
             filters.Add(new HandleErrorAttribute());
+            FilterProviders.Providers.Add(new DefaultAutoOutputCacheFilterProvider());
         }
     }
 }

@@ -32,7 +32,7 @@ namespace DevTrends.MvcDonutCaching
             if (cacheability != HttpCacheability.NoCache)
             {
                 response.Cache.SetExpires(DateTime.Now.AddSeconds(settings.Duration));
-                response.Cache.SetMaxAge(new TimeSpan(0, 0, settings.Duration));
+                response.Cache.SetMaxAge(new TimeSpan(0, 0, (int)settings.Duration));
             }
 
             if (settings.NoStore)

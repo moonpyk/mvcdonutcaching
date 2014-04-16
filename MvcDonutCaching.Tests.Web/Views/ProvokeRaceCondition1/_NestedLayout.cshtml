@@ -1,0 +1,18 @@
+﻿    @{ Layout = "_TopLayout.cshtml"; }
+
+@Html.Action("NestedLayoutHeader")    
+@RenderSection("Section2")
+<div id="O::7">NestedLayout: @DateTime.Now.ToLongTimeString()</div>
+@RenderSection("Section3")
+    @RenderBody()
+    @Html.Action("NestedLayoutFooter")
+
+@section Section1
+{
+    <div id="O::3">Section1:@DateTime.Now.ToLongTimeString()</div>
+}
+
+@section Section4
+{
+    <div id="O::12">Section4:@DateTime.Now.ToLongTimeString()</div>
+}

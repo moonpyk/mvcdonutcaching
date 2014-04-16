@@ -18,7 +18,7 @@ namespace DevTrends.MvcDonutCaching
         /// <value>
         /// The cache duration.
         /// </value>
-        public int Duration { get; set; }
+        public double Duration { get; set; }
 
         /// <summary>
         /// Gets or sets the VaryByParam cache parameter.

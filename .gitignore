@@ -18,3 +18,5 @@ nuget/lib/
 
 # Doxygen
 doc/*
+*.crunchsolution.cache
+_NCrunch_*
