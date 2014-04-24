@@ -18,7 +18,7 @@ namespace DevTrends.MvcDonutCaching.Demo.Models
 
         [DataType(DataType.Password)]
         [Display(Name = "Confirmer le nouveau mot de passe")]
-        [System.Web.Mvc.Compare("NewPassword", ErrorMessage = "Le nouveau mot de passe et le mot de passe de confirmation ne correspondent pas.")]
+        [Compare("NewPassword", ErrorMessage = "Le nouveau mot de passe et le mot de passe de confirmation ne correspondent pas.")]
         public string ConfirmPassword { get; set; }
     }
 
@@ -56,7 +56,7 @@ namespace DevTrends.MvcDonutCaching.Demo.Models
 
         [DataType(DataType.Password)]
         [Display(Name = "Confirmer le mot de passe")]
-        [System.Web.Mvc.Compare("Password", ErrorMessage = "Le mot de passe et le mot de passe de confirmation ne correspondent pas.")]
+        [Compare("Password", ErrorMessage = "Le mot de passe et le mot de passe de confirmation ne correspondent pas.")]
         public string ConfirmPassword { get; set; }
     }
 }
