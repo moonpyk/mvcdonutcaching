@@ -7,7 +7,7 @@ using Autofac.Integration.Mvc;
 
 namespace DevTrends.MvcDonutCaching.Demo
 {
-    public class MvcApplication : System.Web.HttpApplication
+    public class MvcApplication : HttpApplication
     {
         public IContainer Container
         {

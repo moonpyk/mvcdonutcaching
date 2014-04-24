@@ -1,16 +1,10 @@
 ﻿using System;
-using System;
-using System.Collections.Generic;
-using System.Collections.Generic;
-using System.Configuration;
+using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Linq;
 using System.Net;
 using System.Net.Cache;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
 
 namespace DevTrends.MvcDonutCaching.Demo.Controllers
@@ -24,7 +18,15 @@ namespace DevTrends.MvcDonutCaching.Demo.Controllers
             long requestsMade = 0;
 
             var relativeUrl = Url.Action("LargeOutPutRootAction");
-            var uri = string.Format("{0}://{1}:{2}{3}", Request.Url.Scheme, Request.Url.Host, Request.Url.Port, relativeUrl);
+
+            Debug.Assert(Request.Url != null, "Request.Url != null");
+
+            var uri = string.Format(
+                "{0}://{1}{2}",
+                Request.Url.Scheme,
+                Request.Url.Authority,
+                relativeUrl
+            );
 
             var cancellationTokenSource = new CancellationTokenSource();
             var parallelOptions = new ParallelOptions
@@ -53,10 +55,14 @@ namespace DevTrends.MvcDonutCaching.Demo.Controllers
 
                         using (var response = webRequest.GetResponse())
                         using (var stream = response.GetResponseStream())
-                        using (var reader = new StreamReader(stream))
                         {
-                            reader.ReadToEnd();
-                            Interlocked.Increment(ref requestsMade);
+                            Debug.Assert(stream != null, "stream != null");
+
+                            using (var reader = new StreamReader(stream))
+                            {
+                                reader.ReadToEnd();
+                                Interlocked.Increment(ref requestsMade);
+                            }
                         }
                     });
             }
