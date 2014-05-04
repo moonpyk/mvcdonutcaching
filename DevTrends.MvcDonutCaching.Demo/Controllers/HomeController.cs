@@ -50,5 +50,11 @@ namespace DevTrends.MvcDonutCaching.Demo.Controllers
 
             return Content("OK", "text/plain");
         }
+
+        [DonutOutputCache(Duration = 60 * 5, VaryByParam = "*", VaryByCustom = "subdomain")]
+        public ActionResult TestIssue23()
+        {
+            return View();
+        }
     }
 }

@@ -55,6 +55,12 @@ namespace DevTrends.MvcDonutCaching.Demo
 
             switch (custom.ToLowerInvariant())
             {
+                case "subdomain":
+                    return context.Request.Url.Host == "sub.localtest.me" 
+                            ? "sub" 
+                            : "main";
+
+
                 case "user":
                     var principal = context.User;
                     if (principal != null)
