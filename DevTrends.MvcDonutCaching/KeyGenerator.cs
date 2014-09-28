@@ -23,17 +23,40 @@ namespace DevTrends.MvcDonutCaching
 
         public string GenerateKey(ControllerContext context, CacheSettings cacheSettings)
         {
-            var actionName     = context.RouteData.Values["action"].ToString();
-            var controllerName = context.RouteData.Values["controller"].ToString();
-            string areaName    = null;
+            var routeData = context.RouteData;
 
-            if (context.RouteData.DataTokens.ContainsKey("area"))
+            if (routeData == null)
             {
-                areaName = context.RouteData.DataTokens["area"].ToString();
+                return null;
+            }
+
+            string actionName = null,
+                controllerName = null;
+
+            if (routeData.Values["action"] != null)
+            {
+                actionName = routeData.Values["action"].ToString();
+            }
+
+            if (routeData.Values["controller"] != null)
+            {
+                controllerName = routeData.Values["controller"].ToString();
+            }
+
+            if (string.IsNullOrEmpty(actionName) || string.IsNullOrEmpty(controllerName))
+            {
+                return null;
+            }
+
+            string areaName = null;
+
+            if (routeData.DataTokens.ContainsKey("area"))
+            {
+                areaName = routeData.DataTokens["area"].ToString();
             }
 
             // remove controller, action and DictionaryValueProvider which is added by the framework for child actions
-            var filteredRouteData = context.RouteData.Values.Where(
+            var filteredRouteData = routeData.Values.Where(
                 x => x.Key.ToLowerInvariant() != "controller" && 
                      x.Key.ToLowerInvariant() != "action" &&   
                      x.Key.ToLowerInvariant() != "area" &&

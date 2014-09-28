@@ -144,6 +144,12 @@ namespace DevTrends.MvcDonutCaching
 
             var cacheKey = KeyGenerator.GenerateKey(filterContext, CacheSettings);
 
+            // If we are unable to generate a cache key it mean we can't do anything
+            if (string.IsNullOrEmpty(cacheKey))
+            {
+                return;
+            }
+
             // Are we actually storing data on the server side ?
             if (CacheSettings.IsServerCachingEnabled)
             {
@@ -301,6 +307,11 @@ namespace DevTrends.MvcDonutCaching
         private void ExecuteCallback(ControllerContext context, bool hasErrors)
         {
             var cacheKey = KeyGenerator.GenerateKey(context, CacheSettings);
+
+            if (string.IsNullOrEmpty(cacheKey))
+            {
+                return;
+            }
 
             var callback = context.HttpContext.Items[cacheKey] as Action<bool>;
 
