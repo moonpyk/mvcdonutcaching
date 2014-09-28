@@ -106,7 +106,7 @@ namespace DevTrends.MvcDonutCaching
 
             if (!string.IsNullOrEmpty(cacheSettings.VaryByCustom))
             {
-                // if there is an existing route value with the same key as varybycustom, we should overwrite it
+                // If there is an existing route value with the same key as varybycustom, we should overwrite it
                 routeValues[cacheSettings.VaryByCustom.ToLowerInvariant()] =
                             context.HttpContext.ApplicationInstance.GetVaryByCustomString(HttpContext.Current, cacheSettings.VaryByCustom);
             }
