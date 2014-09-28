@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DevTrends.MvcDonutCaching.Annotations;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -9,6 +10,10 @@ namespace DevTrends.MvcDonutCaching
 {
     public class KeyGenerator : IKeyGenerator
     {
+        private const string RouteDataKeyAction     = "action";
+        private const string RouteDataKeyController = "controller";
+        private const string DataTokensKeyArea      = "area";
+
         private readonly IKeyBuilder _keyBuilder;
 
         public KeyGenerator(IKeyBuilder keyBuilder)
@@ -21,6 +26,7 @@ namespace DevTrends.MvcDonutCaching
             _keyBuilder = keyBuilder;
         }
 
+        [CanBeNull]
         public string GenerateKey(ControllerContext context, CacheSettings cacheSettings)
         {
             var routeData = context.RouteData;
@@ -33,14 +39,18 @@ namespace DevTrends.MvcDonutCaching
             string actionName = null,
                 controllerName = null;
 
-            if (routeData.Values["action"] != null)
+            if (
+                routeData.Values.ContainsKey(RouteDataKeyAction) &&
+                routeData.Values[RouteDataKeyAction] != null)
             {
-                actionName = routeData.Values["action"].ToString();
+                actionName = routeData.Values[RouteDataKeyAction].ToString();
             }
 
-            if (routeData.Values["controller"] != null)
+            if (
+                routeData.Values.ContainsKey(RouteDataKeyController) && 
+                routeData.Values[RouteDataKeyController] != null)
             {
-                controllerName = routeData.Values["controller"].ToString();
+                controllerName = routeData.Values[RouteDataKeyController].ToString();
             }
 
             if (string.IsNullOrEmpty(actionName) || string.IsNullOrEmpty(controllerName))
@@ -50,22 +60,22 @@ namespace DevTrends.MvcDonutCaching
 
             string areaName = null;
 
-            if (routeData.DataTokens.ContainsKey("area"))
+            if (routeData.DataTokens.ContainsKey(DataTokensKeyArea))
             {
-                areaName = routeData.DataTokens["area"].ToString();
+                areaName = routeData.DataTokens[DataTokensKeyArea].ToString();
             }
 
             // remove controller, action and DictionaryValueProvider which is added by the framework for child actions
             var filteredRouteData = routeData.Values.Where(
-                x => x.Key.ToLowerInvariant() != "controller" && 
-                     x.Key.ToLowerInvariant() != "action" &&   
-                     x.Key.ToLowerInvariant() != "area" &&
+                x => x.Key.ToLowerInvariant() != RouteDataKeyController && 
+                     x.Key.ToLowerInvariant() != RouteDataKeyAction &&   
+                     x.Key.ToLowerInvariant() != DataTokensKeyArea &&
                      !(x.Value is DictionaryValueProvider<object>)
             ).ToList();
 
             if (!string.IsNullOrWhiteSpace(areaName))
             {
-                filteredRouteData.Add(new KeyValuePair<string, object>("area", areaName));
+                filteredRouteData.Add(new KeyValuePair<string, object>(DataTokensKeyArea, areaName));
             }
 
             var routeValues = new RouteValueDictionary(filteredRouteData.ToDictionary(x => x.Key.ToLowerInvariant(), x => x.Value));

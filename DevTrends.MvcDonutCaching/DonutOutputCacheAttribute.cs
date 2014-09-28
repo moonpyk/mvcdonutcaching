@@ -144,7 +144,7 @@ namespace DevTrends.MvcDonutCaching
 
             var cacheKey = KeyGenerator.GenerateKey(filterContext, CacheSettings);
 
-            // If we are unable to generate a cache key it mean we can't do anything
+            // If we are unable to generate a cache key it means we can't do anything
             if (string.IsNullOrEmpty(cacheKey))
             {
                 return;
