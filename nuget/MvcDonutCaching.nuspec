@@ -9,7 +9,7 @@
         <projectUrl>https://github.com/moonpyk/mvcdonutcaching/</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>MvcDonutCaching provides extensible donut output caching for ASP.NET MVC 3 and above.</description>
-        <releaseNotes>First release candidate for 1.3.0</releaseNotes>
-        <tags>mvc3 mvc4 mvc5 mvc51 donut caching mvc outputcaching outputcache substitution</tags>
+        <releaseNotes>Second release candidate for 1.3.0</releaseNotes>
+        <tags>mvc3 mvc4 mvc5 mvc51 mvc52 donut caching mvc outputcaching outputcache substitution</tags>
     </metadata>
 </package>
