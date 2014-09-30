@@ -39,12 +39,6 @@
     <ErrorReport>prompt</ErrorReport>
     <DocumentationFile>..\nuget\lib\net40\DevTrends.MvcDonutCaching.XML</DocumentationFile>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release.Public|AnyCPU' ">
-    <SignAssembly>true</SignAssembly>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release.Public|AnyCPU' ">
-    <AssemblyOriginatorKeyFile>C:\Users\moonpyk\Documents\Clés\moonpyk_at_gmail_com.pfx</AssemblyOriginatorKeyFile>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'CI|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\CI\</OutputPath>

@@ -15,5 +15,5 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyFileVersion("1.3.0")]
 
 #if RELEASE_PUBLIC
-[assembly: AssemblyKeyFile(@"C:\Users\moonpyk\Documents\Clés\moonpyk_at_gmail_com.snk")]
+    [assembly: AssemblyKeyFile(@"C:\Users\moonpyk\Documents\Clés\Code\Code.snk")]
 #endif
