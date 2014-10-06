@@ -9,3 +9,4 @@ Ramgopal <itsramgopal@gmail.com> : Fixed codeplex issue issue #2578
 Gábor Plesz <gplesz@smarterdb.com> : Work on the demo project.
 Luc-Edmond Gaspard <gaspard.le@gmail.com> : Reported and fixed Github issue #5.
 anorborg <norborg@gmail.com> : Fixed duplicate key exception PR #27
+pstarkov <pstarkov@knoema.com> : Implemented VaryByHeader support #6
