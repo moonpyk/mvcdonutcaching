@@ -69,6 +69,15 @@ namespace DevTrends.MvcDonutCaching
         }
 
         /// <summary>
+        /// Gets or sets the vary-by-header value.
+        /// </summary>
+        public string VaryByHeader
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         /// Gets or sets the vary-by-custom value.
         /// </summary>
         public string VaryByCustom
@@ -262,12 +271,13 @@ namespace DevTrends.MvcDonutCaching
                 cacheSettings = new CacheSettings
                 {
                     IsCachingEnabled = CacheSettingsManager.IsCachingEnabledGlobally,
-                    Duration = Duration,
-                    VaryByCustom = VaryByCustom,
-                    VaryByParam = VaryByParam,
-                    Location = (int)Location == -1 ? OutputCacheLocation.Server : Location,
-                    NoStore = NoStore,
-                    Options = Options,
+                    Duration         = Duration,
+                    VaryByCustom     = VaryByCustom,
+                    VaryByParam      = VaryByParam,
+                    VaryByHeader     = VaryByHeader,
+                    Location         = (int)Location == -1 ? OutputCacheLocation.Server : Location,
+                    NoStore          = NoStore,
+                    Options          = Options,
                 };
             }
             else
@@ -277,12 +287,13 @@ namespace DevTrends.MvcDonutCaching
                 cacheSettings = new CacheSettings
                 {
                     IsCachingEnabled = CacheSettingsManager.IsCachingEnabledGlobally && cacheProfile.Enabled,
-                    Duration = Duration == -1 ? cacheProfile.Duration : Duration,
-                    VaryByCustom = VaryByCustom ?? cacheProfile.VaryByCustom,
-                    VaryByParam = VaryByParam ?? cacheProfile.VaryByParam,
-                    Location = (int)Location == -1 ? ((int)cacheProfile.Location == -1 ? OutputCacheLocation.Server : cacheProfile.Location) : Location,
-                    NoStore = _noStore.HasValue ? _noStore.Value : cacheProfile.NoStore,
-                    Options = Options,
+                    Duration         = Duration == -1 ? cacheProfile.Duration : Duration,
+                    VaryByCustom     = VaryByCustom ?? cacheProfile.VaryByCustom,
+                    VaryByParam      = VaryByParam ?? cacheProfile.VaryByParam,
+                    VaryByHeader     = VaryByHeader ?? cacheProfile.VaryByHeader,
+                    Location         = (int)Location == -1 ? ((int)cacheProfile.Location == -1 ? OutputCacheLocation.Server : cacheProfile.Location) : Location,
+                    NoStore          = _noStore.HasValue ? _noStore.Value : cacheProfile.NoStore,
+                    Options          = Options,
                 };
             }
 
