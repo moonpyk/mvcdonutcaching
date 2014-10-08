@@ -60,7 +60,10 @@ namespace DevTrends.MvcDonutCaching
 
             string areaName = null;
 
-            if (routeData.DataTokens.ContainsKey(DataTokensKeyArea))
+            if (
+                routeData.DataTokens.ContainsKey(DataTokensKeyArea) &&
+                routeData.DataTokens[DataTokensKeyArea] != null
+            )
             {
                 areaName = routeData.DataTokens[DataTokensKeyArea].ToString();
             }
