@@ -135,7 +135,8 @@ namespace DevTrends.MvcDonutCaching
                 else if (cacheSettings.VaryByParam != "*")
                 {
                     var parameters = cacheSettings.VaryByParam.ToLowerInvariant().Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-                    routeValues = new RouteValueDictionary(routeValues.Where(x => parameters.Contains(x.Key)).ToDictionary(x => x.Key, x => x.Value));
+                    routeValues = new RouteValueDictionary(routeValues.Where(x => parameters.Contains(x.Key))
+                        .ToDictionary(x => x.Key, x => x.Value));
                 }
             }
 
