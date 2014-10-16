@@ -1,0 +1,10 @@
+root = true
+
+[*]
+insert_final_newline = true
+charset = utf8
+indent_style = space
+indent_size = 4
+
+[{*.cs,*.cshtml}]
+trim_trailing_whitespace = true
