@@ -29,6 +29,14 @@ namespace DevTrends.MvcDonutCaching
         public string VaryByParam { get; set; }
 
         /// <summary>
+        /// Gets or sets the VaryByHeader cache parameter.
+        /// </summary>
+        /// <value>
+        /// The VaryByHeader cache parameter.
+        /// </value>
+        public string VaryByHeader { get; set; }
+
+        /// <summary>
         /// Gets or sets the VaryByCustom cache parameter.
         /// </summary>
         /// <value>

@@ -60,7 +60,10 @@ namespace DevTrends.MvcDonutCaching
 
             string areaName = null;
 
-            if (routeData.DataTokens.ContainsKey(DataTokensKeyArea))
+            if (
+                routeData.DataTokens.ContainsKey(DataTokensKeyArea) &&
+                routeData.DataTokens[DataTokensKeyArea] != null
+            )
             {
                 areaName = routeData.DataTokens[DataTokensKeyArea].ToString();
             }
@@ -83,7 +86,6 @@ namespace DevTrends.MvcDonutCaching
             if (!context.IsChildAction)
             {
                 // note that route values take priority over form values and form values take priority over query string values
-
                 if ((cacheSettings.Options & OutputCacheOptions.IgnoreFormData) != OutputCacheOptions.IgnoreFormData)
                 {
                     foreach (var formKey in context.HttpContext.Request.Form.AllKeys)
@@ -107,7 +109,7 @@ namespace DevTrends.MvcDonutCaching
                 {
                     foreach (var queryStringKey in context.HttpContext.Request.QueryString.AllKeys)
                     {
-                        // queryStringKey is null if url has qs name without value. e.g. test.com?q
+                        // queryStringKey is null if url has as name without value. e.g. test.com?q
                         if (queryStringKey == null || routeValues.ContainsKey(queryStringKey.ToLowerInvariant()))
                         {
                             continue;
@@ -133,7 +135,8 @@ namespace DevTrends.MvcDonutCaching
                 else if (cacheSettings.VaryByParam != "*")
                 {
                     var parameters = cacheSettings.VaryByParam.ToLowerInvariant().Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-                    routeValues = new RouteValueDictionary(routeValues.Where(x => parameters.Contains(x.Key)).ToDictionary(x => x.Key, x => x.Value));
+                    routeValues = new RouteValueDictionary(routeValues.Where(x => parameters.Contains(x.Key))
+                        .ToDictionary(x => x.Key, x => x.Value));
                 }
             }
 
@@ -142,6 +145,16 @@ namespace DevTrends.MvcDonutCaching
                 // If there is an existing route value with the same key as varybycustom, we should overwrite it
                 routeValues[cacheSettings.VaryByCustom.ToLowerInvariant()] =
                             context.HttpContext.ApplicationInstance.GetVaryByCustomString(HttpContext.Current, cacheSettings.VaryByCustom);
+            }
+
+            if (!string.IsNullOrEmpty(cacheSettings.VaryByHeader))
+            {
+                var headers = cacheSettings.VaryByHeader.ToLowerInvariant().Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+                var existingHeaders = context.HttpContext.Request.Headers.AllKeys.Where(x => headers.Contains(x.ToLowerInvariant()));
+                foreach (var header in existingHeaders)
+                {
+                    routeValues[header] = context.HttpContext.Request.Headers[header];
+                }
             }
 
             var key = _keyBuilder.BuildKey(controllerName, actionName, routeValues);

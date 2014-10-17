@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("DevTrends")]
 [assembly: AssemblyProduct("DevTrends.MvcDonutCaching")]
-[assembly: AssemblyCopyright("Copyright 2013 © MvcDonutCaching contributors")]
+[assembly: AssemblyCopyright("Copyright 2014 © MvcDonutCaching contributors")]
 // [assembly: AssemblyTrademark("")]
 // [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]

@@ -23,6 +23,11 @@ namespace DevTrends.MvcDonutCaching
             _keyBuilder = keyBuilder;
         }
 
+        public IKeyBuilder KeyBuilder
+        {
+            get { return _keyBuilder; }
+        }
+
         public void AddItem(string key, CacheItem cacheItem, DateTime utcExpiry)
         {
             _outputCacheProvider.Add(key, cacheItem, utcExpiry);
@@ -114,7 +119,7 @@ namespace DevTrends.MvcDonutCaching
         public void RemoveItems([AspMvcController] string controllerName, [AspMvcAction] string actionName, RouteValueDictionary routeValues)
         {
             var enumerableCache = _outputCacheProvider as IEnumerable<KeyValuePair<string, object>>;
-
+            
             if (enumerableCache == null)
             {
                 throw new NotSupportedException("Ensure that your custom OutputCacheProvider implements IEnumerable<KeyValuePair<string, object>>.");
