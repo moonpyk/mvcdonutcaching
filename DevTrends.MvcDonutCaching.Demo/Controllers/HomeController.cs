@@ -1,6 +1,10 @@
 ﻿using System;
+using System.IO;
+using System.Net;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 using DevTrends.MvcDonutCaching.Demo.Mvc;
+using Newtonsoft.Json;
 
 namespace DevTrends.MvcDonutCaching.Demo.Controllers
 {
@@ -55,6 +59,20 @@ namespace DevTrends.MvcDonutCaching.Demo.Controllers
         public ActionResult TestIssue23()
         {
             return View();
+        }
+
+        public async Task<ActionResult> WorksOnAsyncMethodsToo()
+        {
+            var req = WebRequest.Create("http://baconipsum.com/api/?type=meat-and-filler");
+
+            string[] final;
+
+            using (var resp = await req.GetResponseAsync())
+            {
+                final = JsonConvert.DeserializeObject<string[]>(resp.ToString());
+            }
+            
+            return View(final);
         }
     }
 }

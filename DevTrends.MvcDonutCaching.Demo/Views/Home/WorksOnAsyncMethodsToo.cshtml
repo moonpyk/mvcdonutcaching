@@ -1,0 +1,14 @@
+﻿@model IEnumerable<string>
+
+
+    <table>
+        <tr>
+            <th>Value</th>
+        </tr>
+        @foreach (var w in Model)
+        {
+            <tr>
+                <td>@w</td>
+            </tr>
+        }
+    </table>
