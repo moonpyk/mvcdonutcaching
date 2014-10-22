@@ -61,17 +61,25 @@ namespace DevTrends.MvcDonutCaching.Demo.Controllers
             return View();
         }
 
+        [DonutOutputCache(Duration = 3600 /* Bacon is still good one hour later */)]
         public async Task<ActionResult> WorksOnAsyncMethodsToo()
         {
             var req = WebRequest.Create("http://baconipsum.com/api/?type=meat-and-filler");
 
-            string[] final;
+            string[] final = null;
 
             using (var resp = await req.GetResponseAsync())
             {
-                final = JsonConvert.DeserializeObject<string[]>(resp.ToString());
+                var rStream = resp.GetResponseStream();
+                if (rStream != null)
+                {
+                    using (var r = new StreamReader(rStream))
+                    {
+                        final = JsonConvert.DeserializeObject<string[]>(r.ReadToEnd());
+                    }
+                }
             }
-            
+
             return View(final);
         }
     }

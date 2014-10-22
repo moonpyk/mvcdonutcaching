@@ -1,14 +1,13 @@
 ﻿@model IEnumerable<string>
-
-
-    <table>
-        <tr>
-            <th>Value</th>
-        </tr>
-        @foreach (var w in Model)
+    @if (Model == null)
+    {
+        <p>Error while reading remote web service response</p>
+    }
+    else
+    {
+        <h1>Everybody loves bacon</h1>
+        foreach (var ipsum in Model)
         {
-            <tr>
-                <td>@w</td>
-            </tr>
+            <p>@ipsum</p>
         }
-    </table>
+    }
