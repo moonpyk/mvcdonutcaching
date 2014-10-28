@@ -9,6 +9,12 @@ namespace DevTrends.MvcDonutCaching
     {
         private static IActionSettingsSerialiser _serialiser;
 
+        /// <summary>
+        /// Gets or sets the serialiser.
+        /// </summary>
+        /// <value>
+        /// The serialiser.
+        /// </value>
         public static IActionSettingsSerialiser Serialiser
         {
             get

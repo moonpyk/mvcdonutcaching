@@ -38,6 +38,9 @@ namespace DevTrends.MvcDonutCaching
         {
         }
 
+        /// <summary>
+        /// Gets the current <see cref="OutputCacheManager"/> instance.
+        /// </summary>
         public static OutputCacheProvider Instance
         {
             get;

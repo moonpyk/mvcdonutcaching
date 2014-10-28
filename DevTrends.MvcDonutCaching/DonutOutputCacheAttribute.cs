@@ -22,8 +22,15 @@ namespace DevTrends.MvcDonutCaching
         private bool? _noStore;
         private OutputCacheOptions? _options;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DonutOutputCacheAttribute"/> class.
+        /// </summary>
         public DonutOutputCacheAttribute() : this(new KeyBuilder()) { }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DonutOutputCacheAttribute"/> class.
+        /// </summary>
+        /// <param name="keyBuilder">The key builder.</param>
         public DonutOutputCacheAttribute(IKeyBuilder keyBuilder) :
             this(
                new KeyGenerator(keyBuilder),
@@ -34,6 +41,14 @@ namespace DevTrends.MvcDonutCaching
         )
         { }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DonutOutputCacheAttribute"/> class.
+        /// </summary>
+        /// <param name="keyGenerator">The key generator.</param>
+        /// <param name="outputCacheManager">The output cache manager.</param>
+        /// <param name="donutHoleFiller">The donut hole filler.</param>
+        /// <param name="cacheSettingsManager">The cache settings manager.</param>
+        /// <param name="cacheHeadersHelper">The cache headers helper.</param>
         protected DonutOutputCacheAttribute(
             IKeyGenerator keyGenerator, IReadWriteOutputCacheManager outputCacheManager,
             IDonutHoleFiller donutHoleFiller, ICacheSettingsManager cacheSettingsManager, ICacheHeadersHelper cacheHeadersHelper
