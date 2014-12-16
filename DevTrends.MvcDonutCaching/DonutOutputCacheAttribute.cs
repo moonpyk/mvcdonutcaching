@@ -53,61 +53,35 @@ namespace DevTrends.MvcDonutCaching
         /// <summary>
         /// Gets or sets the cache duration, in seconds.
         /// </summary>
-        public int Duration
-        {
-            get;
-            set;
-        }
+        public int Duration { get; set; }
 
         /// <summary>
         /// Gets or sets the vary-by-param value.
         /// </summary>
-        public string VaryByParam
-        {
-            get;
-            set;
-        }
+        public string VaryByParam { get; set; }
 
         /// <summary>
         /// Gets or sets the vary-by-custom value.
         /// </summary>
-        public string VaryByCustom
-        {
-            get;
-            set;
-        }
+        public string VaryByCustom { get; set; }
 
         /// <summary>
         /// Gets or sets the cache profile name.
         /// </summary>
-        public string CacheProfile
-        {
-            get;
-            set;
-        }
+        public string CacheProfile { get; set; }
 
         /// <summary>
         /// Gets or sets the location.
         /// </summary>
-        public OutputCacheLocation Location
-        {
-            get;
-            set;
-        }
+        public OutputCacheLocation Location { get; set; }
 
         /// <summary>
         /// Gets or sets a value that indicates whether to store the cache.
         /// </summary>
         public bool NoStore
         {
-            get
-            {
-                return _noStore ?? false;
-            }
-            set
-            {
-                _noStore = value;
-            }
+            get { return _noStore ?? false; }
+            set { _noStore = value; }
         }
 
         /// <summary>
@@ -116,14 +90,8 @@ namespace DevTrends.MvcDonutCaching
         /// </summary>
         public OutputCacheOptions Options
         {
-            get
-            {
-                return _options ?? OutputCacheOptions.None;
-            }
-            set
-            {
-                _options = value;
-            }
+            get { return _options ?? OutputCacheOptions.None; }
+            set { _options = value; }
         }
 
         public void OnException(ExceptionContext filterContext)

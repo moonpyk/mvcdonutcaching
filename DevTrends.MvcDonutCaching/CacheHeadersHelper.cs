@@ -13,6 +13,9 @@ namespace DevTrends.MvcDonutCaching
         /// <param name="settings">The cache settings.</param>
         public void SetCacheHeaders(HttpResponseBase response, CacheSettings settings)
         {
+            if (response == null) { throw new ArgumentNullException("response"); }
+            if (settings == null) { throw new ArgumentNullException("settings"); }
+
             var cacheability = HttpCacheability.NoCache;
 
             switch (settings.Location)
