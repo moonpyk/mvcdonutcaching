@@ -27,5 +27,23 @@ namespace MvcDonutCaching.UnitTests
             Assert.Throws<ArgumentNullException>(() => keyGenerator.GenerateKey(null, new CacheSettings()));
             Assert.Throws<ArgumentNullException>(() => keyGenerator.GenerateKey(new ControllerContext(), null));
         }
+
+        [Fact]
+        public void GenerateKey_NullRouteData_ReturnsNull()
+        {
+            
+        }
+
+        [Fact]
+        public void GenerateKey_NullActionName_ReturnsNull()
+        {
+            
+        }
+
+        [Fact]
+        public void GenerateKey_NullControllerName_ReturnsNull()
+        {
+            
+        }
     }
 }

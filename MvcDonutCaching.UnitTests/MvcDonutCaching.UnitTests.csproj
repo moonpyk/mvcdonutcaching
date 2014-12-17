@@ -61,8 +61,11 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="ActionSettingsTests.cs" />
     <Compile Include="CacheHeadersHelperTests.cs" />
+    <Compile Include="CacheItemTests.cs" />
     <Compile Include="CacheSettingsTests.cs" />
+    <Compile Include="DonutHoleFillerTests.cs" />
     <Compile Include="EncryptingActionSettingsSerialiserTests.cs" />
     <Compile Include="KeyGeneratorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
