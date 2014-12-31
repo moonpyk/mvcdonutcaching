@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Globalization;
 using System.IO;
+using System.Runtime.Serialization;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Routing;
 using System.Web.UI;
 
 namespace DevTrends.MvcDonutCaching
@@ -24,20 +26,18 @@ namespace DevTrends.MvcDonutCaching
 
         public DonutOutputCacheAttribute() : this(new KeyBuilder()) { }
 
-        public DonutOutputCacheAttribute(IKeyBuilder keyBuilder) :
-            this(
-               new KeyGenerator(keyBuilder),
-               new OutputCacheManager(OutputCache.Instance, keyBuilder),
-               new DonutHoleFiller(new EncryptingActionSettingsSerialiser(new ActionSettingsSerialiser(), new Encryptor())),
-               new CacheSettingsManager(),
-               new CacheHeadersHelper()
-        )
+        public DonutOutputCacheAttribute(IKeyBuilder keyBuilder) : this(new KeyGenerator(keyBuilder),
+                                                                        new OutputCacheManager(OutputCache.Instance, keyBuilder), 
+                                                                        GetDonutHoleFiller(),
+                                                                        new CacheSettingsManager(),
+                                                                        new CacheHeadersHelper())
         { }
 
-        protected DonutOutputCacheAttribute(
-            IKeyGenerator keyGenerator, IReadWriteOutputCacheManager outputCacheManager,
-            IDonutHoleFiller donutHoleFiller, ICacheSettingsManager cacheSettingsManager, ICacheHeadersHelper cacheHeadersHelper
-        )
+        protected DonutOutputCacheAttribute(IKeyGenerator keyGenerator, 
+                                            IReadWriteOutputCacheManager outputCacheManager,
+                                            IDonutHoleFiller donutHoleFiller, 
+                                            ICacheSettingsManager cacheSettingsManager, 
+                                            ICacheHeadersHelper cacheHeadersHelper)
         {
             KeyGenerator = keyGenerator;
             OutputCacheManager = outputCacheManager;
@@ -48,6 +48,15 @@ namespace DevTrends.MvcDonutCaching
             Duration = -1;
             Location = (OutputCacheLocation)(-1);
             Options = OutputCache.DefaultOptions;
+        }
+
+        private static IDonutHoleFiller GetDonutHoleFiller()
+        {
+            var dataContractSerializer = new DataContractSerializer(typeof(ActionSettings), new[] { typeof(RouteValueDictionary) });
+            var dataContractSerializerWrapper = new DataContractSerializerWrapper(dataContractSerializer);
+            var actionSettingsSerializer = new ActionSettingsSerialiser(dataContractSerializerWrapper);
+
+            return new DonutHoleFiller(new EncryptingActionSettingsSerialiser(actionSettingsSerializer, new Encryptor()));
         }
 
         /// <summary>

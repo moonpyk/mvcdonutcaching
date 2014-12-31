@@ -12,7 +12,6 @@ namespace MvcDonutCaching.UnitTests
         public void Constructor_NullValues_ThrowsArgumentNullException()
         {
             Assert.Throws<ArgumentNullException>(() => new EncryptingActionSettingsSerialiser(null, null));
-            Assert.Throws<ArgumentNullException>(() => new EncryptingActionSettingsSerialiser(new ActionSettingsSerialiser(), null));
             Assert.Throws<ArgumentNullException>(() => new EncryptingActionSettingsSerialiser(null, new Encryptor()));
         }
 

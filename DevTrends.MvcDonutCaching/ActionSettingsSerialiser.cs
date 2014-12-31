@@ -1,24 +1,28 @@
-﻿using System.IO;
-using System.Runtime.Serialization;
+﻿using System;
+using System.IO;
 using System.Text;
-using System.Web.Routing;
 
 namespace DevTrends.MvcDonutCaching
 {
     public class ActionSettingsSerialiser : IActionSettingsSerialiser
     {
-        private readonly DataContractSerializer _serialiser;
+        private readonly IDataContractSerializer _dataContractSerializer;
 
-        public ActionSettingsSerialiser()
+        public ActionSettingsSerialiser(IDataContractSerializer dataContractSerializer)
         {
-            _serialiser = new DataContractSerializer(typeof(ActionSettings), new[] { typeof(RouteValueDictionary) });
+            if (dataContractSerializer == null) { throw new ArgumentNullException("dataContractSerializer"); }
+
+            _dataContractSerializer = dataContractSerializer;
         }
 
         public string Serialise(ActionSettings actionSettings)
         {
+            if (actionSettings == null) { throw new ArgumentNullException("actionSettings"); }
+
             using (var memoryStream = new MemoryStream())
             {
-                _serialiser.WriteObject(memoryStream, actionSettings);
+                _dataContractSerializer.WriteObject(memoryStream, actionSettings);
+
                 return Encoding.UTF8.GetString(memoryStream.ToArray());
             }
         }
@@ -27,7 +31,7 @@ namespace DevTrends.MvcDonutCaching
         {
             using (var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(serialisedActionSettings)))
             {
-                return (ActionSettings)_serialiser.ReadObject(memoryStream);
+                return (ActionSettings) _dataContractSerializer.ReadObject(memoryStream);
             }
         }
     }

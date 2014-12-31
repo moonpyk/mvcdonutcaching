@@ -10,14 +10,8 @@ namespace DevTrends.MvcDonutCaching
 
         public string CacheKeyPrefix
         {
-            get
-            {
-                return _cacheKeyPrefix;
-            }
-            set
-            {
-                _cacheKeyPrefix = value;
-            }
+            get { return _cacheKeyPrefix; }
+            set { _cacheKeyPrefix = value; }
         }
 
         public string BuildKey(string controllerName)
