@@ -3,6 +3,7 @@ using System.Globalization;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Web;
+using System.Web.Configuration;
 using System.Web.Mvc;
 using System.Web.Routing;
 using System.Web.UI;
@@ -12,7 +13,6 @@ namespace DevTrends.MvcDonutCaching
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = true, AllowMultiple = false)]
     public class DonutOutputCacheAttribute : ActionFilterAttribute, IExceptionFilter
     {
-        // Protected
         protected readonly ICacheHeadersHelper CacheHeadersHelper;
         protected readonly ICacheSettingsManager CacheSettingsManager;
         protected readonly IDonutHoleFiller DonutHoleFiller;
@@ -20,7 +20,6 @@ namespace DevTrends.MvcDonutCaching
         protected readonly IReadWriteOutputCacheManager OutputCacheManager;
         protected CacheSettings CacheSettings;
 
-        // Private
         private bool? _noStore;
         private OutputCacheOptions? _options;
 
@@ -207,10 +206,7 @@ namespace DevTrends.MvcDonutCaching
         /// <param name="filterContext">The filter context.</param>
         public override void OnResultExecuted(ResultExecutedContext filterContext)
         {
-            if (CacheSettings == null)
-            {
-                return;
-            }
+            if (CacheSettings == null) { return; }
 
             // See OnActionExecuting
             ExecuteCallback(filterContext, filterContext.Exception != null);
@@ -236,31 +232,13 @@ namespace DevTrends.MvcDonutCaching
 
             if (string.IsNullOrEmpty(CacheProfile))
             {
-                cacheSettings = new CacheSettings
-                {
-                    IsCachingEnabled = CacheSettingsManager.IsCachingEnabledGlobally,
-                    Duration = Duration,
-                    VaryByCustom = VaryByCustom,
-                    VaryByParam = VaryByParam,
-                    Location = (int)Location == -1 ? OutputCacheLocation.Server : Location,
-                    NoStore = NoStore,
-                    Options = Options,
-                };
+                cacheSettings = GetDefaultCacheSettings();
             }
             else
             {
-                var cacheProfile = CacheSettingsManager.RetrieveOutputCacheProfile(CacheProfile);
+                var outputCacheProfile = CacheSettingsManager.RetrieveOutputCacheProfile(CacheProfile);
 
-                cacheSettings = new CacheSettings
-                {
-                    IsCachingEnabled = CacheSettingsManager.IsCachingEnabledGlobally && cacheProfile.Enabled,
-                    Duration = Duration == -1 ? cacheProfile.Duration : Duration,
-                    VaryByCustom = VaryByCustom ?? cacheProfile.VaryByCustom,
-                    VaryByParam = VaryByParam ?? cacheProfile.VaryByParam,
-                    Location = (int)Location == -1 ? ((int)cacheProfile.Location == -1 ? OutputCacheLocation.Server : cacheProfile.Location) : Location,
-                    NoStore = _noStore.HasValue ? _noStore.Value : cacheProfile.NoStore,
-                    Options = Options,
-                };
+                cacheSettings = GetCacheSettingsFromCacheProfile(outputCacheProfile);
             }
 
             if (cacheSettings.Duration == -1)
@@ -276,6 +254,34 @@ namespace DevTrends.MvcDonutCaching
             return cacheSettings;
         }
 
+        private CacheSettings GetDefaultCacheSettings()
+        {
+            return new CacheSettings
+            {
+                IsCachingEnabled = CacheSettingsManager.IsCachingEnabledGlobally,
+                Duration = Duration,
+                VaryByCustom = VaryByCustom,
+                VaryByParam = VaryByParam,
+                Location = (int)Location == -1 ? OutputCacheLocation.Server : Location,
+                NoStore = NoStore,
+                Options = Options,
+            };
+        }
+
+        private CacheSettings GetCacheSettingsFromCacheProfile(OutputCacheProfile outputCacheProfile)
+        {
+            return new CacheSettings
+            {
+                IsCachingEnabled = CacheSettingsManager.IsCachingEnabledGlobally && outputCacheProfile.Enabled,
+                Duration = Duration == -1 ? outputCacheProfile.Duration : Duration,
+                VaryByCustom = VaryByCustom ?? outputCacheProfile.VaryByCustom,
+                VaryByParam = VaryByParam ?? outputCacheProfile.VaryByParam,
+                Location = (int)Location == -1 ? ((int)outputCacheProfile.Location == -1 ? OutputCacheLocation.Server : outputCacheProfile.Location) : Location,
+                NoStore = _noStore ?? outputCacheProfile.NoStore,
+                Options = Options,
+            };
+        }
+
         /// <summary>
         /// Executes the callback.
         /// </summary>
@@ -285,10 +291,7 @@ namespace DevTrends.MvcDonutCaching
         {
             var cacheKey = KeyGenerator.GenerateKey(context, CacheSettings);
 
-            if (string.IsNullOrEmpty(cacheKey))
-            {
-                return;
-            }
+            if (string.IsNullOrEmpty(cacheKey)) { return; }
 
             var callback = context.HttpContext.Items[cacheKey] as Action<bool>;
 

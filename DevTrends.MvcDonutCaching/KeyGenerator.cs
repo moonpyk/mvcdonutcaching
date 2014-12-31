@@ -31,10 +31,7 @@ namespace DevTrends.MvcDonutCaching
 
             RouteData routeData = context.RouteData;
 
-            if (routeData == null)
-            {
-                return null;
-            }
+            if (routeData == null) { return null; }
 
             string actionName = GetActionNameFromRouteData(routeData);
             string controllerName = GetControllerNameFromRouteData(routeData);
