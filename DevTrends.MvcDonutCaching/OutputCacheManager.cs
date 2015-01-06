@@ -12,13 +12,13 @@ namespace DevTrends.MvcDonutCaching
         private readonly OutputCacheProvider _outputCacheProvider;
         private readonly IKeyBuilder _keyBuilder;
 
-        public OutputCacheManager()
-            : this(OutputCache.Instance, new KeyBuilder())
-        {
-        }
+        public OutputCacheManager() : this(OutputCache.Instance, new KeyBuilder()) {  }
 
         public OutputCacheManager(OutputCacheProvider outputCacheProvider, IKeyBuilder keyBuilder)
         {
+            if (outputCacheProvider == null) { throw new ArgumentNullException("outputCacheProvider"); }
+            if (keyBuilder == null) { throw new ArgumentNullException("keyBuilder"); }
+
             _outputCacheProvider = outputCacheProvider;
             _keyBuilder = keyBuilder;
         }
@@ -122,25 +122,18 @@ namespace DevTrends.MvcDonutCaching
 
             var key = _keyBuilder.BuildKey(controllerName, actionName);
 
-            if (string.IsNullOrEmpty(key))
-            {
-                return;
-            }
+            if (string.IsNullOrEmpty(key)) { return; }
 
-            var keysToDelete = enumerableCache
-                .Where(_ => !string.IsNullOrEmpty(_.Key) && _.Key.StartsWith(key))
-                .Select(_ => _.Key);
+            var keysToDelete = enumerableCache.Where(_ => !string.IsNullOrEmpty(_.Key) && _.Key.StartsWith(key))
+                                              .Select(_ => _.Key);
 
             if (routeValues != null)
             {
                 foreach (var routeValue in routeValues)
                 {
-                    var keyFrag = _keyBuilder.BuildKeyFragment(routeValue);
+                    string keyFrag = _keyBuilder.BuildKeyFragment(routeValue);
 
-                    if (string.IsNullOrEmpty(keyFrag))
-                    {
-                        continue;
-                    }
+                    if (string.IsNullOrEmpty(keyFrag)) { continue; }
 
                     keysToDelete = keysToDelete.Where(_ => !string.IsNullOrEmpty(_) && _.Contains(keyFrag));
                 }

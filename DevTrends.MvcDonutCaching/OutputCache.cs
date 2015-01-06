@@ -22,7 +22,6 @@ namespace DevTrends.MvcDonutCaching
                 {
                     Instance = (OutputCacheProvider)Activator.CreateInstance(Type.GetType(providerSettings.Type));
                     Instance.Initialize(providerSettings.Name, providerSettings.Parameters);
-
                 }
                 catch (Exception ex)
                 {
@@ -34,23 +33,13 @@ namespace DevTrends.MvcDonutCaching
             }
         }
 
-        private OutputCache()
-        {
-        }
+        private OutputCache() {  }
 
-        public static OutputCacheProvider Instance
-        {
-            get;
-            private set;
-        }
+        public static OutputCacheProvider Instance { get; private set; }
 
         /// <summary>
         /// Specifies the default value for the <see cref="DonutOutputCacheAttribute.Options"/>
         /// </summary>
-        public static OutputCacheOptions DefaultOptions
-        {
-            get;
-            set;
-        }
+        public static OutputCacheOptions DefaultOptions { get; set; }
     }
 }

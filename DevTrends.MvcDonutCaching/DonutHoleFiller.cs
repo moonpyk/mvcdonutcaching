@@ -15,18 +15,16 @@ namespace DevTrends.MvcDonutCaching
 
         public DonutHoleFiller(IActionSettingsSerialiser actionSettingsSerialiser)
         {
-            if (actionSettingsSerialiser == null)
-            {
-                throw new ArgumentNullException("actionSettingsSerialiser");
-            }
+            if (actionSettingsSerialiser == null) { throw new ArgumentNullException("actionSettingsSerialiser"); }
 
             _actionSettingsSerialiser = actionSettingsSerialiser;
         }
 
         public string RemoveDonutHoleWrappers(string content, ControllerContext filterContext, OutputCacheOptions options)
         {
-            if (
-                filterContext.IsChildAction &&
+            if (filterContext == null) { throw new ArgumentNullException("filterContext"); }
+
+            if (filterContext.IsChildAction &&
                 (options & OutputCacheOptions.ReplaceDonutsInChildActions) != OutputCacheOptions.ReplaceDonutsInChildActions)
             {
                 return content;
@@ -37,8 +35,7 @@ namespace DevTrends.MvcDonutCaching
 
         public string ReplaceDonutHoleContent(string content, ControllerContext filterContext, OutputCacheOptions options)
         {
-            if (
-                filterContext.IsChildAction &&
+            if (filterContext.IsChildAction &&
                 (options & OutputCacheOptions.ReplaceDonutsInChildActions) != OutputCacheOptions.ReplaceDonutsInChildActions)
             {
                 return content;

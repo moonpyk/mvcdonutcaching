@@ -13,7 +13,10 @@ namespace DevTrends.MvcDonutCaching
         /// <param name="settings">The cache settings.</param>
         public void SetCacheHeaders(HttpResponseBase response, CacheSettings settings)
         {
-            var cacheability = HttpCacheability.NoCache;
+            if (response == null) { throw new ArgumentNullException("response"); }
+            if (settings == null) { throw new ArgumentNullException("settings"); }
+
+            HttpCacheability cacheability;
 
             switch (settings.Location)
             {
@@ -24,7 +27,10 @@ namespace DevTrends.MvcDonutCaching
                 case OutputCacheLocation.Client:
                 case OutputCacheLocation.ServerAndClient:
                     cacheability = HttpCacheability.Private;
-                    break;                    
+                    break;
+                default:
+                    cacheability = HttpCacheability.NoCache;
+                    break;
             }
 
             response.Cache.SetCacheability(cacheability);

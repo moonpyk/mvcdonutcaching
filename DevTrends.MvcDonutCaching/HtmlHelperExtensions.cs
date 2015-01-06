@@ -1,4 +1,5 @@
-﻿using System.Web.Mvc;
+﻿using System.Runtime.Serialization;
+using System.Web.Mvc;
 using System.Web.Mvc.Html;
 using System.Web.Routing;
 using DevTrends.MvcDonutCaching.Annotations;
@@ -13,7 +14,11 @@ namespace DevTrends.MvcDonutCaching
         {
             get
             {
-                return _serialiser ??  (_serialiser = new EncryptingActionSettingsSerialiser(new ActionSettingsSerialiser(), new Encryptor()));
+                var dataContractSerializer = new DataContractSerializer(typeof(ActionSettings), new[] { typeof(RouteValueDictionary) });
+                var dataContractSerializerWrapper = new DataContractSerializerWrapper(dataContractSerializer);
+                var actionSettingsSerializer = new ActionSettingsSerialiser(dataContractSerializerWrapper);
+
+                return _serialiser ?? (_serialiser = new EncryptingActionSettingsSerialiser(actionSettingsSerializer, new Encryptor()));
             }
             set
             {
