@@ -78,6 +78,15 @@ namespace DevTrends.MvcDonutCaching
         }
 
         /// <summary>
+        /// Gets or sets the skip-by-custom value.
+        /// </summary>
+        public string SkipByCustom
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         /// Gets or sets the cache profile name.
         /// </summary>
         public string CacheProfile
@@ -140,6 +149,15 @@ namespace DevTrends.MvcDonutCaching
         /// <param name="filterContext">The filter context.</param>
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
+            if (SkipByCustom != null)
+            {
+                var skipByCustomDelegate =
+                    filterContext.HttpContext.Application[HttpApplicationExtensions.SkipByCustomApplicationStateKey] as
+                        Func<HttpContextBase, string, bool>;
+                if (skipByCustomDelegate != null && skipByCustomDelegate(filterContext.HttpContext, SkipByCustom))
+                    return;
+            }
+
             CacheSettings = BuildCacheSettings();
 
             var cacheKey = KeyGenerator.GenerateKey(filterContext, CacheSettings);

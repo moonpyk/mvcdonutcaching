@@ -24,6 +24,8 @@ namespace DevTrends.MvcDonutCaching.Demo
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
             Container = RegisterAutofac();
+
+            this.SetSkipByCustomStringDelegate(SkipByCustomString);
         }
 
         private static IContainer RegisterAutofac()
@@ -45,7 +47,7 @@ namespace DevTrends.MvcDonutCaching.Demo
 
             return container;
         }
-
+        
         public override string GetVaryByCustomString(HttpContext context, string custom)
         {
             if (string.IsNullOrWhiteSpace(custom))
@@ -71,6 +73,21 @@ namespace DevTrends.MvcDonutCaching.Demo
             }
 
             return base.GetVaryByCustomString(context, custom);
+        }
+
+        private static bool SkipByCustomString(HttpContextBase context, string custom)
+        {
+            switch (custom.ToLowerInvariant())
+            {
+                case "preview":
+                    if (context.Request.QueryString["preview"] == "1")
+                    {
+                        return true;
+                    }
+                    break;
+            }
+
+            return false;
         }
     }
 }
