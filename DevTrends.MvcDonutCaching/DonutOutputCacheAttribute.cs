@@ -149,13 +149,9 @@ namespace DevTrends.MvcDonutCaching
         /// <param name="filterContext">The filter context.</param>
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            if (SkipByCustom != null)
+            if (SkipBecauseOfCustom(filterContext))
             {
-                var skipByCustomDelegate =
-                    filterContext.HttpContext.Application[HttpApplicationExtensions.SkipByCustomApplicationStateKey] as
-                        Func<HttpContextBase, string, bool>;
-                if (skipByCustomDelegate != null && skipByCustomDelegate(filterContext.HttpContext, SkipByCustom))
-                    return;
+                return;
             }
 
             CacheSettings = BuildCacheSettings();
@@ -235,11 +231,29 @@ namespace DevTrends.MvcDonutCaching
                     DonutHoleFiller.RemoveDonutHoleWrappers(cacheItem.Content, filterContext, CacheSettings.Options)
                 );
 
+                if (SkipBecauseOfCustom(filterContext))
+                {
+                    return; //offer second chance to skip by custom in case something has changed in the course of the action (e.g. setting a flag to choose to skip)
+                }
+
                 if (CacheSettings.IsServerCachingEnabled && filterContext.HttpContext.Response.StatusCode == 200)
                 {
                     OutputCacheManager.AddItem(cacheKey, cacheItem, DateTime.UtcNow.AddSeconds(CacheSettings.Duration));
                 }
             });
+        }
+
+        private bool SkipBecauseOfCustom(ActionExecutingContext filterContext)
+        {
+            if (SkipByCustom != null)
+            {
+                var skipByCustomDelegate =
+                    filterContext.HttpContext.Application[HttpApplicationExtensions.SkipByCustomApplicationStateKey] as
+                        Func<HttpContextBase, string, bool>;
+                if (skipByCustomDelegate != null && skipByCustomDelegate(filterContext.HttpContext, SkipByCustom))
+                    return true;
+            }
+            return false;
         }
 
         /// <summary>
