@@ -243,7 +243,7 @@ namespace DevTrends.MvcDonutCaching
             });
         }
 
-        private bool SkipBecauseOfCustom(ActionExecutingContext filterContext)
+        private bool SkipBecauseOfCustom(ControllerContext filterContext)
         {
             if (SkipByCustom != null)
             {
@@ -272,7 +272,7 @@ namespace DevTrends.MvcDonutCaching
 
             // If we are in the context of a child action, the main action is responsible for setting
             // the right HTTP Cache headers for the final response.
-            if (!filterContext.IsChildAction)
+            if (!filterContext.IsChildAction && !SkipBecauseOfCustom(filterContext))
             {
                 CacheHeadersHelper.SetCacheHeaders(filterContext.HttpContext.Response, CacheSettings);
             }
