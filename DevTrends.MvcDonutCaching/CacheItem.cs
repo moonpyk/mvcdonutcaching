@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace DevTrends.MvcDonutCaching
@@ -23,5 +24,14 @@ namespace DevTrends.MvcDonutCaching
         /// </value>
         [DataMember(Order = 2)]
         public string Content { get; set; }
+
+        /// <summary>
+        /// Gets or sets the headers to be cached.
+        /// </summary>
+        /// <value>
+        /// The content.
+        /// </value>
+        [DataMember(Order = 3)]
+        public KeyValuePair<string, string>[] CachedHeaders { get; set; }
     }
 }

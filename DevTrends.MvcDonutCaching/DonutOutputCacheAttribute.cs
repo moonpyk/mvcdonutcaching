@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.UI;
@@ -21,6 +23,7 @@ namespace DevTrends.MvcDonutCaching
         // Private
         private bool? _noStore;
         private OutputCacheOptions? _options;
+        private string[] _cachedHeaders;
 
         public DonutOutputCacheAttribute() : this(new KeyBuilder()) { }
 
@@ -111,6 +114,21 @@ namespace DevTrends.MvcDonutCaching
         }
 
         /// <summary>
+        /// Gets or sets the headers to be cached.
+        /// Seperated with ";"
+        /// </summary>
+        public string CachedHeaders {
+            get { return _cachedHeaders != null ? string.Join(";", _cachedHeaders) : null; }
+            set {
+                if (value == null) {
+                    return;
+                }
+
+                _cachedHeaders = value.Split(new []{';'}, StringSplitOptions.RemoveEmptyEntries);
+            }
+        }
+
+        /// <summary>
         /// Get or sets the <see cref="OutputCacheOptions"/> for this attributes. Specifying a value here will
         /// make the <see cref="OutputCache.DefaultOptions"/> value ignored.
         /// </summary>
@@ -175,6 +193,12 @@ namespace DevTrends.MvcDonutCaching
                         Content = DonutHoleFiller.ReplaceDonutHoleContent(cachedItem.Content, filterContext, CacheSettings.Options),
                         ContentType = cachedItem.ContentType
                     };
+
+                    if (cachedItem.CachedHeaders != null) {
+                        foreach (var cachedHeader in cachedItem.CachedHeaders) {
+                            filterContext.HttpContext.Response.Headers[cachedHeader.Key] = cachedHeader.Value;
+                        }
+                    }
                 }
             }
 
@@ -212,6 +236,14 @@ namespace DevTrends.MvcDonutCaching
                     Content = cachingWriter.ToString(),
                     ContentType = filterContext.HttpContext.Response.ContentType
                 };
+
+                // Cache headers from response
+                if (CacheSettings.CachedHeaders != null) {
+                    cacheItem.CachedHeaders = CacheSettings.CachedHeaders
+                        .Where(header => filterContext.HttpContext.Response.Headers.AllKeys.Contains(header))
+                        .Select(header => new KeyValuePair<string, string>(header, filterContext.HttpContext.Response.Headers[header]))
+                        .ToArray();
+                }
 
                 filterContext.HttpContext.Response.Write(
                     DonutHoleFiller.RemoveDonutHoleWrappers(cacheItem.Content, filterContext, CacheSettings.Options)
@@ -268,6 +300,7 @@ namespace DevTrends.MvcDonutCaching
                     Location = (int)Location == -1 ? OutputCacheLocation.Server : Location,
                     NoStore = NoStore,
                     Options = Options,
+                    CachedHeaders = _cachedHeaders
                 };
             }
             else
@@ -283,6 +316,7 @@ namespace DevTrends.MvcDonutCaching
                     Location = (int)Location == -1 ? ((int)cacheProfile.Location == -1 ? OutputCacheLocation.Server : cacheProfile.Location) : Location,
                     NoStore = _noStore.HasValue ? _noStore.Value : cacheProfile.NoStore,
                     Options = Options,
+                    CachedHeaders = _cachedHeaders
                 };
             }
 
