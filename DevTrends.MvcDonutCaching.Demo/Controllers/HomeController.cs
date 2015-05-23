@@ -40,6 +40,7 @@ namespace DevTrends.MvcDonutCaching.Demo.Controllers
         public ActionResult ExpireSimpleDonutCache()
         {
             OutputCacheManager.RemoveItem("Home", "Simple");
+            OutputCacheManager.RemoveItem("Home", "CachedHeaders");
 
             return Content("OK", "text/plain");
         }
@@ -55,6 +56,15 @@ namespace DevTrends.MvcDonutCaching.Demo.Controllers
         public ActionResult TestIssue23()
         {
             return View();
+        }
+
+
+        [DonutOutputCache(Duration = 60, CachedHeaders = "x-cache-me")]
+        public ActionResult CachedHeaders() {
+            Response.AppendHeader("x-cache-me", Guid.NewGuid().ToString());
+            return Json(new {
+                CacheTime = DateTime.Now
+            }, JsonRequestBehavior.AllowGet);
         }
     }
 }

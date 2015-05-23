@@ -61,6 +61,12 @@ namespace DevTrends.MvcDonutCaching
         public OutputCacheOptions Options { get; set; }
 
         /// <summary>
+        /// Gets or sets the headers to be cached.
+        /// Seperated with ";"
+        /// </summary>
+        public string[] CachedHeaders { get; set; }
+
+        /// <summary>
         /// Gets a value indicating whether the server caching is enabled.
         /// </summary>
         /// <value>

@@ -24,7 +24,10 @@
 <p>
     This is again again the main page
 </p>
+
 <button id="btnExpirePage">Expire page cache</button>
+<button id="btnHeaderCache">Get Cached headers</button>
+
 @section scripts
 {
     <script type="text/javascript">
@@ -47,6 +50,19 @@
                 $.get('@Url.Action("ExpireSimpleDonutOneCache")', function (r) {
                     console.log(r);
                     me.prop('disabled', true);
+                });
+            });
+
+
+            $('#btnHeaderCache').click(function (e) {
+                var me = $(this);
+
+                e.preventDefault();
+
+                $.get('@Url.Action("CachedHeaders")', function (data, textStatus, request) {
+                    var header = request.getResponseHeader('x-cache-me');
+                    console.log(header);
+                    alert(header);
                 });
             });
         });
