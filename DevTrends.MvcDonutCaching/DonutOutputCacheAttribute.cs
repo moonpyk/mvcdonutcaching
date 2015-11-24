@@ -28,7 +28,7 @@ namespace DevTrends.MvcDonutCaching
             this(
                new KeyGenerator(keyBuilder),
                new OutputCacheManager(OutputCache.Instance, keyBuilder),
-               new DonutHoleFiller(new EncryptingActionSettingsSerialiser(new ActionSettingsSerialiser(), new Encryptor())),
+               new DonutHoleFiller(HtmlHelperExtensions.Serialiser),
                new CacheSettingsManager(),
                new CacheHeadersHelper()
         )
