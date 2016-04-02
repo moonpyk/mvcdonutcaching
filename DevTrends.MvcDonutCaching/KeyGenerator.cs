@@ -10,9 +10,9 @@ namespace DevTrends.MvcDonutCaching
 {
     public class KeyGenerator : IKeyGenerator
     {
-        private const string RouteDataKeyAction     = "action";
-        private const string RouteDataKeyController = "controller";
-        private const string DataTokensKeyArea      = "area";
+        internal const string RouteDataKeyAction     = "action";
+        internal const string RouteDataKeyController = "controller";
+        internal const string DataTokensKeyArea      = "area";
 
         private readonly IKeyBuilder _keyBuilder;
 
@@ -26,6 +26,12 @@ namespace DevTrends.MvcDonutCaching
             _keyBuilder = keyBuilder;
         }
 
+        /// <summary>
+        /// Generates a key given the <see cref="context"/> and <see cref="cacheSettings"/>.
+        /// </summary>
+        /// <param name="context">The controller context.</param>
+        /// <param name="cacheSettings">The cache settings.</param>
+        /// <returns>A string that can be used as an output cache key</returns>
         [CanBeNull]
         public string GenerateKey(ControllerContext context, CacheSettings cacheSettings)
         {

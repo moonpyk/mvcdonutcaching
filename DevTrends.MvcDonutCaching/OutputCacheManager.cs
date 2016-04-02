@@ -159,6 +159,17 @@ namespace DevTrends.MvcDonutCaching
             {
                 foreach (var routeValue in routeValues)
                 {
+                    // Ignoring the "area" part of the route values if it's an empty string
+                    // Ref : https://github.com/moonpyk/mvcdonutcaching/issues/36
+                    if (routeValue.Key == KeyGenerator.DataTokensKeyArea)
+                    {
+                        var areaString = routeValue.Value as string;
+                        if (string.IsNullOrWhiteSpace(areaString))
+                        {
+                            continue;
+                        }
+                    }
+
                     var keyFrag = _keyBuilder.BuildKeyFragment(routeValue);
 
                     if (string.IsNullOrEmpty(keyFrag))
