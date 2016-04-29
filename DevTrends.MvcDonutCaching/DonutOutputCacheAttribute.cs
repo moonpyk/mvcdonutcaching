@@ -102,6 +102,15 @@ namespace DevTrends.MvcDonutCaching
         }
 
         /// <summary>
+        /// Gets or sets the skip-by-custom value.
+        /// </summary>
+        public string SkipByCustom
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         /// Gets or sets the cache profile name.
         /// </summary>
         public string CacheProfile
@@ -164,6 +173,11 @@ namespace DevTrends.MvcDonutCaching
         /// <param name="filterContext">The filter context.</param>
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
+            if (SkipBecauseOfCustom(filterContext))
+            {
+                return;
+            }
+
             CacheSettings = BuildCacheSettings();
 
             var cacheKey = KeyGenerator.GenerateKey(filterContext, CacheSettings);
@@ -241,11 +255,29 @@ namespace DevTrends.MvcDonutCaching
                     DonutHoleFiller.RemoveDonutHoleWrappers(cacheItem.Content, filterContext, CacheSettings.Options)
                 );
 
+                if (SkipBecauseOfCustom(filterContext))
+                {
+                    return; //offer second chance to skip by custom in case something has changed in the course of the action (e.g. setting a flag to choose to skip)
+                }
+
                 if (CacheSettings.IsServerCachingEnabled && filterContext.HttpContext.Response.StatusCode == 200)
                 {
                     OutputCacheManager.AddItem(cacheKey, cacheItem, DateTime.UtcNow.AddSeconds(CacheSettings.Duration));
                 }
             });
+        }
+
+        private bool SkipBecauseOfCustom(ControllerContext filterContext)
+        {
+            if (SkipByCustom != null)
+            {
+                var skipByCustomDelegate =
+                    filterContext.HttpContext.Application[HttpApplicationExtensions.SkipByCustomApplicationStateKey] as
+                        Func<HttpContextBase, string, bool>;
+                if (skipByCustomDelegate != null && skipByCustomDelegate(filterContext.HttpContext, SkipByCustom))
+                    return true;
+            }
+            return false;
         }
 
         /// <summary>
@@ -264,7 +296,7 @@ namespace DevTrends.MvcDonutCaching
 
             // If we are in the context of a child action, the main action is responsible for setting
             // the right HTTP Cache headers for the final response.
-            if (!filterContext.IsChildAction)
+            if (!filterContext.IsChildAction && !SkipBecauseOfCustom(filterContext))
             {
                 CacheHeadersHelper.SetCacheHeaders(filterContext.HttpContext.Response, CacheSettings);
             }

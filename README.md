@@ -64,6 +64,39 @@ You can also configure the output cache to use a custom provider:
 
 Note, that a custom provider is not included with this project but you can write one fairly easily by subclassing *System.Web.Caching.OutputCacheProvider*. A number of implementations are also available on the web.
 
+## Skip by custom ##
+Sometimes you want to allow the output caching to be bypassed entirely.  DonutCacheAttribute adds the ability to choose to do this dynamically, using a similar interface to the VaryByCustom functionality of the standard OutputCacheAttribute.
+
+E.g., in Global.asax.cs, 
+
+```csharp
+public class Application : HttpApplication
+{
+  protected void Application_Start()
+  {
+    this.SetSkipByCustomStringDelegate(SkipByCustomString); //extension method 
+  }
+  
+  private bool SkipByCustomString(HttpContextBase context, string custom)
+  {
+    if (custom == "SkipOnPreview")
+    {
+      if (context.Request.QueryString["cmspreview"] == "1")
+        return true;
+    }
+    
+    return false;
+  }
+}
+```
+then on your Action:
+
+```csharp
+[DonutOutputCache(SkipByCustom = "SkipOnPreview")]
+public ActionResult SomeAction(){ ... }
+```
+
+
 ## More Information ##
 
 A comprehensive guide to MVC Extensible Donut Caching is now available on the [DevTrends Blog](http://www.devtrends.co.uk/blog/donut-output-caching-in-asp.net-mvc-3).

@@ -23,6 +23,12 @@ namespace DevTrends.MvcDonutCaching.Demo.Controllers
             return View(DateTime.Now);
         }
 
+        [DonutOutputCache(Duration = 24 * 3600, SkipByCustom = "preview")]
+        public ActionResult SimpleButCanSkip()
+        {
+            return View("Simple", DateTime.Now);
+        }
+
         [ChildActionOnly, DonutOutputCache(Duration = 60, Options = OutputCacheOptions.ReplaceDonutsInChildActions)]
         public ActionResult SimpleDonutOne()
         {
